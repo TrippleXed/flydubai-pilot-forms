@@ -1829,22 +1829,36 @@
     function checkForRecovery() {
       console.log('🔍 Checking for previous session...');
       const savedData = localStorage.getItem('pilotFormData');
+      console.log('💾 Raw saved data:', savedData);
+      
       if (savedData) {
         try {
           const data = JSON.parse(savedData);
-          console.log('📊 Found saved data:', data);
+          console.log('📊 Parsed data keys:', Object.keys(data));
+          console.log('📊 Session ID exists:', !!data.sessionId);
+          console.log('📊 Last saved timestamp:', data.lastSaved);
+          
           const timeDiff = Date.now() - (data.lastSaved || 0);
           const isValidSession = data.sessionId && timeDiff < 7 * 24 * 60 * 60 * 1000; // 7 days
           
           console.log('⏰ Time since last save:', Math.round(timeDiff / (1000 * 60 * 60)), 'hours');
+          console.log('⏰ Time diff (ms):', timeDiff);
+          console.log('⏰ Max age (ms):', 7 * 24 * 60 * 60 * 1000);
           console.log('🔐 Session ID:', data.sessionId);
-          console.log('✅ Valid session:', isValidSession);
+          console.log('✅ Valid session check:', isValidSession);
           
           if (isValidSession) {
             console.log('🎯 Showing recovery banner');
-            document.getElementById('recoveryBanner').classList.add('show');
+            const banner = document.getElementById('recoveryBanner');
+            if (banner) {
+              banner.classList.add('show');
+              console.log('✅ Recovery banner shown');
+            } else {
+              console.error('❌ Recovery banner element not found');
+            }
           } else {
             console.log('❌ Session too old or invalid, clearing...');
+            console.log('❌ Reason: sessionId exists?', !!data.sessionId, 'timeDiff < max?', timeDiff < 7 * 24 * 60 * 60 * 1000);
             localStorage.removeItem('pilotFormData');
           }
         } catch (error) {
@@ -1852,7 +1866,7 @@
           localStorage.removeItem('pilotFormData');
         }
       } else {
-        console.log('📭 No saved data found');
+        console.log('📭 No saved data found in localStorage');
       }
     }
 
