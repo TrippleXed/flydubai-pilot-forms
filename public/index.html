@@ -3774,6 +3774,25 @@
           console.log('📄 Generating application summary...');
           collectFormData();
           generateApplicationSummary();
+          
+          // Reinitialize signature canvas to ensure proper sizing
+          setTimeout(() => {
+            const canvas = document.getElementById('sigCanvas');
+            if (canvas) {
+              console.log('✍️ Reinitializing signature canvas for proper sizing...');
+              const ctx = canvas.getContext('2d');
+              const ratio = Math.max(window.devicePixelRatio || 1, 1);
+              const rect = canvas.getBoundingClientRect();
+              canvas.width = rect.width * ratio;
+              canvas.height = 160 * ratio;
+              ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+              ctx.lineWidth = 2;
+              ctx.lineJoin = 'round';
+              ctx.lineCap = 'round';
+              ctx.strokeStyle = '#111827';
+              console.log('✅ Signature canvas reinitialized with dimensions:', rect.width, 'x', '160');
+            }
+          }, 100);
         }
       } else {
         console.error('❌ Step element not found for step:', step);
