@@ -2545,20 +2545,7 @@
       return heavyJets.includes(aircraftType);
     }
 
-    // Add aircraft section functionality
-    function addAircraftSection(b737Type = null, locked = false) {
-      sectionCount++;
-      const sec = document.createElement('section');
-      sec.className = 'section';
-      sec.setAttribute('data-section-id', sectionCount);
-      sec.dataset.locked = locked ? '1' : '0';
-      
-      const label = `Aircraft Type ${sectionCount}`;
-      const typeText = b737Type ? (b737Type === 'ng-max' ? 'Boeing 737 NG/MAX' : 'Boeing 737 Classic (300-500)') : '';
-      
-      let aircraftDropdown;
-      if(b737Type) {
-        aircraftDropdown = `
+    // Now dynamically added sections use the same makeAircraftSection function as the pre-loaded ones
         <div style="display: grid; grid-template-columns: 400px auto 1fr; gap: 16px; align-items: end;">
           <div>
             <select class="ac-type" ${locked ? 'disabled' : ''} style="width: 100%; padding: 14px 16px; border-radius: 12px; border: 3px solid #cbd5e1; background: #ffffff; color: var(--ink); font-size: 14px; font-weight: 500; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), inset 0 1px 3px rgba(0, 0, 0, 0.05); ${locked ? 'background-color: #f3f4f6; cursor: not-allowed;' : ''}">
@@ -3017,7 +3004,9 @@
       if (e.target.id === 'btnAddSection') {
         // Validate before adding new section (from original)
         if(!validateOtherFields()) return;
-        addAircraftSection();
+        const count = sectionsWrap.querySelectorAll('.section').length + 1;
+        sectionsWrap.appendChild(makeAircraftSection({label:`Aircraft Type ${count}`, typeText:'', locked:false}));
+        computeAll();
       }
       
       // Handle remove button clicks
