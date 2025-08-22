@@ -2384,6 +2384,7 @@
                 <option value="TEA (Test of English for Aviation)">TEA (Test of English for Aviation)</option>
                 <option value="IELTS">IELTS (Academic)</option>
                 <option value="Native Speaker">Native English Speaker</option>
+                <option value="Attached to License">Attached to License (ELP Endorsement)</option>
                 <option value="Other">Other Approved Test</option>
               </select>
             </div>
@@ -2391,7 +2392,7 @@
               <label>Test Date</label>
               <input type="date" id="englishTestDate" />
             </div>
-            <div>
+            <div id="englishUploadDiv">
               <label>Upload Certificate</label>
               <input type="file" id="englishFile" accept=".pdf,.jpg,.png" />
             </div>
@@ -3574,9 +3575,19 @@
             }
           });
           
-          // File is also required if section was started
+          // File is also required if section was started (unless it's ELP attached to license)
           const fileInput = document.getElementById(file.id);
-          if (fileInput && (!fileInput.files || fileInput.files.length === 0)) {
+          
+          // Special case: English proficiency "attached to license" doesn't require file upload
+          let skipFileValidation = false;
+          if (file.id === 'englishFile') {
+            const englishTestType = document.getElementById('englishTestType');
+            if (englishTestType && englishTestType.value === 'Attached to License') {
+              skipFileValidation = true;
+            }
+          }
+          
+          if (!skipFileValidation && fileInput && (!fileInput.files || fileInput.files.length === 0)) {
             const formSection = fileInput.closest('.form-section');
             if (formSection) {
               formSection.style.borderColor = '#dc2626';
@@ -4063,22 +4074,40 @@
       
       if (!issueInput.value) return;
       
+      // Only auto-calculate if expiry field is empty to avoid overwriting user input
+      if (expiryInput.value) return;
+      
       const issueDate = new Date(issueInput.value);
       let expiryDate = new Date(issueDate);
+      
+      console.log(`📅 Calculating expiry for ${docType}:`, {
+        issueDate: issueInput.value,
+        parsedIssueDate: issueDate.toISOString(),
+        docType: docType
+      });
       
       // Standard validity periods
       switch(docType) {
         case 'medical':
-          expiryDate.setMonth(expiryDate.getMonth() + 12); // 12 months
+          expiryDate.setFullYear(expiryDate.getFullYear() + 1); // 1 year (12 months)
+          console.log(`🏥 Medical expiry calculated: ${expiryDate.toISOString()}`);
           break;
         case 'rol':
           expiryDate.setFullYear(expiryDate.getFullYear() + 5); // 5 years
+          console.log(`📻 ROL expiry calculated: ${expiryDate.toISOString()}`);
           break;
+        case 'license':
+          // Don't auto-calculate license expiry as it varies greatly
+          return;
+        case 'passport':
+          // Don't auto-calculate passport expiry as it varies by country
+          return;
         default:
           return; // Don't auto-calculate for other documents
       }
       
       expiryInput.value = expiryDate.toISOString().split('T')[0];
+      console.log(`✅ Set ${docType} expiry to: ${expiryInput.value}`);
       checkValidity(docType);
     }
 
@@ -4535,6 +4564,38 @@
       }
       
       console.log('✅ Authority dropdown handlers set up completed');
+      
+      // ===== English Test Type Handler =====
+      console.log('🔗 Setting up English test type handler...');
+      
+      const englishTestType = document.getElementById('englishTestType');
+      const englishUploadDiv = document.getElementById('englishUploadDiv');
+      const englishTestDate = document.getElementById('englishTestDate');
+      
+      if (englishTestType && englishUploadDiv) {
+        englishTestType.addEventListener('change', () => {
+          if (englishTestType.value === 'Attached to License') {
+            englishUploadDiv.style.display = 'none';
+            // Clear the file input when hiding
+            const fileInput = document.getElementById('englishFile');
+            if (fileInput) {
+              fileInput.value = '';
+              // Remove any validation errors
+              const formSection = fileInput.closest('.form-section');
+              if (formSection) {
+                formSection.style.borderColor = '';
+                formSection.style.backgroundColor = '';
+                const errorMsg = formSection.querySelector('.error-message');
+                if (errorMsg) errorMsg.remove();
+              }
+            }
+          } else {
+            englishUploadDiv.style.display = 'block';
+          }
+        });
+      }
+      
+      console.log('✅ English test type handler set up completed');
       
       // ===== Enter Key Navigation for Time Fields =====
       console.log('🔗 Setting up Enter key navigation for time fields...');
