@@ -77,9 +77,9 @@ function generateEmailContent(formData) {
           <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Email:</strong> ${formData.contactEmail || 'N/A'}</p>
           <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Phone:</strong> ${formData.phoneNumber || 'N/A'}</p>
           <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Date of Birth:</strong> ${formData.dateOfBirth || 'N/A'}</p>
-          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Current Location:</strong> ${formData.currentLocation || 'N/A'}</p>
           <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Designation:</strong> ${formData.designation || 'N/A'}</p>
-          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Current Employer:</strong> ${formData.currentEmployer || 'N/A'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Expected Date of Joining:</strong> ${formData.expectedDateOfJoining || 'N/A'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Previous Employer:</strong> ${formData.previousEmployer || 'N/A'}</p>
         </div>
       </div>
 
