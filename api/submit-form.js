@@ -1,6 +1,7 @@
 const nodemailer = require('nodemailer');
 const JSZip = require('jszip');
 const fs = require('fs').promises;
+const { jsPDF } = require('jspdf');
 
 export default async function handler(req, res) {
   // Set CORS headers
@@ -187,6 +188,14 @@ async function createZipAttachment(formData) {
       englishFile: 'English_Proficiency_Certificate'
     };
 
+    // Generate comprehensive form data PDF
+    const formDataPdf = await generateFormDataPDF(formData);
+    if (formDataPdf) {
+      zip.file('00_Application_Summary.pdf', formDataPdf);
+      hasFiles = true;
+      console.log('Added Application Summary PDF to zip');
+    }
+
     // Add each uploaded file to the zip
     for (const [docId, folderName] of Object.entries(documentTypes)) {
       const fileData = formData.uploads[docId];
@@ -232,6 +241,228 @@ async function createZipAttachment(formData) {
 
   } catch (error) {
     console.error('Error creating zip file:', error);
+    return null;
+  }
+}
+
+async function generateFormDataPDF(formData) {
+  try {
+    const doc = new jsPDF();
+    let yPos = 20;
+    const pageHeight = doc.internal.pageSize.height;
+    const margin = 20;
+    
+    // Helper function to add new page if needed
+    const checkNewPage = (additionalHeight = 10) => {
+      if (yPos + additionalHeight > pageHeight - margin) {
+        doc.addPage();
+        yPos = 20;
+      }
+    };
+    
+    // Helper function to add text with word wrap
+    const addText = (text, x, y, options = {}) => {
+      const maxWidth = options.maxWidth || 170;
+      const fontSize = options.fontSize || 10;
+      const fontStyle = options.fontStyle || 'normal';
+      
+      doc.setFontSize(fontSize);
+      doc.setFont('helvetica', fontStyle);
+      
+      const lines = doc.splitTextToSize(text, maxWidth);
+      lines.forEach((line, index) => {
+        if (y + (index * 5) > pageHeight - margin) {
+          doc.addPage();
+          y = 20;
+        }
+        doc.text(line, x, y + (index * 5));
+      });
+      
+      return y + (lines.length * 5) + 2;
+    };
+
+    // Header
+    doc.setFillColor(0, 122, 204);
+    doc.rect(0, 0, 210, 30, 'F');
+    
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(20);
+    doc.setFont('helvetica', 'bold');
+    doc.text('flydubai Pilot Application', 105, 20, { align: 'center' });
+    
+    doc.setTextColor(0, 0, 0);
+    yPos = 40;
+
+    // Application ID and Date
+    checkNewPage(15);
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Application ID: ${formData.applicationId || 'Not Generated'}`, 20, yPos);
+    yPos += 8;
+    doc.text(`Submitted: ${formData.submittedAt ? new Date(formData.submittedAt).toLocaleString() : new Date().toLocaleString()}`, 20, yPos);
+    yPos += 15;
+
+    // Personal Information Section
+    checkNewPage(60);
+    doc.setFillColor(248, 250, 252);
+    doc.rect(15, yPos - 5, 180, 8, 'F');
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text('👤 Personal Information', 20, yPos);
+    yPos += 15;
+
+    const personalInfo = [
+      ['Full Name', formData.pilotName || 'N/A'],
+      ['Nationality', formData.nationality || 'N/A'], 
+      ['Date of Birth', formData.dateOfBirth || 'N/A'],
+      ['Email Address', formData.contactEmail || 'N/A'],
+      ['Country Code', formData.countryCode || 'N/A'],
+      ['Phone Number', formData.phoneNumber || 'N/A'],
+      ['flydubai Designation', formData.designation || 'N/A'],
+      ['Date of Joining', formData.doj || 'N/A']
+    ];
+
+    personalInfo.forEach(([label, value]) => {
+      checkNewPage(8);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.text(`${label}:`, 20, yPos);
+      doc.setFont('helvetica', 'normal');
+      doc.text(value, 80, yPos);
+      yPos += 6;
+    });
+    
+    yPos += 10;
+
+    // Flight Experience Section
+    checkNewPage(40);
+    doc.setFillColor(240, 249, 255);
+    doc.rect(15, yPos - 5, 180, 8, 'F');
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text('✈️ Flight Experience Summary', 20, yPos);
+    yPos += 15;
+
+    // Grand Total
+    checkNewPage(10);
+    doc.setFillColor(240, 253, 244);
+    doc.rect(15, yPos - 3, 180, 12, 'F');
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Total Flight Hours: ${formData.grandTotalHours || 'Not Calculated'}`, 20, yPos + 5);
+    yPos += 20;
+
+    // Aircraft Type Details
+    const flightData = [
+      ['Boeing 737 NG/MAX Combined Hours', formData.b737_combined || 'N/A'],
+      ['Boeing 737 NG/MAX Multi-Pilot Hours', formData.b737_mp || 'N/A'],
+      ['Boeing 737 NG/MAX Night Hours', formData.b737_night || 'N/A'],
+      ['Boeing 737 Classic Combined Hours', formData.b737c_combined || 'N/A'],
+      ['Boeing 737 Classic Multi-Pilot Hours', formData.b737c_mp || 'N/A'],
+      ['Boeing 737 Classic Night Hours', formData.b737c_night || 'N/A']
+    ];
+
+    flightData.forEach(([label, value]) => {
+      checkNewPage(8);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.text(`${label}:`, 20, yPos);
+      doc.setFont('helvetica', 'normal');
+      doc.text(value, 120, yPos);
+      yPos += 6;
+    });
+
+    yPos += 10;
+
+    // Documents Section
+    checkNewPage(60);
+    doc.setFillColor(254, 247, 237);
+    doc.rect(15, yPos - 5, 180, 8, 'F');
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text('📄 Document Checklist', 20, yPos);
+    yPos += 15;
+
+    const documentList = [
+      ['Pilot License', 'pilotLicenseFile'],
+      ['Medical Certificate', 'medicalFile'],
+      ['Radio License', 'radioLicenseFile'],
+      ['ROL Certificate', 'rolFile'],
+      ['Flight Hours Verification', 'flightHoursFile'],
+      ['Passport Copy', 'passportFile'],
+      ['UAE Visa', 'visaFile'],
+      ['License Verification Letter', 'licenseVerificationFile'],
+      ['Hours Verification Letter', 'hoursVerificationFile'],
+      ['No Incident Letter', 'incidentLetterFile'],
+      ['Emirates ID', 'emiratesIdFile'],
+      ['English Proficiency Certificate', 'englishFile']
+    ];
+
+    documentList.forEach(([docName, docId]) => {
+      checkNewPage(8);
+      const uploaded = formData.uploads && formData.uploads[docId];
+      const status = uploaded ? '✅ Uploaded' : '❌ Missing';
+      const fileName = uploaded ? uploaded.fileName : 'Not provided';
+      
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.text(`${docName}:`, 20, yPos);
+      doc.setFont('helvetica', 'normal');
+      doc.text(status, 120, yPos);
+      if (uploaded) {
+        doc.setFontSize(8);
+        doc.setTextColor(108, 114, 128);
+        doc.text(fileName, 20, yPos + 4);
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(10);
+      }
+      yPos += uploaded ? 10 : 6;
+    });
+
+    yPos += 10;
+
+    // Declaration Section
+    checkNewPage(30);
+    doc.setFillColor(240, 253, 244);
+    doc.rect(15, yPos - 5, 180, 8, 'F');
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text('✍️ Declaration & Signature', 20, yPos);
+    yPos += 15;
+
+    const declarationInfo = [
+      ['Declaration Accepted', formData.declaration ? '✅ Yes' : '❌ No'],
+      ['Signature Date', formData.signatureDate || 'N/A'],
+      ['Digital Signature', formData.signaturePad ? '✅ Provided' : '❌ Missing'],
+      ['Session ID', formData.sessionId || 'Not Available']
+    ];
+
+    declarationInfo.forEach(([label, value]) => {
+      checkNewPage(8);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.text(`${label}:`, 20, yPos);
+      doc.setFont('helvetica', 'normal');
+      doc.text(value, 80, yPos);
+      yPos += 6;
+    });
+
+    // Footer
+    checkNewPage(20);
+    yPos = pageHeight - 30;
+    doc.setFillColor(249, 250, 251);
+    doc.rect(15, yPos - 5, 180, 25, 'F');
+    doc.setFontSize(8);
+    doc.setTextColor(107, 114, 128);
+    doc.text('This document was automatically generated from the flydubai Pilot Documentation System', 105, yPos + 5, { align: 'center' });
+    doc.text('For queries regarding this application, please contact Flight Operations', 105, yPos + 10, { align: 'center' });
+    doc.text(`Generated: ${new Date().toLocaleString()}`, 105, yPos + 15, { align: 'center' });
+
+    // Return PDF as buffer
+    return Buffer.from(doc.output('arraybuffer'));
+    
+  } catch (error) {
+    console.error('Error generating PDF:', error);
     return null;
   }
 }
