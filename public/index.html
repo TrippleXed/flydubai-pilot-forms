@@ -1818,11 +1818,18 @@
 
     // Initialize form system
     function initializeForm() {
+      console.log('🚀 === FORM INITIALIZATION START ===');
+      console.log('📍 Current step:', currentStep);
+      console.log('📍 Total steps:', totalSteps);
+      console.log('🆔 Session ID:', sessionId);
+      
       loadFormData();
       checkForRecovery();
       updateProgress();
       setupAutoSave();
       setupEventListeners();
+      
+      console.log('✅ === FORM INITIALIZATION COMPLETE ===');
     }
 
     // Check for previous session
@@ -1946,9 +1953,14 @@
 
     // Collect current form data
     function collectFormData() {
+      console.log('📝 === COLLECTING FORM DATA ===');
+      console.log('📍 Current step:', currentStep);
+      console.log('📝 Previous form data keys:', Object.keys(formData));
+      
       // Step 1: Personal Information
       if (currentStep >= 1) {
-        formData.personalInfo = {
+        console.log('📋 Collecting Step 1: Personal Information');
+        const personalInfo = {
           pilotName: document.getElementById('pilotName')?.value || '',
           designation: document.getElementById('designation')?.value || '',
           doj: document.getElementById('doj')?.value || '',
@@ -1957,6 +1969,9 @@
           dateOfBirth: document.getElementById('dateOfBirth')?.value || '',
           phoneNumber: document.getElementById('phoneNumber')?.value || ''
         };
+        
+        console.log('👤 Personal info collected:', personalInfo);
+        formData.personalInfo = personalInfo;
       }
       
       // Step 2: Flight Experience
@@ -2030,6 +2045,12 @@
 
     // Save form data to localStorage
     function saveFormData() {
+      console.log('💾 === SAVING FORM DATA ===');
+      console.log('🆔 Session ID:', sessionId);
+      console.log('📍 Current step:', currentStep);
+      console.log('📝 Form data keys:', Object.keys(formData));
+      console.log('📝 Form data structure:', formData);
+      
       const saveData = {
         sessionId: sessionId,
         currentStep: currentStep,
@@ -2038,25 +2059,71 @@
         expiresAt: Date.now() + (30 * 24 * 60 * 60 * 1000) // 30 days
       };
       
-      localStorage.setItem('pilotFormData', JSON.stringify(saveData));
-      showAutoSaveStatus('All changes saved', 'saved');
+      console.log('💽 Save data structure:', {
+        hasSessionId: !!saveData.sessionId,
+        currentStep: saveData.currentStep,
+        formDataSize: JSON.stringify(saveData.formData).length,
+        lastSaved: new Date(saveData.lastSaved).toLocaleString(),
+        expiresAt: new Date(saveData.expiresAt).toLocaleString()
+      });
+      
+      try {
+        localStorage.setItem('pilotFormData', JSON.stringify(saveData));
+        console.log('✅ Data successfully saved to localStorage');
+        showAutoSaveStatus('All changes saved', 'saved');
+      } catch (error) {
+        console.error('❌ Error saving to localStorage:', error);
+        showAutoSaveStatus('Error saving changes', 'error');
+      }
+      
+      console.log('✅ === FORM DATA SAVE COMPLETE ===');
     }
 
     // Load form data from localStorage
     function loadFormData() {
+      console.log('📥 === LOADING FORM DATA ===');
       const savedData = localStorage.getItem('pilotFormData');
+      console.log('💾 Raw localStorage data:', savedData ? 'EXISTS' : 'NOT FOUND');
+      
       if (savedData) {
-        const data = JSON.parse(savedData);
-        
-        // Check if data hasn't expired
-        if (Date.now() < data.expiresAt) {
-          formData = data.formData || {};
-          return true;
-        } else {
-          // Clear expired data
+        try {
+          const data = JSON.parse(savedData);
+          console.log('📊 Loaded data keys:', Object.keys(data));
+          console.log('📊 Data structure:', {
+            hasFormData: !!data.formData,
+            currentStep: data.currentStep,
+            sessionId: data.sessionId ? 'EXISTS' : 'MISSING',
+            lastSaved: data.lastSaved ? new Date(data.lastSaved).toLocaleString() : 'MISSING',
+            expiresAt: data.expiresAt ? new Date(data.expiresAt).toLocaleString() : 'MISSING'
+          });
+          
+          // Check if data hasn't expired
+          const now = Date.now();
+          const isExpired = now >= data.expiresAt;
+          console.log('⏰ Expiry check:', {
+            now: new Date(now).toLocaleString(),
+            expiresAt: new Date(data.expiresAt).toLocaleString(),
+            isExpired: isExpired
+          });
+          
+          if (!isExpired) {
+            formData = data.formData || {};
+            console.log('📝 Form data loaded:', Object.keys(formData));
+            console.log('✅ Data successfully loaded');
+            return true;
+          } else {
+            console.log('🗑️ Data expired, clearing...');
+            localStorage.removeItem('pilotFormData');
+          }
+        } catch (error) {
+          console.error('❌ Error parsing saved data:', error);
           localStorage.removeItem('pilotFormData');
         }
+      } else {
+        console.log('📭 No saved data found');
       }
+      
+      console.log('❌ No valid data loaded');
       return false;
     }
 
@@ -2126,67 +2193,132 @@
 
     // Navigate to next step
     function nextStep() {
-      if (validateCurrentStep()) {
+      console.log('➡️ === NEXT STEP NAVIGATION ===');
+      console.log('📍 Current step before validation:', currentStep);
+      console.log('📍 Total steps:', totalSteps);
+      
+      const isValid = validateCurrentStep();
+      console.log('✅ Step validation result:', isValid);
+      
+      if (isValid) {
+        console.log('📝 Collecting form data...');
         collectFormData();
+        console.log('💾 Saving form data...');
         saveFormData();
         
         if (currentStep < totalSteps) {
+          console.log('🔄 Moving from step', currentStep, 'to step', currentStep + 1);
           currentStep++;
           showStep(currentStep);
+        } else {
+          console.log('🏁 Already at final step:', currentStep);
         }
+      } else {
+        console.log('❌ Validation failed, staying on step:', currentStep);
       }
+      console.log('✅ === NEXT STEP NAVIGATION COMPLETE ===');
     }
 
     // Navigate to previous step  
     function previousStep() {
+      console.log('⬅️ === PREVIOUS STEP NAVIGATION ===');
+      console.log('📍 Current step:', currentStep);
+      
+      console.log('📝 Collecting form data...');
       collectFormData();
+      console.log('💾 Saving form data...');
       saveFormData();
       
       if (currentStep > 1) {
+        console.log('🔄 Moving from step', currentStep, 'to step', currentStep - 1);
         currentStep--;
         showStep(currentStep);
+      } else {
+        console.log('🏁 Already at first step:', currentStep);
       }
+      console.log('✅ === PREVIOUS STEP NAVIGATION COMPLETE ===');
     }
 
     // Show specific step
     function showStep(step) {
+      console.log('🔄 === SHOWING STEP ===');
+      console.log('🎯 Target step:', step);
+      console.log('📍 Current step variable:', currentStep);
+      
       // Hide all steps
-      document.querySelectorAll('.form-step').forEach(stepEl => {
+      const allSteps = document.querySelectorAll('.form-step');
+      console.log('📋 Total step elements found:', allSteps.length);
+      
+      allSteps.forEach((stepEl, index) => {
+        const wasActive = stepEl.classList.contains('active');
+        const stepNumber = stepEl.getAttribute('data-step');
         stepEl.classList.remove('active');
+        if (wasActive) {
+          console.log('👁️ Hiding step element:', stepNumber);
+        }
       });
       
       // Show current step
       const currentStepEl = document.querySelector(`.form-step[data-step="${step}"]`);
+      console.log('🔍 Found step element for step', step, ':', !!currentStepEl);
+      
       if (currentStepEl) {
         currentStepEl.classList.add('active');
-      }
-      
-      // Generate summary if showing review step
-      if (step === 4) {
-        collectFormData();
-        generateApplicationSummary();
+        console.log('👁️ Showing step element:', step);
+        
+        // Generate summary if showing review step
+        if (step === 4) {
+          console.log('📄 Generating application summary...');
+          collectFormData();
+          generateApplicationSummary();
+        }
+      } else {
+        console.error('❌ Step element not found for step:', step);
       }
       
       updateProgress();
       updateNavigation();
+      console.log('✅ === STEP DISPLAY COMPLETE ===');
     }
 
     // Update progress bar and steps
     function updateProgress() {
+      console.log('📊 === UPDATING PROGRESS ===');
+      console.log('📍 Current step:', currentStep);
+      console.log('📍 Total steps:', totalSteps);
+      
       const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
-      document.getElementById('progressFill').style.width = `${progress}%`;
+      console.log('📊 Progress percentage:', progress.toFixed(1) + '%');
+      
+      const progressFill = document.getElementById('progressFill');
+      if (progressFill) {
+        progressFill.style.width = `${progress}%`;
+        console.log('✅ Progress bar updated');
+      } else {
+        console.error('❌ Progress fill element not found');
+      }
       
       // Update step indicators
-      document.querySelectorAll('.step').forEach((stepEl, index) => {
+      const stepElements = document.querySelectorAll('.step');
+      console.log('🔢 Step indicator elements found:', stepElements.length);
+      
+      stepElements.forEach((stepEl, index) => {
         const stepNumber = index + 1;
+        const wasCompleted = stepEl.classList.contains('completed');
+        const wasActive = stepEl.classList.contains('active');
+        
         stepEl.classList.remove('active', 'completed');
         
         if (stepNumber < currentStep) {
           stepEl.classList.add('completed');
+          if (!wasCompleted) console.log(`✅ Step ${stepNumber} marked as completed`);
         } else if (stepNumber === currentStep) {
           stepEl.classList.add('active');
+          if (!wasActive) console.log(`👁️ Step ${stepNumber} marked as active`);
         }
       });
+      
+      console.log('✅ === PROGRESS UPDATE COMPLETE ===');
     }
 
     // Update navigation buttons
@@ -2200,16 +2332,31 @@
 
     // Validate current step
     function validateCurrentStep() {
+      console.log('🔍 === VALIDATING CURRENT STEP ===');
+      console.log('📍 Current step:', currentStep);
+      
+      let isValid = false;
+      
       if (currentStep === 1) {
-        return validatePersonalInfo();
+        console.log('✅ Validating Step 1: Personal Information');
+        isValid = validatePersonalInfo();
       } else if (currentStep === 2) {
-        return validateFlightExperience();
+        console.log('✅ Validating Step 2: Flight Experience');
+        isValid = validateFlightExperience();
       } else if (currentStep === 3) {
-        return validateDocumentation();
+        console.log('✅ Validating Step 3: Documentation');
+        isValid = validateDocumentation();
       } else if (currentStep === 4) {
-        return validateDeclaration();
+        console.log('✅ Validating Step 4: Declaration');
+        isValid = validateDeclaration();
+      } else {
+        console.log('⚠️ No validation defined for step:', currentStep);
+        isValid = true;
       }
-      return true;
+      
+      console.log('🔍 Validation result:', isValid);
+      console.log('✅ === STEP VALIDATION COMPLETE ===');
+      return isValid;
     }
 
     // Validate personal information
@@ -3424,12 +3571,33 @@
 
     // Initialize the form when page loads
     document.addEventListener('DOMContentLoaded', () => {
-      console.log('🚀 Form initializing with original functions loaded!');
+      console.log('🚀 === DOM CONTENT LOADED ===');
+      console.log('🌐 Page URL:', window.location.href);
+      console.log('🕒 Load time:', new Date().toLocaleString());
       console.log('✅ parseHHMM function available:', typeof parseHHMM);
       console.log('✅ computeAll function available:', typeof computeAll);
       console.log('✅ sectionCounter initialized:', sectionCounter);
       console.log('✅ sectionsWrap element found:', !!sectionsWrap);
+      console.log('✅ Global functions attached:', {
+        nextStep: typeof window.nextStep,
+        previousStep: typeof window.previousStep,
+        recoverSession: typeof window.recoverSession,
+        clearSession: typeof window.clearSession
+      });
+      
+      // Check for critical elements
+      const criticalElements = {
+        progressFill: !!document.getElementById('progressFill'),
+        recoveryBanner: !!document.getElementById('recoveryBanner'),
+        nextBtn: !!document.getElementById('nextBtn'),
+        prevBtn: !!document.getElementById('prevBtn'),
+        steps: document.querySelectorAll('.form-step').length,
+        stepIndicators: document.querySelectorAll('.step').length
+      };
+      console.log('🏗️ Critical elements check:', criticalElements);
+      
       initializeForm();
+      console.log('✅ === INITIALIZATION COMPLETE ===');
     });
   </script>
 </body>
