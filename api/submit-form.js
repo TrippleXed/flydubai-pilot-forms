@@ -19,6 +19,10 @@ export default async function handler(req, res) {
   }
 
   try {
+    console.log('=== FORM SUBMISSION STARTED ===');
+    console.log('Request method:', req.method);
+    console.log('Content-Type:', req.headers['content-type']);
+    
     // Parse multipart form data
     let formData;
     let files = {};
@@ -35,28 +39,43 @@ export default async function handler(req, res) {
           
           // Parse form data from multipart
           formData = JSON.parse(req.body.formData || '{}');
+          console.log('Parsed form data keys:', Object.keys(formData));
           
           // Process uploaded files
           if (req.files) {
+            console.log('Files received:', req.files.length);
             req.files.forEach(file => {
+              console.log(`Processing file: ${file.fieldname} - ${file.originalname}`);
               files[file.fieldname] = {
                 name: file.originalname,
                 data: file.buffer,
                 mimetype: file.mimetype
               };
             });
+          } else {
+            console.log('No files in request');
           }
           
           // Add files to formData for compatibility with existing code
           formData.uploads = files;
+          console.log('Files added to formData.uploads:', Object.keys(files));
           
           resolve();
         });
       });
     } else {
       // Handle JSON form data (fallback)
+      console.log('Using JSON fallback for form data');
       formData = req.body;
     }
+    
+    console.log('Final formData structure:', {
+      personalInfo: !!formData.personalInfo,
+      flightExperience: !!formData.flightExperience,
+      documentation: !!formData.documentation,
+      declaration: !!formData.declaration,
+      uploads: formData.uploads ? Object.keys(formData.uploads) : 'none'
+    });
     
     // Check required environment variables
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
@@ -71,15 +90,27 @@ export default async function handler(req, res) {
     }
 
     // Create transporter
+    console.log('Creating nodemailer transporter...');
     const transporter = nodemailer.createTransporter({
-      service: 'gmail', // or your preferred email service
+      service: 'gmail',
       auth: {
         user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS, // App password for Gmail
+        pass: process.env.EMAIL_PASS,
       },
     });
     
     console.log('Email transporter created successfully');
+    
+    // Test the connection
+    try {
+      await transporter.verify();
+      console.log('Email transporter connection verified successfully');
+    } catch (verifyError) {
+      console.error('Email transporter verification failed:', verifyError.message);
+      return res.status(500).json({ 
+        error: 'Email service configuration error. Please check credentials.' 
+      });
+    }
 
     // Create HTML email content from form data
     const emailContent = generateEmailContent(formData);
@@ -96,12 +127,16 @@ export default async function handler(req, res) {
       attachments: zipAttachment ? [zipAttachment] : [],
     };
 
-    console.log('Attempting to send email to:', mailOptions.to);
-    console.log('Email subject:', mailOptions.subject);
-    console.log('Has ZIP attachment:', !!zipAttachment);
+    console.log('Attempting to send email...');
+    console.log('- To:', mailOptions.to);
+    console.log('- Subject:', mailOptions.subject);
+    console.log('- Has ZIP attachment:', !!zipAttachment);
+    console.log('- Email content length:', emailContent.length);
     
     const emailResult = await transporter.sendMail(mailOptions);
-    console.log('Email sent successfully:', emailResult.messageId);
+    console.log('✅ EMAIL SENT SUCCESSFULLY!');
+    console.log('- Message ID:', emailResult.messageId);
+    console.log('- Response:', emailResult.response);
 
     res.status(200).json({ 
       success: true, 
