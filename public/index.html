@@ -2840,6 +2840,11 @@
         };
         
         console.log('👤 Personal info collected:', personalInfo);
+        console.log('🏳️ Country code specifically:', {
+          element: document.getElementById('countryCode'),
+          value: document.getElementById('countryCode')?.value,
+          selectedOption: document.getElementById('countryCode')?.selectedOptions[0]?.textContent
+        });
         formData.personalInfo = personalInfo;
       }
       
@@ -3082,8 +3087,20 @@
           if (element && field.value) {
             element.value = field.value;
             console.log(`✅ ${field.id}: ${field.value}`);
+            
+            // Special logging for country code
+            if (field.id === 'countryCode') {
+              console.log('🏳️ Country code restoration:', {
+                savedValue: field.value,
+                elementValue: element.value,
+                selectedOption: element.selectedOptions[0]?.textContent,
+                allOptions: Array.from(element.options).map(opt => ({ value: opt.value, text: opt.textContent }))
+              });
+            }
           } else if (!element) {
             console.log(`⚠️ Element not found: ${field.id}`);
+          } else {
+            console.log(`⚠️ No value to restore for ${field.id}:`, field.value);
           }
         });
       }
@@ -5384,6 +5401,13 @@
               const allTimeFields = Array.from(document.querySelectorAll('.hhmm'));
               const globalCurrentIndex = allTimeFields.indexOf(e.target);
               console.log(`🌍 Global navigation: found ${allTimeFields.length} total time fields, current at index ${globalCurrentIndex}`);
+              console.log('🔍 Time field locations:', allTimeFields.map((field, i) => ({
+                index: i,
+                isCurrentField: field === e.target,
+                section: field.closest('.section')?.querySelector('h3')?.textContent?.trim() || 'Summary row',
+                parentId: field.closest('[id]')?.id || 'no-id',
+                className: field.className
+              })));
               
               if (globalCurrentIndex !== -1 && globalCurrentIndex < allTimeFields.length - 1) {
                 const nextField = allTimeFields[globalCurrentIndex + 1];
