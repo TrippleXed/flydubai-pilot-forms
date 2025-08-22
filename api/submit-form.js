@@ -58,14 +58,28 @@ export default async function handler(req, res) {
       formData = req.body;
     }
     
-    // Create transporter (you'll need to add these environment variables)
-    const transporter = nodemailer.createTransport({
+    // Check required environment variables
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      console.error('Missing email configuration:', {
+        EMAIL_USER: !!process.env.EMAIL_USER,
+        EMAIL_PASS: !!process.env.EMAIL_PASS,
+        RECIPIENT_EMAIL: !!process.env.RECIPIENT_EMAIL
+      });
+      return res.status(500).json({ 
+        error: 'Email service not configured. Please contact administrator.' 
+      });
+    }
+
+    // Create transporter
+    const transporter = nodemailer.createTransporter({
       service: 'gmail', // or your preferred email service
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS, // App password for Gmail
       },
     });
+    
+    console.log('Email transporter created successfully');
 
     // Create HTML email content from form data
     const emailContent = generateEmailContent(formData);
