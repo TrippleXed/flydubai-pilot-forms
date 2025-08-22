@@ -3838,6 +3838,13 @@
       // Validate required form fields
       requiredFields.forEach(({ id, label }) => {
         const field = document.getElementById(id);
+        
+        // Skip visa fields if "No Current UAE Visa" is selected
+        const visaStatus = document.getElementById('visaStatus')?.value;
+        if ((id === 'visaExpiry' || id === 'visaNumber') && visaStatus === 'No Current UAE Visa') {
+          return; // Skip validation for these fields
+        }
+        
         if (field && !field.value.trim()) {
           field.classList.add('validation-error');
           
@@ -3865,6 +3872,13 @@
       // Validate required file uploads
       requiredFiles.forEach(({ id, label }) => {
         const fileInput = document.getElementById(id);
+        
+        // Skip visa file if "No Current UAE Visa" is selected
+        const visaStatus = document.getElementById('visaStatus')?.value;
+        if (id === 'visaFile' && visaStatus === 'No Current UAE Visa') {
+          return; // Skip validation for visa file
+        }
+        
         if (fileInput && (!fileInput.files || fileInput.files.length === 0)) {
           const formSection = fileInput.closest('.form-section');
           if (formSection) {
@@ -3915,6 +3929,15 @@
           // If user started this optional section, all fields become required
           fields.forEach(({ id, label }) => {
             const field = document.getElementById(id);
+            
+            // Skip English test date if "Attached to License" is selected
+            if (id === 'englishTestDate') {
+              const englishTestType = document.getElementById('englishTestType');
+              if (englishTestType && englishTestType.value === 'Attached to License') {
+                return; // Skip validation for test date
+              }
+            }
+            
             if (field && !field.value.trim()) {
               field.classList.add('validation-error');
               
