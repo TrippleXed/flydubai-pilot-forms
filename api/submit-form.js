@@ -34,7 +34,7 @@ export default async function handler(req, res) {
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: process.env.RECIPIENT_EMAIL || 'jason.cameron@flydubai.com',
-      subject: `Flight Time Experience Form - ${formData.pilotName || 'Pilot Submission'}`,
+      subject: `Pilot Application - ${formData.pilotName || 'Pilot Submission'} - ${formData.applicationId || 'No ID'}`,
       html: emailContent,
     };
 
@@ -55,45 +55,91 @@ export default async function handler(req, res) {
 }
 
 function generateEmailContent(formData) {
-  const aircraftSections = formData.aircraftSections || [];
-  
   return `
-    <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px;">
-      <div style="background: linear-gradient(90deg, #3b82f6 0%, #f97316 50%, #3b82f6 100%); height: 4px; margin-bottom: 30px;"></div>
+    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background: #ffffff;">
+      <!-- Header -->
+      <div style="background: linear-gradient(135deg, #007acc 0%, #1a365d 100%); height: 80px; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; border-radius: 12px;">
+        <h1 style="color: white; margin: 0; font-size: 24px; font-weight: 700;">flydubai Pilot Application</h1>
+      </div>
       
-      <h1 style="color: #1e3a8a; margin-bottom: 30px;">Flight Time Experience Form Submission</h1>
-      
-      <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-        <h2 style="color: #374151; margin-top: 0;">Personal Information</h2>
-        <p><strong>Pilot Name:</strong> ${formData.pilotName || 'N/A'}</p>
-        <p><strong>Designation:</strong> ${formData.designation || 'N/A'}</p>
-        <p><strong>Date of Joining:</strong> ${formData.dateOfJoining || 'N/A'}</p>
-        <p><strong>Signature Date:</strong> ${formData.signatureDate || 'N/A'}</p>
+      <!-- Application ID -->
+      <div style="background: #e6f3ff; border: 1px solid #007acc; border-radius: 8px; padding: 15px; margin-bottom: 25px; text-align: center;">
+        <h2 style="margin: 0; color: #1a365d; font-size: 18px;">Application ID: ${formData.applicationId || 'Not Generated'}</h2>
+        <p style="margin: 5px 0 0 0; color: #374151; font-size: 14px;">Submitted: ${formData.submittedAt ? new Date(formData.submittedAt).toLocaleString() : new Date().toLocaleString()}</p>
       </div>
 
-      ${aircraftSections.length > 0 ? `
-      <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-        <h2 style="color: #374151; margin-top: 0;">Aircraft Experience</h2>
-        ${aircraftSections.map((section, index) => `
-          <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #d1d5db; border-radius: 8px; background: white;">
-            <h3 style="color: #1e3a8a; margin-top: 0;">Aircraft Type ${index + 1}: ${section.aircraftType || 'Not specified'}</h3>
-            ${Object.keys(section.flightData).length > 0 ? `
-              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
-                ${Object.entries(section.flightData).map(([key, value]) => `
-                  <p style="margin: 5px 0;"><strong>${key}:</strong> ${value}</p>
-                `).join('')}
-              </div>
-            ` : '<p><em>No flight data entered for this aircraft type.</em></p>'}
-          </div>
-        `).join('')}
+      <!-- Personal Information -->
+      <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #007acc;">
+        <h2 style="color: #1a365d; margin-top: 0; margin-bottom: 15px;">👤 Personal Information</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px;">
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Full Name:</strong> ${formData.pilotName || 'N/A'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Nationality:</strong> ${formData.nationality || 'N/A'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Email:</strong> ${formData.contactEmail || 'N/A'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Phone:</strong> ${formData.phoneNumber || 'N/A'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Date of Birth:</strong> ${formData.dateOfBirth || 'N/A'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Current Location:</strong> ${formData.currentLocation || 'N/A'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Designation:</strong> ${formData.designation || 'N/A'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Current Employer:</strong> ${formData.currentEmployer || 'N/A'}</p>
+        </div>
       </div>
-      ` : ''}
 
-      <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 12px;">
-        <p>Submitted on: ${new Date().toLocaleString()}</p>
-        <p>This form was submitted through the flydubai pilot documentation system.</p>
-        <p><strong>Note:</strong> This submission includes digital signature and declaration as per ICAO Annex 1 standards.</p>
+      <!-- Flight Experience -->
+      <div style="background: #f0f9ff; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #0ea5e9;">
+        <h2 style="color: #1a365d; margin-top: 0; margin-bottom: 15px;">✈️ Flight Experience</h2>
+        <div style="background: white; padding: 15px; border-radius: 6px; margin-bottom: 15px; text-align: center;">
+          <h3 style="margin: 0; color: #16a34a; font-size: 20px;">Grand Total Flight Hours: ${formData.grandTotalHours || 'Not Calculated'}</h3>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Boeing 737 NG/MAX Hours:</strong> ${formData.b737_combined || 'N/A'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Multi-Pilot Hours:</strong> ${formData.b737_mp || 'N/A'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Night Hours:</strong> ${formData.b737_night || 'N/A'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Boeing 737 Classic Hours:</strong> ${formData.b737c_combined || 'N/A'}</p>
+        </div>
+      </div>
+
+      <!-- Documentation -->
+      <div style="background: #fef7ed; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #f97316;">
+        <h2 style="color: #1a365d; margin-top: 0; margin-bottom: 15px;">📄 Uploaded Documents</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+          ${generateDocumentStatus(formData.uploads, 'pilotLicenseFile', 'Pilot License')}
+          ${generateDocumentStatus(formData.uploads, 'medicalFile', 'Medical Certificate')}
+          ${generateDocumentStatus(formData.uploads, 'radioLicenseFile', 'Radio License')}
+          ${generateDocumentStatus(formData.uploads, 'flightHoursFile', 'Flight Hours Verification')}
+          ${generateDocumentStatus(formData.uploads, 'passportFile', 'Passport Copy')}
+        </div>
+      </div>
+
+      <!-- Declaration & Signature -->
+      <div style="background: #f0fdf4; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #16a34a;">
+        <h2 style="color: #1a365d; margin-top: 0; margin-bottom: 15px;">✍️ Declaration & Signature</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Declaration Accepted:</strong> ${formData.declaration ? '✅ Yes' : '❌ No'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Signature Date:</strong> ${formData.signatureDate || 'N/A'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Digital Signature:</strong> ${formData.signaturePad ? '✅ Provided' : '❌ Missing'}</p>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div style="margin-top: 30px; padding: 20px; border-top: 2px solid #e5e7eb; background: #f9fafb; border-radius: 8px;">
+        <div style="text-align: center; margin-bottom: 15px;">
+          <h3 style="color: #1a365d; margin: 0;">flydubai Flight Operations</h3>
+          <p style="color: #6b7280; margin: 5px 0; font-size: 14px;">This is an automated submission from the Pilot Documentation System</p>
+        </div>
+        <div style="text-align: center; font-size: 12px; color: #6b7280;">
+          <p style="margin: 5px 0;">✅ Declaration completed per ICAO Annex 1 standards and UAE GCAA regulations</p>
+          <p style="margin: 5px 0;">📧 For queries regarding this application, please contact Flight Operations</p>
+          <p style="margin: 5px 0;">🔗 Session ID: ${formData.sessionId || 'Not Available'}</p>
+        </div>
       </div>
     </div>
   `;
+}
+
+function generateDocumentStatus(uploads, docId, docName) {
+  const doc = uploads && uploads[docId];
+  const status = doc ? '✅ Uploaded' : '❌ Missing';
+  const fileName = doc ? doc.fileName : 'Not uploaded';
+  const size = doc ? `(${(doc.size / 1024).toFixed(1)}KB)` : '';
+  
+  return `<p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>${docName}:</strong> ${status}<br><span style="font-size: 12px; color: #6b7280;">${fileName} ${size}</span></p>`;
 }
