@@ -1799,41 +1799,84 @@
 
     // Check for previous session
     function checkForRecovery() {
+      console.log('🔍 Checking for previous session...');
       const savedData = localStorage.getItem('pilotFormData');
       if (savedData) {
-        const data = JSON.parse(savedData);
-        if (data.sessionId && Date.now() - data.lastSaved < 7 * 24 * 60 * 60 * 1000) { // 7 days
-          document.getElementById('recoveryBanner').classList.add('show');
+        try {
+          const data = JSON.parse(savedData);
+          console.log('📊 Found saved data:', data);
+          const timeDiff = Date.now() - (data.lastSaved || 0);
+          const isValidSession = data.sessionId && timeDiff < 7 * 24 * 60 * 60 * 1000; // 7 days
+          
+          console.log('⏰ Time since last save:', Math.round(timeDiff / (1000 * 60 * 60)), 'hours');
+          console.log('🔐 Session ID:', data.sessionId);
+          console.log('✅ Valid session:', isValidSession);
+          
+          if (isValidSession) {
+            console.log('🎯 Showing recovery banner');
+            document.getElementById('recoveryBanner').classList.add('show');
+          } else {
+            console.log('❌ Session too old or invalid, clearing...');
+            localStorage.removeItem('pilotFormData');
+          }
+        } catch (error) {
+          console.error('❌ Error parsing saved data:', error);
+          localStorage.removeItem('pilotFormData');
         }
+      } else {
+        console.log('📭 No saved data found');
       }
     }
 
     // Recover previous session
     function recoverSession() {
+      console.log('🔄 Recovering session...');
       const savedData = localStorage.getItem('pilotFormData');
       if (savedData) {
-        const data = JSON.parse(savedData);
-        formData = data.formData || {};
-        currentStep = 1;
-        sessionId = data.sessionId || generateSessionId();
-        
-        populateFormFields();
-        showStep(currentStep);
-        document.getElementById('recoveryBanner').classList.remove('show');
-        showAutoSaveStatus('Restored previous session', 'saved');
+        try {
+          const data = JSON.parse(savedData);
+          formData = data.formData || {};
+          currentStep = data.currentStep || 1;
+          sessionId = data.sessionId || generateSessionId();
+          
+          populateFormFields();
+          showStep(currentStep);
+          document.getElementById('recoveryBanner').classList.remove('show');
+          showAutoSaveStatus('Restored previous session', 'saved');
+          console.log('✅ Session recovered successfully');
+        } catch (error) {
+          console.error('❌ Error recovering session:', error);
+          clearSession();
+        }
       }
     }
 
     // Clear session and start fresh
     function clearSession() {
+      console.log('🗑️ Clearing session...');
       localStorage.removeItem('pilotFormData');
       formData = {};
       currentStep = 1;
       sessionId = generateSessionId();
+      
+      // Clear all form fields
+      document.querySelectorAll('input, select, textarea').forEach(field => {
+        if (field.type === 'checkbox' || field.type === 'radio') {
+          field.checked = false;
+        } else {
+          field.value = '';
+        }
+      });
+      
       showStep(1);
       document.getElementById('recoveryBanner').classList.remove('show');
       showAutoSaveStatus('Starting fresh session', 'saved');
+      console.log('✅ Session cleared successfully');
     }
+
+    // Make functions globally accessible for onclick handlers
+    window.recoverSession = recoverSession;
+    window.clearSession = clearSession;
 
     // Setup auto-save functionality
     function setupAutoSave() {
@@ -2827,6 +2870,12 @@
     document.addEventListener('click', (e) => {
       if (e.target.id === 'btnAddSection') {
         addAircraftSection();
+      }
+      
+      // Handle remove button clicks
+      if (e.target.hasAttribute('data-remove-section')) {
+        e.target.closest('.section').remove();
+        computeAll();
       }
     });
 
