@@ -2862,6 +2862,8 @@
             p1us: inputs[7]?.value || '0:00'
           };
           
+          console.log(`✈️ Section ${aircraftSections.length + 1} hours:`, flightHours);
+          
           aircraftSections.push({
             aircraftType,
             notes,
@@ -3129,6 +3131,9 @@
           // Populate flight hours
           const hourInputs = section.querySelectorAll('.hhmm');
           const hours = sectionData.flightHours;
+          console.log(`🔄 Restoring section ${index + 1} hours:`, hours);
+          console.log(`🔄 Found ${hourInputs.length} hour input fields`);
+          
           if (hours && hourInputs.length >= 8) {
             hourInputs[0].value = hours.pic || '0:00';      // PIC
             hourInputs[1].value = hours.sic || '0:00';      // SIC  
@@ -3139,7 +3144,21 @@
             hourInputs[6].value = hours.instructor || '0:00'; // Instructor
             hourInputs[7].value = hours.p1us || '0:00';     // P1US
             
-            console.log(`✅ Hours populated for section ${index + 1}`);
+            console.log(`✅ Hours populated for section ${index + 1}:`, {
+              pic: hourInputs[0].value,
+              sic: hourInputs[1].value,
+              solo: hourInputs[2].value,
+              instrument: hourInputs[3].value,
+              sim: hourInputs[4].value,
+              night: hourInputs[5].value,
+              instructor: hourInputs[6].value,
+              p1us: hourInputs[7].value
+            });
+          } else {
+            console.log(`⚠️ Cannot populate hours for section ${index + 1}:`, {
+              hasHours: !!hours,
+              hourInputsCount: hourInputs.length
+            });
           }
         });
         
@@ -3155,24 +3174,7 @@
             computeAll();
           });
           
-          // Add Enter key navigation
-          field.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              const allFields = Array.from(document.querySelectorAll('.hhmm'));
-              const currentIndex = allFields.indexOf(this);
-              const nextField = allFields[currentIndex + 1];
-              
-              if (nextField) {
-                console.log('🔄 Moving to next time field via Enter key');
-                nextField.focus();
-              } else {
-                // This is the very last time field - blur it to trigger processing
-                console.log('🔚 Last time field in form, triggering blur to process value');
-                e.target.blur();
-              }
-            }
-          });
+          // Note: Enter key navigation is handled by the global document handler
           
           console.log(`  - Restored time field ${index + 1}: ${field.className} event listeners added`);
         });
@@ -5381,9 +5383,13 @@
               // If no next section, try to find any time field after the current one in the whole document
               const allTimeFields = Array.from(document.querySelectorAll('.hhmm'));
               const globalCurrentIndex = allTimeFields.indexOf(e.target);
+              console.log(`🌍 Global navigation: found ${allTimeFields.length} total time fields, current at index ${globalCurrentIndex}`);
+              
               if (globalCurrentIndex !== -1 && globalCurrentIndex < allTimeFields.length - 1) {
-                allTimeFields[globalCurrentIndex + 1].focus();
-                allTimeFields[globalCurrentIndex + 1].select();
+                const nextField = allTimeFields[globalCurrentIndex + 1];
+                console.log(`🎯 Moving to next field globally: ${nextField.className} in ${nextField.closest('.section')?.classList.value || 'summary'}`);
+                nextField.focus();
+                nextField.select();
               } else {
                 // This is the very last time field - blur it to trigger processing
                 console.log('🔚 Last time field in form, triggering blur to process value');
