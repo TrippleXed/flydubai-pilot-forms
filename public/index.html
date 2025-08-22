@@ -310,7 +310,7 @@
       cursor: pointer;
     }
 
-    /* Ensure designation dropdown and date fields have consistent width */
+    /* Ensure consistent field widths in personal information section */
     .form-step[data-step="1"] #dateOfBirth {
       width: 180px !important;
       box-sizing: border-box;
@@ -323,6 +323,16 @@
 
     .form-step[data-step="1"] #doj {
       width: 180px !important;
+      box-sizing: border-box;
+    }
+
+    .form-step[data-step="1"] #nationality {
+      width: 240px !important;
+      box-sizing: border-box;
+    }
+
+    .form-step[data-step="1"] #phoneNumber {
+      width: 240px !important;
       box-sizing: border-box;
     }
     
@@ -1317,11 +1327,26 @@
         <h2 class="step-title">👨‍✈️ Personal Information</h2>
         <p class="step-subtitle">Let's start with your basic information. All fields marked with <span class="required">*</span> are required.</p>
         
-        <!-- Row 1: Name, Nationality, Designation, Date of Birth -->
-        <div style="display: grid; gap: 20px; grid-template-columns: 300px 240px 180px 180px; margin-bottom: 20px;">
+        <!-- Row 1: Name, Date of Birth, Designation, Nationality -->
+        <div style="display: grid; gap: 20px; grid-template-columns: 300px 180px 180px 240px; margin-bottom: 20px;">
           <div>
             <label for="pilotName">Full Name <span class="required">*</span></label>
             <input id="pilotName" type="text" placeholder="e.g., Jane D. Pilot" required>
+          </div>
+          <div>
+            <label for="dateOfBirth">Date of Birth <span class="required">*</span></label>
+            <input id="dateOfBirth" type="date" required>
+          </div>
+          <div>
+            <label for="designation">flydubai Designation <span class="required">*</span></label>
+            <select id="designation" required>
+              <option value="">Select…</option>
+              <option>Captain</option>
+              <option>First Officer</option>
+              <option>Second Officer</option>
+              <option>Cadet</option>
+              <option>Ab-Initio</option>
+            </select>
           </div>
           <div>
             <label for="nationality">Nationality <span class="required">*</span></label>
@@ -1567,25 +1592,10 @@
               <option value="ZW">Zimbabwe</option>
             </select>
           </div>
-          <div>
-            <label for="dateOfBirth">Date of Birth <span class="required">*</span></label>
-            <input id="dateOfBirth" type="date" required>
-          </div>
-          <div>
-            <label for="designation">flydubai Designation <span class="required">*</span></label>
-            <select id="designation" required>
-              <option value="">Select…</option>
-              <option>Captain</option>
-              <option>First Officer</option>
-              <option>Second Officer</option>
-              <option>Cadet</option>
-              <option>Ab-Initio</option>
-            </select>
-          </div>
         </div>
 
-        <!-- Row 2: Email, Phone, Date of Joining -->
-        <div style="display: grid; gap: 20px; grid-template-columns: 300px 240px 180px 180px; margin-bottom: 20px;">
+        <!-- Row 2: Email, Date of Joining, Empty, Phone -->
+        <div style="display: grid; gap: 20px; grid-template-columns: 300px 180px 180px 240px; margin-bottom: 20px;">
           <div>
             <label for="contactEmail">Email Address <span class="required">*</span></label>
             <input id="contactEmail" type="email" placeholder="your.email@example.com" 
@@ -1594,14 +1604,14 @@
                    required>
           </div>
           <div>
-            <label for="phoneNumber">Phone Number <span class="required">*</span></label>
-            <input id="phoneNumber" type="tel" placeholder="+971 50 123 4567" required>
-          </div>
-          <div>
             <label for="doj">Date of Joining <span class="required">*</span></label>
             <input id="doj" type="date" required>
           </div>
           <div></div>
+          <div>
+            <label for="phoneNumber">Phone Number <span class="required">*</span></label>
+            <input id="phoneNumber" type="tel" placeholder="+971 50 123 4567" required>
+          </div>
         </div>
       </div>
 
