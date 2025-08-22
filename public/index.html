@@ -802,6 +802,84 @@
       margin-right: 4px;
     }
 
+    /* Original form styling for Step 2 */
+    .section {
+      border: 2px solid var(--line);
+      border-radius: 20px;
+      padding: 32px;
+      margin-top: 24px;
+      background: linear-gradient(135deg, #ffffff 0%, #fafbff 100%);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--flydubai-blue) 0%, var(--flydubai-orange) 100%);
+    }
+    
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+    
+    .section-title h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--flydubai-navy);
+      letter-spacing: -0.025em;
+    }
+    
+    .grid {
+      display: grid;
+      gap: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      align-items: start;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+      justify-content: center;
+    }
+    
+    .btn {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border: 2px solid var(--line);
+      padding: 14px 24px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.025em;
+      transition: all 0.2s ease-in-out;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--ink);
+    }
+    
+    .btn:hover {
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
     .summary table th,
     .summary table td {
       border: 1px solid #ddd;
