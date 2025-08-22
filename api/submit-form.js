@@ -82,11 +82,17 @@ export default async function handler(req, res) {
       attachments: zipAttachment ? [zipAttachment] : [],
     };
 
-    await transporter.sendMail(mailOptions);
+    console.log('Attempting to send email to:', mailOptions.to);
+    console.log('Email subject:', mailOptions.subject);
+    console.log('Has ZIP attachment:', !!zipAttachment);
+    
+    const emailResult = await transporter.sendMail(mailOptions);
+    console.log('Email sent successfully:', emailResult.messageId);
 
     res.status(200).json({ 
       success: true, 
-      message: 'Form submitted successfully' 
+      message: 'Form submitted successfully',
+      emailId: emailResult.messageId
     });
 
   } catch (error) {
