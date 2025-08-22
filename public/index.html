@@ -944,6 +944,147 @@
         </div>
       </div>
 
+      <!-- Step 2: Flight Experience -->
+      <div class="form-step" data-step="2">
+        <h2 class="step-title">✈️ Flight Experience</h2>
+        <p class="step-subtitle">Tell us about your aviation background and flight experience.</p>
+        
+        <div class="form-section">
+          <div class="section-title">Licenses & Ratings</div>
+          <div class="form-grid">
+            <div>
+              <label for="pilotLicense">Pilot License Type <span class="required">*</span></label>
+              <select id="pilotLicense" required>
+                <option value="">Select license type</option>
+                <option value="ATPL">ATPL (Airline Transport Pilot License)</option>
+                <option value="CPL">CPL (Commercial Pilot License)</option>
+                <option value="PPL">PPL (Private Pilot License)</option>
+                <option value="MPL">MPL (Multi-crew Pilot License)</option>
+              </select>
+            </div>
+            <div>
+              <label for="licenseNumber">License Number <span class="required">*</span></label>
+              <input id="licenseNumber" type="text" placeholder="Enter license number" required>
+            </div>
+            <div>
+              <label for="licenseAuthority">License Authority <span class="required">*</span></label>
+              <input id="licenseAuthority" type="text" placeholder="e.g., GCAA, FAA, EASA" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="section-title">Flight Hours</div>
+          <div class="form-grid">
+            <div>
+              <label for="totalFlightHours">Total Flight Hours <span class="required">*</span></label>
+              <input id="totalFlightHours" type="number" placeholder="0" min="0" required>
+            </div>
+            <div>
+              <label for="picHours">PIC (Pilot in Command) Hours</label>
+              <input id="picHours" type="number" placeholder="0" min="0">
+            </div>
+            <div>
+              <label for="instrumentHours">Instrument Flight Hours</label>
+              <input id="instrumentHours" type="number" placeholder="0" min="0">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="section-title">Aircraft Experience</div>
+          <div class="form-grid">
+            <div>
+              <label for="aircraftTypes">Aircraft Types Flown</label>
+              <textarea id="aircraftTypes" rows="3" placeholder="List aircraft types you have experience with (e.g., B737, A320, etc.)"></textarea>
+            </div>
+            <div>
+              <label for="turbineHours">Turbine Hours</label>
+              <input id="turbineHours" type="number" placeholder="0" min="0">
+            </div>
+            <div>
+              <label for="jetHours">Jet Hours</label>
+              <input id="jetHours" type="number" placeholder="0" min="0">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Documentation -->
+      <div class="form-step" data-step="3">
+        <h2 class="step-title">📋 Documentation</h2>
+        <p class="step-subtitle">Upload your required documents. All documents should be clear, legible, and in PDF format.</p>
+        
+        <div class="form-section">
+          <div class="section-title">Required Documents</div>
+          
+          <div style="margin-bottom: 24px;">
+            <label>Pilot License <span class="required">*</span></label>
+            <div class="upload-area" onclick="document.getElementById('licenseFile').click()">
+              <div class="upload-icon">📄</div>
+              <p><strong>Click to upload</strong> or drag and drop your pilot license</p>
+              <p style="font-size: 12px; color: var(--muted);">PDF, max 10MB</p>
+            </div>
+            <input type="file" id="licenseFile" style="display: none;" accept=".pdf" onchange="handleFileUpload(this, 'license')">
+            <div id="licenseFileList" class="file-list"></div>
+          </div>
+
+          <div style="margin-bottom: 24px;">
+            <label>Medical Certificate <span class="required">*</span></label>
+            <div class="upload-area" onclick="document.getElementById('medicalFile').click()">
+              <div class="upload-icon">🏥</div>
+              <p><strong>Click to upload</strong> or drag and drop your medical certificate</p>
+              <p style="font-size: 12px; color: var(--muted);">PDF, max 10MB</p>
+            </div>
+            <input type="file" id="medicalFile" style="display: none;" accept=".pdf" onchange="handleFileUpload(this, 'medical')">
+            <div id="medicalFileList" class="file-list"></div>
+          </div>
+
+          <div style="margin-bottom: 24px;">
+            <label>Logbook Pages</label>
+            <div class="upload-area" onclick="document.getElementById('logbookFile').click()">
+              <div class="upload-icon">📊</div>
+              <p><strong>Click to upload</strong> or drag and drop recent logbook pages</p>
+              <p style="font-size: 12px; color: var(--muted);">PDF, max 10MB</p>
+            </div>
+            <input type="file" id="logbookFile" style="display: none;" accept=".pdf" onchange="handleFileUpload(this, 'logbook')">
+            <div id="logbookFileList" class="file-list"></div>
+          </div>
+
+          <div style="margin-bottom: 24px;">
+            <label>Resume/CV</label>
+            <div class="upload-area" onclick="document.getElementById('resumeFile').click()">
+              <div class="upload-icon">📝</div>
+              <p><strong>Click to upload</strong> or drag and drop your resume</p>
+              <p style="font-size: 12px; color: var(--muted);">PDF, max 10MB</p>
+            </div>
+            <input type="file" id="resumeFile" style="display: none;" accept=".pdf" onchange="handleFileUpload(this, 'resume')">
+            <div id="resumeFileList" class="file-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4: Review & Submit -->
+      <div class="form-step" data-step="4">
+        <h2 class="step-title">🔍 Review & Submit</h2>
+        <p class="step-subtitle">Please review all your information before submitting your application.</p>
+        
+        <div class="form-section">
+          <div class="section-title">Application Summary</div>
+          <div id="applicationSummary">
+            <!-- Summary will be populated by JavaScript -->
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="section-title">Declaration</div>
+          <label style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px;">
+            <input type="checkbox" id="declaration" required style="width: auto; margin-top: 4px;">
+            <span>I declare that all information provided in this application is true and accurate to the best of my knowledge. I understand that any false or misleading information may result in the rejection of my application or termination of employment.</span>
+          </label>
+        </div>
+      </div>
+
       <!-- Navigation -->
       <div class="form-navigation">
         <div class="nav-left">
@@ -1063,7 +1204,37 @@
         };
       }
       
-      // Additional steps will be added here
+      // Step 2: Flight Experience
+      if (currentStep >= 2) {
+        formData.flightExperience = {
+          pilotLicense: document.getElementById('pilotLicense')?.value || '',
+          licenseNumber: document.getElementById('licenseNumber')?.value || '',
+          licenseAuthority: document.getElementById('licenseAuthority')?.value || '',
+          totalFlightHours: document.getElementById('totalFlightHours')?.value || '',
+          picHours: document.getElementById('picHours')?.value || '',
+          instrumentHours: document.getElementById('instrumentHours')?.value || '',
+          aircraftTypes: document.getElementById('aircraftTypes')?.value || '',
+          turbineHours: document.getElementById('turbineHours')?.value || '',
+          jetHours: document.getElementById('jetHours')?.value || ''
+        };
+      }
+      
+      // Step 3: Documentation
+      if (currentStep >= 3) {
+        formData.documentation = {
+          licenseFile: document.getElementById('licenseFile')?.files[0]?.name || '',
+          medicalFile: document.getElementById('medicalFile')?.files[0]?.name || '',
+          logbookFile: document.getElementById('logbookFile')?.files[0]?.name || '',
+          resumeFile: document.getElementById('resumeFile')?.files[0]?.name || ''
+        };
+      }
+      
+      // Step 4: Review & Submit
+      if (currentStep >= 4) {
+        formData.declaration = {
+          agreed: document.getElementById('declaration')?.checked || false
+        };
+      }
     }
 
     // Save form data to localStorage
@@ -1110,6 +1281,23 @@
         document.getElementById('designation').value = info.designation || '';
         document.getElementById('expectedDateOfJoining').value = info.expectedDateOfJoining || '';
         document.getElementById('previousEmployer').value = info.previousEmployer || '';
+      }
+      
+      if (formData.flightExperience) {
+        const exp = formData.flightExperience;
+        document.getElementById('pilotLicense').value = exp.pilotLicense || '';
+        document.getElementById('licenseNumber').value = exp.licenseNumber || '';
+        document.getElementById('licenseAuthority').value = exp.licenseAuthority || '';
+        document.getElementById('totalFlightHours').value = exp.totalFlightHours || '';
+        document.getElementById('picHours').value = exp.picHours || '';
+        document.getElementById('instrumentHours').value = exp.instrumentHours || '';
+        document.getElementById('aircraftTypes').value = exp.aircraftTypes || '';
+        document.getElementById('turbineHours').value = exp.turbineHours || '';
+        document.getElementById('jetHours').value = exp.jetHours || '';
+      }
+      
+      if (formData.declaration) {
+        document.getElementById('declaration').checked = formData.declaration.agreed || false;
       }
     }
 
@@ -1217,8 +1405,13 @@
     function validateCurrentStep() {
       if (currentStep === 1) {
         return validatePersonalInfo();
+      } else if (currentStep === 2) {
+        return validateFlightExperience();
+      } else if (currentStep === 3) {
+        return validateDocumentation();
+      } else if (currentStep === 4) {
+        return validateDeclaration();
       }
-      // Additional step validations will be added here
       return true;
     }
 
@@ -1246,6 +1439,163 @@
       
       return isValid;
     }
+
+    // Validate flight experience
+    function validateFlightExperience() {
+      const requiredFields = ['pilotLicense', 'licenseNumber', 'licenseAuthority', 'totalFlightHours'];
+      let isValid = true;
+      
+      requiredFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (!field.value.trim()) {
+          field.style.borderColor = '#dc2626';
+          isValid = false;
+          
+          field.addEventListener('input', () => {
+            field.style.borderColor = '#e2e8f0';
+          }, { once: true });
+        }
+      });
+      
+      if (!isValid) {
+        alert('Please fill in all required flight experience fields before continuing.');
+      }
+      
+      return isValid;
+    }
+
+    // Validate documentation
+    function validateDocumentation() {
+      const requiredFiles = ['licenseFile', 'medicalFile'];
+      let isValid = true;
+      
+      requiredFiles.forEach(fileId => {
+        const fileInput = document.getElementById(fileId);
+        if (!fileInput.files || fileInput.files.length === 0) {
+          const uploadArea = fileInput.parentElement.querySelector('.upload-area');
+          uploadArea.style.borderColor = '#dc2626';
+          isValid = false;
+          
+          fileInput.addEventListener('change', () => {
+            uploadArea.style.borderColor = '#e2e8f0';
+          }, { once: true });
+        }
+      });
+      
+      if (!isValid) {
+        alert('Please upload all required documents before continuing.');
+      }
+      
+      return isValid;
+    }
+
+    // Validate declaration
+    function validateDeclaration() {
+      const declaration = document.getElementById('declaration');
+      if (!declaration.checked) {
+        alert('Please accept the declaration before submitting your application.');
+        return false;
+      }
+      return true;
+    }
+
+    // Handle file upload
+    function handleFileUpload(input, type) {
+      const file = input.files[0];
+      if (!file) return;
+      
+      // Validate file type
+      if (file.type !== 'application/pdf') {
+        alert('Please upload only PDF files.');
+        input.value = '';
+        return;
+      }
+      
+      // Validate file size (10MB limit)
+      if (file.size > 10 * 1024 * 1024) {
+        alert('File size must be less than 10MB.');
+        input.value = '';
+        return;
+      }
+      
+      // Show file in the list
+      const fileListId = type + 'FileList';
+      const fileList = document.getElementById(fileListId);
+      
+      fileList.innerHTML = `
+        <div class="file-item">
+          <div class="file-info">
+            <div class="file-icon">📄</div>
+            <div class="file-details">
+              <div class="file-name">${file.name}</div>
+              <div class="file-size">${(file.size / 1024 / 1024).toFixed(1)} MB</div>
+            </div>
+          </div>
+          <div class="file-status completed">✓ Ready</div>
+        </div>
+      `;
+      
+      // Reset upload area border
+      const uploadArea = input.parentElement.querySelector('.upload-area');
+      uploadArea.style.borderColor = '#e2e8f0';
+    }
+
+    // Generate application summary for review step
+    function generateApplicationSummary() {
+      if (currentStep !== 4) return;
+      
+      const summaryEl = document.getElementById('applicationSummary');
+      let html = '';
+      
+      if (formData.personalInfo) {
+        html += `
+          <div style="margin-bottom: 24px; padding: 20px; background: #f8fafc; border-radius: 12px;">
+            <h3 style="color: var(--flydubai-navy); margin-bottom: 12px;">Personal Information</h3>
+            <div style="display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+              <div><strong>Name:</strong> ${formData.personalInfo.pilotName}</div>
+              <div><strong>Nationality:</strong> ${formData.personalInfo.nationality}</div>
+              <div><strong>Email:</strong> ${formData.personalInfo.contactEmail}</div>
+              <div><strong>Date of Birth:</strong> ${formData.personalInfo.dateOfBirth}</div>
+              <div><strong>Phone:</strong> ${formData.personalInfo.phoneNumber}</div>
+              <div><strong>Designation:</strong> ${formData.personalInfo.designation}</div>
+              ${formData.personalInfo.expectedDateOfJoining ? `<div><strong>Expected Joining:</strong> ${formData.personalInfo.expectedDateOfJoining}</div>` : ''}
+              ${formData.personalInfo.previousEmployer ? `<div><strong>Previous Employer:</strong> ${formData.personalInfo.previousEmployer}</div>` : ''}
+            </div>
+          </div>
+        `;
+      }
+      
+      if (formData.flightExperience) {
+        html += `
+          <div style="margin-bottom: 24px; padding: 20px; background: #f8fafc; border-radius: 12px;">
+            <h3 style="color: var(--flydubai-navy); margin-bottom: 12px;">Flight Experience</h3>
+            <div style="display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+              <div><strong>License Type:</strong> ${formData.flightExperience.pilotLicense}</div>
+              <div><strong>License Number:</strong> ${formData.flightExperience.licenseNumber}</div>
+              <div><strong>License Authority:</strong> ${formData.flightExperience.licenseAuthority}</div>
+              <div><strong>Total Flight Hours:</strong> ${formData.flightExperience.totalFlightHours}</div>
+              ${formData.flightExperience.picHours ? `<div><strong>PIC Hours:</strong> ${formData.flightExperience.picHours}</div>` : ''}
+              ${formData.flightExperience.instrumentHours ? `<div><strong>Instrument Hours:</strong> ${formData.flightExperience.instrumentHours}</div>` : ''}
+              ${formData.flightExperience.turbineHours ? `<div><strong>Turbine Hours:</strong> ${formData.flightExperience.turbineHours}</div>` : ''}
+              ${formData.flightExperience.jetHours ? `<div><strong>Jet Hours:</strong> ${formData.flightExperience.jetHours}</div>` : ''}
+            </div>
+            ${formData.flightExperience.aircraftTypes ? `<div style="margin-top: 12px;"><strong>Aircraft Types:</strong><br>${formData.flightExperience.aircraftTypes}</div>` : ''}
+          </div>
+        `;
+      }
+      
+      summaryEl.innerHTML = html;
+    }
+
+    // Override showStep to generate summary
+    const originalShowStep = showStep;
+    showStep = function(step) {
+      originalShowStep(step);
+      if (step === 4) {
+        collectFormData();
+        generateApplicationSummary();
+      }
+    };
 
     // Initialize the form when page loads
     document.addEventListener('DOMContentLoaded', initializeForm);
