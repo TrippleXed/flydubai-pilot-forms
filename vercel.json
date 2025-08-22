@@ -1,11 +1,5 @@
 {
   "name": "flydubai-pilot-forms",
-  "rewrites": [
-    {
-      "source": "/",
-      "destination": "/index.html"
-    }
-  ],
   "functions": {
     "api/submit-form.js": {
       "maxDuration": 30
