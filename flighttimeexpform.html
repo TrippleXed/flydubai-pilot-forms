@@ -705,11 +705,11 @@
           </div>
         </div>
 
-        <!-- Bottom note & centered Download button -->
+        <!-- Bottom note & centered Submit button -->
         <div id="submitNote" style="text-align:center;margin:40px 0 0;padding:32px;background:linear-gradient(135deg,#fafbff 0%,#f8fafc 100%);border-radius:20px;border:2px solid var(--line);">
-          <p style="margin:0 0 20px;font-size:15px;color:var(--flydubai-navy);font-weight:500;">Kindly download the completed form and send the PDF file to <strong style="color:var(--flydubai-blue);font-weight:700;">FOF.Admin@flydubai.com</strong></p>
+          <p style="margin:0 0 20px;font-size:15px;color:var(--flydubai-navy);font-weight:500;">Please review all information and submit your completed form to <strong style="color:var(--flydubai-blue);font-weight:700;">FOF.Admin@flydubai.com</strong></p>
           <div class="no-print" style="text-align:center;">
-            <button class="btn primary" id="btnDownload" style="font-size:16px;padding:16px 32px;">📄 Download PDF</button>
+            <button class="btn primary" id="btnSubmit" style="font-size:16px;padding:16px 32px;">📤 Submit Form</button>
           </div>
         </div>
 
@@ -1172,6 +1172,84 @@
       return isValid;
     }
 
+    // Function to collect all form data
+    function collectFormData() {
+      const formData = {
+        // Personal information
+        pilotName: document.getElementById('pilotName')?.value || '',
+        employeeId: document.getElementById('employeeId')?.value || '',
+        licenseNumber: document.getElementById('licenseNumber')?.value || '',
+        email: document.getElementById('email')?.value || '',
+        phone: document.getElementById('phone')?.value || '',
+        
+        // Signature data
+        signatureDate: document.getElementById('sigDate')?.value || '',
+        
+        // Aircraft sections data
+        aircraftSections: []
+      };
+
+      // Collect data from all aircraft sections
+      const sections = document.querySelectorAll('.section[data-section-id]');
+      sections.forEach(section => {
+        const aircraftType = section.querySelector('.ac-type')?.value || '';
+        const sectionData = {
+          aircraftType: aircraftType,
+          flightData: {}
+        };
+
+        // Collect all input data from the section
+        const inputs = section.querySelectorAll('input[type="text"]');
+        inputs.forEach(input => {
+          if (input.value.trim()) {
+            const label = input.closest('td')?.getAttribute('data-label') || input.placeholder || '';
+            sectionData.flightData[label] = input.value;
+          }
+        });
+
+        if (aircraftType || Object.keys(sectionData.flightData).length > 0) {
+          formData.aircraftSections.push(sectionData);
+        }
+      });
+
+      return formData;
+    }
+
+    // Function to submit form data
+    async function submitForm(formData) {
+      const submitButton = document.getElementById('btnSubmit');
+      const originalText = submitButton.innerHTML;
+      
+      try {
+        // Show loading state
+        submitButton.innerHTML = '⏳ Submitting...';
+        submitButton.disabled = true;
+
+        const response = await fetch('/api/submit-form', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          alert('Form submitted successfully! Thank you for your submission.');
+        } else {
+          throw new Error(result.message || 'Failed to submit form');
+        }
+      } catch (error) {
+        console.error('Submit error:', error);
+        alert('Error submitting form: ' + error.message + '\nPlease try again or contact support.');
+      } finally {
+        // Restore button state
+        submitButton.innerHTML = originalText;
+        submitButton.disabled = false;
+      }
+    }
+
     document.addEventListener('click', (e)=>{
       const t = e.target;
       if(t.matches('#btnAddSection')){
@@ -1188,15 +1266,15 @@
       if(t.matches('#btnReset')){
         if(confirm('Clear all fields?')) location.reload();
       }
-      if(t.matches('#btnDownload')){
-        // Validate before downloading
+      if(t.matches('#btnSubmit')){
+        // Validate before submitting
         if(!validateOtherFields()) return;
-        document.querySelectorAll('.date-inp').forEach(inp=>{ const span = inp.closest('.date-cell').querySelector('.date-print'); span.textContent = toDDMMMYYYY(inp.value); });
-        const sd = document.getElementById('sigDate');
-        if(sd){ document.getElementById('sigDatePrint').textContent = toDDMMMYYYY(sd.value); }
-        document.body.classList.add('pdf');
-        window.print();
-        setTimeout(()=>document.body.classList.remove('pdf'), 500);
+        
+        // Collect form data
+        const formData = collectFormData();
+        
+        // Submit form
+        submitForm(formData);
       }
     });
 
