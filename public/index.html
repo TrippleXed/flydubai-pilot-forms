@@ -309,6 +309,17 @@
     .form-step[data-step="1"] input[type="date"]::-moz-calendar-picker-indicator {
       cursor: pointer;
     }
+
+    /* Ensure designation dropdown matches date input width exactly */
+    .form-step[data-step="1"] #designation {
+      width: 180px !important;
+      box-sizing: border-box;
+    }
+
+    .form-step[data-step="1"] #doj {
+      width: 180px !important;
+      box-sizing: border-box;
+    }
     
     .required {
       color: var(--expired);
