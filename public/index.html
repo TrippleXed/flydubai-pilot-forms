@@ -3091,15 +3091,104 @@
       if(t.classList && t.classList.contains('date-inp')){ const span = t.closest('.date-cell').querySelector('.date-print'); span.textContent = toDDMMMYYYY(t.value); }
     }, true);
 
+    // Validate all aircraft sections are complete
+    function validateAircraftSections() {
+      console.log('🔍 === VALIDATING AIRCRAFT SECTIONS ===');
+      
+      const sections = sectionsWrap.querySelectorAll('.section');
+      console.log('📊 Total sections to validate:', sections.length);
+      
+      let isValid = true;
+      let firstIncompleteSection = null;
+      
+      sections.forEach((section, index) => {
+        const sectionTitle = section.querySelector('.section-title h3')?.textContent || `Section ${index + 1}`;
+        console.log(`🛩️ Validating ${sectionTitle}:`);
+        
+        // Check aircraft type selection (skip for locked sections with pre-selected types)
+        const aircraftSelect = section.querySelector('.ac-type');
+        const isLocked = section.dataset.locked === '1';
+        
+        if (!isLocked && (!aircraftSelect?.value || aircraftSelect.value === '')) {
+          console.log(`❌ ${sectionTitle}: Aircraft type not selected`);
+          isValid = false;
+          if (!firstIncompleteSection) firstIncompleteSection = { section, field: aircraftSelect, message: 'Please select an aircraft type' };
+        } else {
+          console.log(`✅ ${sectionTitle}: Aircraft type selected - ${aircraftSelect?.value || 'Pre-selected'}`);
+        }
+        
+        // Check if at least one flight hour field has a meaningful value (not 0:00)
+        const hourInputs = section.querySelectorAll('.hhmm');
+        const hasFlightHours = Array.from(hourInputs).some(input => {
+          const value = input.value || '0:00';
+          const minutes = parseHHMM(value);
+          return minutes > 0;
+        });
+        
+        if (!hasFlightHours) {
+          console.log(`❌ ${sectionTitle}: No flight hours entered`);
+          isValid = false;
+          if (!firstIncompleteSection) firstIncompleteSection = { section, field: hourInputs[0], message: 'Please enter at least some flight hours for this aircraft type' };
+        } else {
+          console.log(`✅ ${sectionTitle}: Flight hours entered`);
+        }
+        
+        // Check notes field if "Other" aircraft type is selected
+        if (aircraftSelect?.value === 'Other') {
+          const notesField = section.querySelector('.ac-notes');
+          if (!notesField?.value?.trim()) {
+            console.log(`❌ ${sectionTitle}: Notes required for "Other" aircraft type`);
+            isValid = false;
+            if (!firstIncompleteSection) firstIncompleteSection = { section, field: notesField, message: 'Please specify the aircraft type in the notes field' };
+          } else {
+            console.log(`✅ ${sectionTitle}: Notes provided for "Other" aircraft type`);
+          }
+        }
+      });
+      
+      if (!isValid && firstIncompleteSection) {
+        // Highlight the incomplete section
+        firstIncompleteSection.section.style.borderColor = '#ef4444';
+        firstIncompleteSection.section.style.borderWidth = '2px';
+        firstIncompleteSection.section.style.borderStyle = 'solid';
+        
+        // Focus the problematic field
+        if (firstIncompleteSection.field) {
+          firstIncompleteSection.field.focus();
+          firstIncompleteSection.field.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
+        // Show error message
+        alert(`Please complete all aircraft sections before adding a new one.\n\n${firstIncompleteSection.message}`);
+        
+        // Remove highlight after 3 seconds
+        setTimeout(() => {
+          firstIncompleteSection.section.style.borderColor = '';
+          firstIncompleteSection.section.style.borderWidth = '';
+          firstIncompleteSection.section.style.borderStyle = '';
+        }, 3000);
+      }
+      
+      console.log('🔍 Aircraft sections validation result:', isValid);
+      console.log('✅ === AIRCRAFT SECTION VALIDATION COMPLETE ===');
+      return isValid;
+    }
+
     // Add event listener for Add Aircraft Section button and Remove buttons
     document.addEventListener('click', (e) => {
       // Handle Add Aircraft Section button
       if (e.target.id === 'btnAddSection') {
         console.log('➕ Add Aircraft Section button clicked');
         
-        // Validate before adding new section (from original)
+        // Validate all existing aircraft sections are complete
+        if (!validateAircraftSections()) {
+          console.log('❌ Aircraft sections validation failed, cannot add new section');
+          return;
+        }
+        
+        // Validate other form fields (original validation)
         if(!validateOtherFields()) {
-          console.log('❌ Validation failed, cannot add new section');
+          console.log('❌ Other fields validation failed, cannot add new section');
           return;
         }
         
