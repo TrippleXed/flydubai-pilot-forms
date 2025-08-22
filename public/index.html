@@ -2850,8 +2850,20 @@
       
       // Step 2: Flight Experience
       if (currentStep >= 2) {
+        console.log('🔍 === COLLECTING FLIGHT EXPERIENCE DATA ===');
+        const sectionsFound = document.querySelectorAll('#sections .form-section, #sections .section');
+        console.log('📊 Total sections found:', sectionsFound.length);
+        console.log('📊 Section selectors used:', '#sections .form-section, #sections .section');
+        
         const aircraftSections = [];
-        document.querySelectorAll('#sections .form-section').forEach(section => {
+        sectionsFound.forEach((section, index) => {
+          console.log(`🛩️ Processing section ${index + 1}:`, {
+            className: section.className,
+            hasAircraftType: !!section.querySelector('.ac-type'),
+            hasNotes: !!section.querySelector('.ac-notes'),
+            timeInputs: section.querySelectorAll('.hhmm').length,
+            dateInputs: section.querySelectorAll('.date-inp').length
+          });
           const aircraftType = section.querySelector('.ac-type')?.value || '';
           const notes = section.querySelector('.ac-notes')?.value || '';
           const inputs = section.querySelectorAll('.hhmm');
@@ -2873,8 +2885,13 @@
             to: dateInputs[1]?.value || ''
           };
           
-          console.log(`✈️ Section ${aircraftSections.length + 1} hours:`, flightHours);
-          console.log(`📅 Section ${aircraftSections.length + 1} dates:`, dates);
+          console.log(`✈️ Section ${index + 1} collected:`, {
+            aircraftType,
+            notes,
+            flightHours,
+            dates,
+            hasData: !!(aircraftType || notes || Object.values(flightHours).some(h => h !== '0:00') || dates.from || dates.to)
+          });
           
           aircraftSections.push({
             aircraftType,
@@ -2907,6 +2924,12 @@
             night: document.getElementById('gtNight')?.textContent || '0:00'
           }
         };
+        console.log('✈️ Flight experience final data:', {
+          sectionsCount: aircraftSections.length,
+          sectionsWithData: aircraftSections.filter(s => s.aircraftType || Object.values(s.flightHours).some(h => h !== '0:00')).length,
+          summaryHours,
+          grandTotals: formData.flightExperience.grandTotals
+        });
       }
       
       // Step 3: Documentation
@@ -3113,12 +3136,15 @@
         });
       }
       
-      // Step 2: Flight Experience - Restore Aircraft Sections
+      // Step 2: Flight Experience - Restore Aircraft Sections  
       if (formData.flightExperience && formData.flightExperience.aircraftSections) {
-        console.log('✈️ Populating flight experience sections...');
+        console.log('🔄 === RESTORING FLIGHT EXPERIENCE SECTIONS ===');
         const sections = formData.flightExperience.aircraftSections;
+        console.log('📊 Sections to restore:', sections.length);
+        console.log('📊 Sections data:', sections);
         
         // Clear existing sections first
+        console.log('🗑️ Clearing existing sections...');
         sectionsWrap.innerHTML = '';
         sectionCounter = 0;
         
