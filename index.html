@@ -1,0 +1,2259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>flydubai Pilot Onboarding System</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    :root{ 
+      /* flydubai Official Brand Colors */
+      --bg: linear-gradient(135deg, #6d28d9 0%, #7c3aed 12%, #8b5cf6 25%, #a855f7 37%, #c084fc 50%, #6366f1 62%, #8b5cf6 75%, #9333ea 87%, #7c3aed 100%);
+      --card: #ffffff; 
+      --ink: #0f172a; 
+      --muted: #64748b; 
+      --accent: #3b82f6; 
+      --accent-light: #60a5fa;
+      --line: #e2e8f0; 
+      --flydubai-blue: #3b82f6;
+      --flydubai-orange: #f97316;
+      --flydubai-navy: #1e3a8a;
+      --flydubai-light-blue: #dbeafe;
+      --aviation-silver: #94a3b8;
+      --success: #059669;
+      --warning: #d97706;
+      --expired: #dc2626;
+      --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4), 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+    
+    * { box-sizing: border-box; }
+    
+    html, body {
+      height: 100%;
+      scroll-behavior: smooth;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      background: var(--bg);
+      background-attachment: fixed;
+      background-size: 100% 100vh;
+      color: var(--ink);
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      font-weight: 400;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+    }
+    
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 20px;
+    }
+    
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, var(--flydubai-blue) 0%, var(--flydubai-orange) 50%, var(--flydubai-blue) 100%);
+    }
+    
+    /* Header */
+    .header {
+      padding: 16px 40px;
+      border-bottom: 2px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 30%, #f8fafc 70%, #f1f5f9 100%);
+      position: relative;
+      min-height: 100px;
+    }
+    
+    .header .logo {
+      width: 300px;
+      height: 60px;
+      background-image: url('Flydubai-Logo.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: left center;
+    }
+    
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: var(--flydubai-navy);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      line-height: 1.2;
+      text-align: center;
+    }
+    
+    /* Progress Bar */
+    .progress-container {
+      padding: 20px 40px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--line);
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--flydubai-blue) 0%, var(--flydubai-orange) 100%);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+    
+    .progress-steps {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .step {
+      display: flex;
+      align-items: center;
+      color: var(--muted);
+    }
+    
+    .step.active {
+      color: var(--flydubai-blue);
+      font-weight: 600;
+    }
+    
+    .step.completed {
+      color: var(--success);
+    }
+    
+    .step-number {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--line);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      margin-right: 8px;
+    }
+    
+    .step.active .step-number {
+      background: var(--flydubai-blue);
+    }
+    
+    .step.completed .step-number {
+      background: var(--success);
+    }
+    
+    /* Form Steps */
+    .form-step {
+      display: none;
+      padding: 40px;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .form-step.active {
+      display: block;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .step-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--flydubai-navy);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .step-subtitle {
+      font-size: 16px;
+      color: var(--muted);
+      margin-bottom: 32px;
+      line-height: 1.5;
+    }
+    
+    /* Form Elements */
+    .form-grid {
+      display: grid;
+      gap: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      margin-bottom: 32px;
+    }
+    
+    .form-section {
+      margin-bottom: 32px;
+    }
+    
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--flydubai-navy);
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--line);
+    }
+    
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: var(--flydubai-navy);
+      letter-spacing: 0.025em;
+    }
+    
+    input, select, textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 2px solid var(--line);
+      background: #ffffff;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s ease-in-out;
+      font-family: inherit;
+    }
+    
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--flydubai-blue);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 0 0 3px rgba(59, 130, 246, 0.1);
+      transform: translateY(-1px);
+    }
+    
+    .required {
+      color: var(--expired);
+    }
+    
+    /* File Upload */
+    .upload-area {
+      border: 2px dashed var(--line);
+      border-radius: 12px;
+      padding: 32px;
+      text-align: center;
+      background: #f8fafc;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    
+    .upload-area:hover {
+      border-color: var(--flydubai-blue);
+      background: var(--flydubai-light-blue);
+    }
+    
+    .upload-area.dragover {
+      border-color: var(--flydubai-orange);
+      background: #fef3f2;
+    }
+    
+    .upload-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+    
+    .file-list {
+      margin-top: 16px;
+    }
+    
+    .file-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .file-info {
+      display: flex;
+      align-items: center;
+    }
+    
+    .file-icon {
+      margin-right: 12px;
+      font-size: 20px;
+    }
+    
+    .file-details {
+      flex: 1;
+    }
+    
+    .file-name {
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+    
+    .file-size {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    
+    .file-status {
+      display: flex;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .file-status.uploading {
+      color: var(--warning);
+    }
+    
+    .file-status.completed {
+      color: var(--success);
+    }
+    
+    .file-status.error {
+      color: var(--expired);
+    }
+    
+    /* Buttons */
+    .btn {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border: 2px solid var(--line);
+      padding: 12px 24px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.025em;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: inherit;
+    }
+    
+    .btn:hover {
+      border-color: var(--flydubai-blue);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .btn.primary {
+      background: linear-gradient(135deg, var(--flydubai-blue) 0%, var(--accent-light) 100%);
+      border-color: var(--flydubai-blue);
+      color: #ffffff;
+      font-weight: 700;
+    }
+    
+    .btn.primary:hover {
+      box-shadow: 0 6px 20px rgba(30, 64, 175, 0.4);
+    }
+    
+    .btn.secondary {
+      background: linear-gradient(135deg, var(--flydubai-orange) 0%, #fb923c 100%);
+      border-color: var(--flydubai-orange);
+      color: #ffffff;
+      font-weight: 700;
+    }
+    
+    .btn.secondary:hover {
+      box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4);
+    }
+    
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    /* Navigation */
+    .form-navigation {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 40px;
+      border-top: 1px solid var(--line);
+      background: #f8fafc;
+    }
+    
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .auto-save-status {
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+    }
+    
+    .auto-save-status.saving {
+      color: var(--warning);
+    }
+    
+    .auto-save-status.saved {
+      color: var(--success);
+    }
+    
+    /* Recovery Banner */
+    .recovery-banner {
+      background: linear-gradient(135deg, #fef3f2 0%, #fee2e2 100%);
+      border: 1px solid #fecaca;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      display: none;
+    }
+    
+    .recovery-banner.show {
+      display: block;
+    }
+    
+    .recovery-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .recovery-message {
+      display: flex;
+      align-items: center;
+      font-weight: 500;
+      color: var(--expired);
+    }
+    
+    .recovery-actions {
+      display: flex;
+      gap: 12px;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        margin: 10px;
+        padding: 10px;
+      }
+      
+      .header {
+        padding: 16px 20px;
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .header h1 {
+        position: static;
+        transform: none;
+        margin-top: 12px;
+      }
+      
+      .header .logo {
+        width: 200px;
+        height: 40px;
+      }
+      
+      .form-step {
+        padding: 20px;
+      }
+      
+      .form-navigation {
+        padding: 16px 20px;
+        flex-direction: column;
+        gap: 16px;
+      }
+      
+      .nav-left, .nav-right {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .progress-steps {
+        font-size: 10px;
+      }
+      
+      .step-number {
+        width: 16px;
+        height: 16px;
+        font-size: 8px;
+      }
+    }
+    
+    /* Loading States */
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+    
+    .spinner {
+      border: 2px solid #f3f3f3;
+      border-top: 2px solid var(--flydubai-blue);
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      animation: spin 1s linear infinite;
+      margin-right: 8px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <script>
+    // ===== Password Protection =====
+    (function() {
+      const FORM_PASSWORD = "FlightTime2025";
+      let attempts = 0;
+      const maxAttempts = 3;
+      
+      function checkPassword() {
+        const userPassword = prompt("Enter access code to continue:");
+        
+        if (userPassword === null) {
+          document.body.innerHTML = `
+            <div style="display: flex; justify-content: center; align-items: center; height: 100vh; background: linear-gradient(135deg, #6d28d9 0%, #7c3aed 12%, #8b5cf6 25%, #a855f7 37%, #c084fc 50%, #6366f1 62%, #8b5cf6 75%, #9333ea 87%, #7c3aed 100%);">
+              <div style="text-align: center; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);">
+                <h1 style="color: #1e3a8a; margin-bottom: 20px;">Access Required</h1>
+                <p style="color: #64748b; margin-bottom: 30px;">This form requires an access code to continue.</p>
+                <button onclick="location.reload()" style="background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer;">Try Again</button>
+              </div>
+            </div>
+          `;
+          return;
+        }
+        
+        if (userPassword === FORM_PASSWORD) {
+          return;
+        } else {
+          attempts++;
+          if (attempts >= maxAttempts) {
+            document.body.innerHTML = `
+              <div style="display: flex; justify-content: center; align-items: center; height: 100vh; background: linear-gradient(135deg, #6d28d9 0%, #7c3aed 12%, #8b5cf6 25%, #a855f7 37%, #c084fc 50%, #6366f1 62%, #8b5cf6 75%, #9333ea 87%, #7c3aed 100%);">
+                <div style="text-align: center; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);">
+                  <h1 style="color: #dc2626; margin-bottom: 20px;">Access Denied</h1>
+                  <p style="color: #64748b; margin-bottom: 30px;">Too many incorrect attempts. Please contact your administrator for the correct access code.</p>
+                  <p style="color: #64748b; font-size: 14px;">Contact: jason.cameron@flydubai.com</p>
+                </div>
+              </div>
+            `;
+            return;
+          } else {
+            alert(`Incorrect access code. ${maxAttempts - attempts} attempt(s) remaining.`);
+            checkPassword();
+          }
+        }
+      }
+      
+      checkPassword();
+    })();
+  </script>
+
+  <div class="container">
+    <div class="card">
+      <!-- Header -->
+      <div class="header">
+        <div class="logo"></div>
+        <h1>Pilot Onboarding System</h1>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-steps">
+          <div class="step active" data-step="1">
+            <div class="step-number">1</div>
+            <span>Personal Info</span>
+          </div>
+          <div class="step" data-step="2">
+            <div class="step-number">2</div>
+            <span>Flight Experience</span>
+          </div>
+          <div class="step" data-step="3">
+            <div class="step-number">3</div>
+            <span>Documentation</span>
+          </div>
+          <div class="step" data-step="4">
+            <div class="step-number">4</div>
+            <span>Review & Submit</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recovery Banner -->
+      <div class="recovery-banner" id="recoveryBanner">
+        <div class="recovery-content">
+          <div class="recovery-message">
+            <span>📋</span>
+            <span style="margin-left: 8px;">Previous session found. Would you like to continue where you left off?</span>
+          </div>
+          <div class="recovery-actions">
+            <button class="btn" onclick="clearSession()">Start Fresh</button>
+            <button class="btn primary" onclick="recoverSession()">Continue</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-container">
+        <!-- Step 1: Personal Information -->
+      <div class="form-step active" data-step="1">
+        <h2 class="step-title">👨‍✈️ Personal Information</h2>
+        <p class="step-subtitle">Let's start with your basic information. All fields marked with <span class="required">*</span> are required.</p>
+        <!-- Force deployment update -->
+        
+        <div class="form-grid">
+          <div>
+            <label for="pilotName">Full Name <span class="required">*</span></label>
+            <input id="pilotName" type="text" placeholder="Enter your full legal name" required>
+          </div>
+          <div>
+            <label for="nationality">Nationality <span class="required">*</span></label>
+            <select id="nationality" required>
+              <option value="">Select your nationality</option>
+              <option value="AF">Afghanistan</option>
+              <option value="AL">Albania</option>
+              <option value="DZ">Algeria</option>
+              <option value="AD">Andorra</option>
+              <option value="AO">Angola</option>
+              <option value="AG">Antigua and Barbuda</option>
+              <option value="AR">Argentina</option>
+              <option value="AM">Armenia</option>
+              <option value="AU">Australia</option>
+              <option value="AT">Austria</option>
+              <option value="AZ">Azerbaijan</option>
+              <option value="BS">Bahamas</option>
+              <option value="BH">Bahrain</option>
+              <option value="BD">Bangladesh</option>
+              <option value="BB">Barbados</option>
+              <option value="BY">Belarus</option>
+              <option value="BE">Belgium</option>
+              <option value="BZ">Belize</option>
+              <option value="BJ">Benin</option>
+              <option value="BT">Bhutan</option>
+              <option value="BO">Bolivia</option>
+              <option value="BA">Bosnia and Herzegovina</option>
+              <option value="BW">Botswana</option>
+              <option value="BR">Brazil</option>
+              <option value="BN">Brunei</option>
+              <option value="BG">Bulgaria</option>
+              <option value="BF">Burkina Faso</option>
+              <option value="BI">Burundi</option>
+              <option value="CV">Cabo Verde</option>
+              <option value="KH">Cambodia</option>
+              <option value="CM">Cameroon</option>
+              <option value="CA">Canada</option>
+              <option value="CF">Central African Republic</option>
+              <option value="TD">Chad</option>
+              <option value="CL">Chile</option>
+              <option value="CN">China</option>
+              <option value="CO">Colombia</option>
+              <option value="KM">Comoros</option>
+              <option value="CG">Congo</option>
+              <option value="CD">Congo (Democratic Republic)</option>
+              <option value="CR">Costa Rica</option>
+              <option value="HR">Croatia</option>
+              <option value="CU">Cuba</option>
+              <option value="CY">Cyprus</option>
+              <option value="CZ">Czech Republic</option>
+              <option value="DK">Denmark</option>
+              <option value="DJ">Djibouti</option>
+              <option value="DM">Dominica</option>
+              <option value="DO">Dominican Republic</option>
+              <option value="EC">Ecuador</option>
+              <option value="EG">Egypt</option>
+              <option value="SV">El Salvador</option>
+              <option value="GQ">Equatorial Guinea</option>
+              <option value="ER">Eritrea</option>
+              <option value="EE">Estonia</option>
+              <option value="SZ">Eswatini</option>
+              <option value="ET">Ethiopia</option>
+              <option value="FJ">Fiji</option>
+              <option value="FI">Finland</option>
+              <option value="FR">France</option>
+              <option value="GA">Gabon</option>
+              <option value="GM">Gambia</option>
+              <option value="GE">Georgia</option>
+              <option value="DE">Germany</option>
+              <option value="GH">Ghana</option>
+              <option value="GR">Greece</option>
+              <option value="GD">Grenada</option>
+              <option value="GT">Guatemala</option>
+              <option value="GN">Guinea</option>
+              <option value="GW">Guinea-Bissau</option>
+              <option value="GY">Guyana</option>
+              <option value="HT">Haiti</option>
+              <option value="HN">Honduras</option>
+              <option value="HU">Hungary</option>
+              <option value="IS">Iceland</option>
+              <option value="IN">India</option>
+              <option value="ID">Indonesia</option>
+              <option value="IR">Iran</option>
+              <option value="IQ">Iraq</option>
+              <option value="IE">Ireland</option>
+              <option value="IL">Israel</option>
+              <option value="IT">Italy</option>
+              <option value="CI">Ivory Coast</option>
+              <option value="JM">Jamaica</option>
+              <option value="JP">Japan</option>
+              <option value="JO">Jordan</option>
+              <option value="KZ">Kazakhstan</option>
+              <option value="KE">Kenya</option>
+              <option value="KI">Kiribati</option>
+              <option value="KP">Korea (North)</option>
+              <option value="KR">Korea (South)</option>
+              <option value="KW">Kuwait</option>
+              <option value="KG">Kyrgyzstan</option>
+              <option value="LA">Laos</option>
+              <option value="LV">Latvia</option>
+              <option value="LB">Lebanon</option>
+              <option value="LS">Lesotho</option>
+              <option value="LR">Liberia</option>
+              <option value="LY">Libya</option>
+              <option value="LI">Liechtenstein</option>
+              <option value="LT">Lithuania</option>
+              <option value="LU">Luxembourg</option>
+              <option value="MG">Madagascar</option>
+              <option value="MW">Malawi</option>
+              <option value="MY">Malaysia</option>
+              <option value="MV">Maldives</option>
+              <option value="ML">Mali</option>
+              <option value="MT">Malta</option>
+              <option value="MH">Marshall Islands</option>
+              <option value="MR">Mauritania</option>
+              <option value="MU">Mauritius</option>
+              <option value="MX">Mexico</option>
+              <option value="FM">Micronesia</option>
+              <option value="MD">Moldova</option>
+              <option value="MC">Monaco</option>
+              <option value="MN">Mongolia</option>
+              <option value="ME">Montenegro</option>
+              <option value="MA">Morocco</option>
+              <option value="MZ">Mozambique</option>
+              <option value="MM">Myanmar</option>
+              <option value="NA">Namibia</option>
+              <option value="NR">Nauru</option>
+              <option value="NP">Nepal</option>
+              <option value="NL">Netherlands</option>
+              <option value="NZ">New Zealand</option>
+              <option value="NI">Nicaragua</option>
+              <option value="NE">Niger</option>
+              <option value="NG">Nigeria</option>
+              <option value="MK">North Macedonia</option>
+              <option value="NO">Norway</option>
+              <option value="OM">Oman</option>
+              <option value="PK">Pakistan</option>
+              <option value="PW">Palau</option>
+              <option value="PA">Panama</option>
+              <option value="PG">Papua New Guinea</option>
+              <option value="PY">Paraguay</option>
+              <option value="PE">Peru</option>
+              <option value="PH">Philippines</option>
+              <option value="PL">Poland</option>
+              <option value="PT">Portugal</option>
+              <option value="QA">Qatar</option>
+              <option value="RO">Romania</option>
+              <option value="RU">Russia</option>
+              <option value="RW">Rwanda</option>
+              <option value="KN">Saint Kitts and Nevis</option>
+              <option value="LC">Saint Lucia</option>
+              <option value="VC">Saint Vincent and the Grenadines</option>
+              <option value="WS">Samoa</option>
+              <option value="SM">San Marino</option>
+              <option value="ST">Sao Tome and Principe</option>
+              <option value="SA">Saudi Arabia</option>
+              <option value="SN">Senegal</option>
+              <option value="RS">Serbia</option>
+              <option value="SC">Seychelles</option>
+              <option value="SL">Sierra Leone</option>
+              <option value="SG">Singapore</option>
+              <option value="SK">Slovakia</option>
+              <option value="SI">Slovenia</option>
+              <option value="SB">Solomon Islands</option>
+              <option value="SO">Somalia</option>
+              <option value="ZA">South Africa</option>
+              <option value="SS">South Sudan</option>
+              <option value="ES">Spain</option>
+              <option value="LK">Sri Lanka</option>
+              <option value="SD">Sudan</option>
+              <option value="SR">Suriname</option>
+              <option value="SE">Sweden</option>
+              <option value="CH">Switzerland</option>
+              <option value="SY">Syria</option>
+              <option value="TJ">Tajikistan</option>
+              <option value="TZ">Tanzania</option>
+              <option value="TH">Thailand</option>
+              <option value="TL">Timor-Leste</option>
+              <option value="TG">Togo</option>
+              <option value="TO">Tonga</option>
+              <option value="TT">Trinidad and Tobago</option>
+              <option value="TN">Tunisia</option>
+              <option value="TR">Turkey</option>
+              <option value="TM">Turkmenistan</option>
+              <option value="TV">Tuvalu</option>
+              <option value="UG">Uganda</option>
+              <option value="UA">Ukraine</option>
+              <option value="AE">United Arab Emirates</option>
+              <option value="GB">United Kingdom</option>
+              <option value="US">United States</option>
+              <option value="UY">Uruguay</option>
+              <option value="UZ">Uzbekistan</option>
+              <option value="VU">Vanuatu</option>
+              <option value="VA">Vatican City</option>
+              <option value="VE">Venezuela</option>
+              <option value="VN">Vietnam</option>
+              <option value="YE">Yemen</option>
+              <option value="ZM">Zambia</option>
+              <option value="ZW">Zimbabwe</option>
+            </select>
+          </div>
+          <div>
+            <label for="contactEmail">Email Address <span class="required">*</span></label>
+            <input id="contactEmail" type="email" placeholder="your.email@example.com" required>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div>
+            <label for="dateOfBirth">Date of Birth <span class="required">*</span></label>
+            <input id="dateOfBirth" type="date" required>
+          </div>
+          <div>
+            <label for="phoneNumber">Phone Number <span class="required">*</span></label>
+            <input id="phoneNumber" type="tel" placeholder="+971 50 123 4567" required>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="section-title">Basic Pilot Information</div>
+          <div class="form-grid">
+            <div>
+              <label for="designation">Current Designation <span class="required">*</span></label>
+              <select id="designation" required>
+                <option value="">Select designation</option>
+                <option value="Captain">Captain</option>
+                <option value="First Officer">First Officer</option>
+                <option value="Second Officer">Second Officer</option>
+                <option value="Cadet">Cadet</option>
+                <option value="Flight Instructor">Flight Instructor</option>
+                <option value="Check Airman">Check Airman</option>
+              </select>
+            </div>
+            <div>
+              <label for="expectedDateOfJoining">Expected Date of Joining</label>
+              <input id="expectedDateOfJoining" type="date">
+            </div>
+            <div>
+              <label for="previousEmployer">Previous Employer</label>
+              <input id="previousEmployer" type="text" placeholder="Airline or Company name">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Flight Experience -->
+      <div class="form-step" data-step="2">
+        <h2 class="step-title">✈️ Flight Experience</h2>
+        <p class="step-subtitle">Please provide your detailed flight experience by aircraft type. Add multiple aircraft types as needed.</p>
+
+        <div id="aircraftSections">
+          <!-- Boeing 737 NG/MAX Section (Locked) -->
+          <div class="form-section aircraft-section" data-aircraft-id="1">
+            <div class="section-title" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding: 16px; border-radius: 12px; margin-bottom: 20px;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; color: var(--flydubai-navy);">Aircraft Type 1: Boeing 737 NG/MAX</h3>
+                <div style="display: flex; align-items: center; background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: white; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase;">
+                  ✈ >50T MTOW
+                </div>
+              </div>
+            </div>
+
+            <div style="overflow-x: auto;">
+              <table style="width: 100%; min-width: 800px; border-collapse: collapse; margin-bottom: 20px; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <thead>
+                  <tr style="background: linear-gradient(135deg, var(--flydubai-blue) 0%, var(--flydubai-navy) 100%);">
+                    <th style="padding: 16px; color: white; text-align: center; font-weight: 700; font-size: 13px;">Flight Role</th>
+                    <th style="padding: 16px; color: white; text-align: center; font-weight: 700; font-size: 13px;">Total Hours<br><span style="font-weight: 400; font-size: 11px;">(HH:MM)</span></th>
+                    <th style="padding: 16px; color: white; text-align: center; font-weight: 700; font-size: 13px;">Block Hours (Last 12 Months)<br><span style="font-weight: 400; font-size: 11px;">(HH:MM)</span></th>
+                    <th style="padding: 16px; color: white; text-align: center; font-weight: 700; font-size: 13px;">First Flight Date<br><span style="font-weight: 400; font-size: 11px;">(Last 12 Months)</span></th>
+                    <th style="padding: 16px; color: white; text-align: center; font-weight: 700; font-size: 13px;">Last Flight Date<br><span style="font-weight: 400; font-size: 11px;">(Last 12 Months)</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 16px; font-weight: 700; color: var(--flydubai-navy); text-align: center;">PIC</td>
+                    <td style="padding: 16px; text-align: center;"><input type="text" class="hhmm" data-time-field="true" placeholder="0:00" style="width: 80px; text-align: center; padding: 8px;"></td>
+                    <td style="padding: 16px; text-align: center;"><input type="text" class="hhmm" data-time-field="true" placeholder="0:00" style="width: 80px; text-align: center; padding: 8px;"></td>
+                    <td style="padding: 16px; text-align: center;"><input type="date" style="width: 140px; padding: 8px;"></td>
+                    <td style="padding: 16px; text-align: center;"><input type="date" style="width: 140px; padding: 8px;"></td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 16px; font-weight: 700; color: var(--flydubai-navy); text-align: center;">SIC</td>
+                    <td style="padding: 16px; text-align: center;"><input type="text" class="hhmm" data-time-field="true" placeholder="0:00" style="width: 80px; text-align: center; padding: 8px;"></td>
+                    <td style="padding: 16px; text-align: center;"><input type="text" class="hhmm" data-time-field="true" placeholder="0:00" style="width: 80px; text-align: center; padding: 8px;"></td>
+                    <td style="padding: 16px; text-align: center;"><input type="date" style="width: 140px; padding: 8px;"></td>
+                    <td style="padding: 16px; text-align: center;"><input type="date" style="width: 140px; padding: 8px;"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+              <div style="background: #f8fafc; padding: 20px; border-radius: 12px; text-align: center;">
+                <label style="font-weight: 600; color: var(--flydubai-navy); margin-bottom: 8px;">Total Combined Block Hours</label>
+                <div style="font-size: 24px; font-weight: 700; color: var(--flydubai-blue); font-family: 'Courier New', monospace;" class="combined-hours">0:00</div>
+              </div>
+              <div>
+                <label for="b737_mp">Multi-Pilot Block Hours (HH:MM)</label>
+                <input id="b737_mp" type="text" class="hhmm mp-hours" data-time-field="true" placeholder="0:00">
+              </div>
+              <div>
+                <label for="b737_night">Night Hours (HH:MM)</label>
+                <input id="b737_night" type="text" class="hhmm night-hours" data-time-field="true" placeholder="0:00">
+              </div>
+            </div>
+          </div>
+
+          <!-- Boeing 737 Classic Section (Locked) -->
+          <div class="form-section aircraft-section" data-aircraft-id="2">
+            <div class="section-title" style="background: linear-gradient(135deg, #fef7ed 0%, #fed7aa 100%); padding: 16px; border-radius: 12px; margin-bottom: 20px;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; color: var(--flydubai-navy);">Aircraft Type 2: Boeing 737 Classic (300-500)</h3>
+                <div style="display: flex; align-items: center; background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: white; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase;">
+                  ✈ >50T MTOW
+                </div>
+              </div>
+            </div>
+
+            <div style="overflow-x: auto;">
+              <table style="width: 100%; min-width: 800px; border-collapse: collapse; margin-bottom: 20px; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <thead>
+                  <tr style="background: linear-gradient(135deg, var(--flydubai-orange) 0%, #fb923c 100%);">
+                    <th style="padding: 16px; color: white; text-align: center; font-weight: 700; font-size: 13px;">Flight Role</th>
+                    <th style="padding: 16px; color: white; text-align: center; font-weight: 700; font-size: 13px;">Total Hours<br><span style="font-weight: 400; font-size: 11px;">(HH:MM)</span></th>
+                    <th style="padding: 16px; color: white; text-align: center; font-weight: 700; font-size: 13px;">Block Hours (Last 12 Months)<br><span style="font-weight: 400; font-size: 11px;">(HH:MM)</span></th>
+                    <th style="padding: 16px; color: white; text-align: center; font-weight: 700; font-size: 13px;">First Flight Date<br><span style="font-weight: 400; font-size: 11px;">(Last 12 Months)</span></th>
+                    <th style="padding: 16px; color: white; text-align: center; font-weight: 700; font-size: 13px;">Last Flight Date<br><span style="font-weight: 400; font-size: 11px;">(Last 12 Months)</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 16px; font-weight: 700; color: var(--flydubai-navy); text-align: center;">PIC</td>
+                    <td style="padding: 16px; text-align: center;"><input type="text" class="hhmm" data-time-field="true" placeholder="0:00" style="width: 80px; text-align: center; padding: 8px;"></td>
+                    <td style="padding: 16px; text-align: center;"><input type="text" class="hhmm" data-time-field="true" placeholder="0:00" style="width: 80px; text-align: center; padding: 8px;"></td>
+                    <td style="padding: 16px; text-align: center;"><input type="date" style="width: 140px; padding: 8px;"></td>
+                    <td style="padding: 16px; text-align: center;"><input type="date" style="width: 140px; padding: 8px;"></td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 16px; font-weight: 700; color: var(--flydubai-navy); text-align: center;">SIC</td>
+                    <td style="padding: 16px; text-align: center;"><input type="text" class="hhmm" data-time-field="true" placeholder="0:00" style="width: 80px; text-align: center; padding: 8px;"></td>
+                    <td style="padding: 16px; text-align: center;"><input type="text" class="hhmm" data-time-field="true" placeholder="0:00" style="width: 80px; text-align: center; padding: 8px;"></td>
+                    <td style="padding: 16px; text-align: center;"><input type="date" style="width: 140px; padding: 8px;"></td>
+                    <td style="padding: 16px; text-align: center;"><input type="date" style="width: 140px; padding: 8px;"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+              <div style="background: #f8fafc; padding: 20px; border-radius: 12px; text-align: center;">
+                <label style="font-weight: 600; color: var(--flydubai-navy); margin-bottom: 8px;">Total Combined Block Hours</label>
+                <div style="font-size: 24px; font-weight: 700; color: var(--flydubai-orange); font-family: 'Courier New', monospace;" class="combined-hours">0:00</div>
+              </div>
+              <div>
+                <label for="b737c_mp">Multi-Pilot Block Hours (HH:MM)</label>
+                <input id="b737c_mp" type="text" class="hhmm mp-hours" data-time-field="true" placeholder="0:00">
+              </div>
+              <div>
+                <label for="b737c_night">Night Hours (HH:MM)</label>
+                <input id="b737c_night" type="text" class="hhmm night-hours" data-time-field="true" placeholder="0:00">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin: 32px 0;">
+          <button class="btn secondary" id="addAircraftBtn" onclick="addAircraftSection()">+ Add Another Aircraft Type</button>
+        </div>
+
+        <!-- Grand Totals -->
+        <div class="form-section" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 2px solid #22c55e; padding: 24px; border-radius: 16px;">
+          <div class="section-title" style="border: none; margin-bottom: 20px; text-align: center;">
+            <h3 style="margin: 0; color: var(--success); font-size: 20px;">GRAND TOTALS (All Aircraft Types)</h3>
+          </div>
+          <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+            <div style="background: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <label style="font-weight: 600; color: var(--success); margin-bottom: 8px;">Combined Block Hours</label>
+              <div style="font-size: 28px; font-weight: 700; color: var(--success); font-family: 'Courier New', monospace;" id="grandTotalCombined">0:00</div>
+            </div>
+            <div style="background: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <label style="font-weight: 600; color: var(--success); margin-bottom: 8px;">Multi-Pilot Block Hours</label>
+              <div style="font-size: 28px; font-weight: 700; color: var(--success); font-family: 'Courier New', monospace;" id="grandTotalMP">0:00</div>
+            </div>
+            <div style="background: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <label style="font-weight: 600; color: var(--success); margin-bottom: 8px;">Night Hours</label>
+              <div style="font-size: 28px; font-weight: 700; color: var(--success); font-family: 'Courier New', monospace;" id="grandTotalNight">0:00</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Flying Experience Summary -->
+        <div class="form-section" style="margin-top: 32px;">
+          <div class="section-title">FLYING EXPERIENCE SUMMARY - GENERAL</div>
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; min-width: 900px; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <thead>
+                <tr style="background: linear-gradient(135deg, var(--flydubai-navy) 0%, var(--flydubai-blue) 100%);">
+                  <th style="padding: 12px; color: white; text-align: center; font-weight: 700; font-size: 12px;">PIC/P1</th>
+                  <th style="padding: 12px; color: white; text-align: center; font-weight: 700; font-size: 12px;">SIC/P2</th>
+                  <th style="padding: 12px; color: white; text-align: center; font-weight: 700; font-size: 12px;">SOLO</th>
+                  <th style="padding: 12px; color: white; text-align: center; font-weight: 700; font-size: 12px;">INSTRUMENT</th>
+                  <th style="padding: 12px; color: white; text-align: center; font-weight: 700; font-size: 12px;">SIM</th>
+                  <th style="padding: 12px; color: white; text-align: center; font-weight: 700; font-size: 12px;">NIGHT</th>
+                  <th style="padding: 12px; color: white; text-align: center; font-weight: 700; font-size: 12px;">INSTRUCTOR</th>
+                  <th style="padding: 12px; color: white; text-align: center; font-weight: 700; font-size: 12px;">P1 U/S</th>
+                  <th style="padding: 12px; color: white; text-align: center; font-weight: 700; font-size: 12px;">GRAND TOTAL</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="padding: 12px; text-align: center;"><input type="text" class="hhmm" data-time-field="true" placeholder="0:00" style="width: 70px; text-align: center; padding: 6px;"></td>
+                  <td style="padding: 12px; text-align: center;"><input type="text" class="hhmm" data-time-field="true" placeholder="0:00" style="width: 70px; text-align: center; padding: 6px;"></td>
+                  <td style="padding: 12px; text-align: center;"><input type="text" class="hhmm" data-time-field="true" placeholder="0:00" style="width: 70px; text-align: center; padding: 6px;"></td>
+                  <td style="padding: 12px; text-align: center;"><input type="text" class="hhmm" data-time-field="true" placeholder="0:00" style="width: 70px; text-align: center; padding: 6px;"></td>
+                  <td style="padding: 12px; text-align: center;"><input type="text" class="hhmm" data-time-field="true" placeholder="0:00" style="width: 70px; text-align: center; padding: 6px;"></td>
+                  <td style="padding: 12px; text-align: center;"><input type="text" class="hhmm" data-time-field="true" placeholder="0:00" style="width: 70px; text-align: center; padding: 6px;"></td>
+                  <td style="padding: 12px; text-align: center;"><input type="text" class="hhmm" data-time-field="true" placeholder="0:00" style="width: 70px; text-align: center; padding: 6px;"></td>
+                  <td style="padding: 12px; text-align: center;"><input type="text" class="hhmm" data-time-field="true" placeholder="0:00" style="width: 70px; text-align: center; padding: 6px;"></td>
+                  <td style="padding: 12px; text-align: center;"><input type="text" class="hhmm" data-time-field="true" id="grandTotalHours" placeholder="0:00" style="width: 70px; text-align: center; padding: 6px; background: #f0fdf4; font-weight: 700; color: var(--success);"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Documentation -->
+      <div class="form-step" data-step="3">
+        <h2 class="step-title">📄 Required Documentation</h2>
+        <p class="step-subtitle">Please upload all required pilot documentation. Files must be in PDF, JPG, or PNG format and under 10MB each.</p>
+
+        <!-- Pilot License Section -->
+        <div class="form-section">
+          <div class="section-title">🛂 Pilot License (ATPL/CPL/PPL)</div>
+          <div class="form-grid">
+            <div>
+              <label for="licenseType">License Type <span class="required">*</span></label>
+              <select id="licenseType" required>
+                <option value="">Select License Type</option>
+                <option value="ATPL">ATPL (Airline Transport Pilot License)</option>
+                <option value="CPL">CPL (Commercial Pilot License)</option>
+                <option value="PPL">PPL (Private Pilot License)</option>
+                <option value="MPL">MPL (Multi-Crew Pilot License)</option>
+              </select>
+            </div>
+            <div>
+              <label for="licenseNumber">License Number <span class="required">*</span></label>
+              <input id="licenseNumber" type="text" placeholder="Enter license number" required>
+            </div>
+            <div>
+              <label for="licenseIssueDate">Issue Date <span class="required">*</span></label>
+              <input id="licenseIssueDate" type="date" required>
+            </div>
+            <div>
+              <label for="licenseExpiryDate">Expiry Date <span class="required">*</span></label>
+              <input id="licenseExpiryDate" type="date" required>
+            </div>
+          </div>
+          
+          <div style="margin-top: 20px;">
+            <label>Upload Pilot License Document <span class="required">*</span></label>
+            <div class="upload-area" onclick="triggerFileUpload('pilotLicense')" ondrop="dropHandler(event, 'pilotLicense')" ondragover="dragOverHandler(event)" ondragleave="dragLeaveHandler(event)">
+              <div class="upload-icon">📄</div>
+              <div style="margin-bottom: 8px; font-weight: 600;">Drop your pilot license here or click to browse</div>
+              <div style="font-size: 12px; color: var(--muted);">Supports PDF, JPG, PNG • Max 10MB</div>
+              <input type="file" id="pilotLicense" accept=".pdf,.jpg,.jpeg,.png" style="display: none;" onchange="handleFileUpload(event, 'pilotLicense')">
+            </div>
+            <div class="file-list" id="pilotLicenseFiles"></div>
+          </div>
+
+          <div style="background: #fef3f2; padding: 16px; border-radius: 8px; border: 1px solid #fecaca; margin-top: 16px; font-size: 13px; color: var(--expired);">
+            <strong>Requirement:</strong> Current valid pilot license (ATPL/CPL/PPL) with appropriate aircraft type ratings. License must be valid for the duration of employment and recognized by UAE GCAA.
+          </div>
+        </div>
+
+        <!-- Medical Certificate Section -->
+        <div class="form-section">
+          <div class="section-title">🏥 Medical Certificate</div>
+          <div class="form-grid">
+            <div>
+              <label for="medicalClass">Medical Class <span class="required">*</span></label>
+              <select id="medicalClass" required>
+                <option value="">Select Medical Class</option>
+                <option value="Class 1">Class 1</option>
+                <option value="Class 2">Class 2</option>
+                <option value="Class 3">Class 3</option>
+              </select>
+            </div>
+            <div>
+              <label for="medicalCertNumber">Certificate Number <span class="required">*</span></label>
+              <input id="medicalCertNumber" type="text" placeholder="Enter certificate number" required>
+            </div>
+            <div>
+              <label for="medicalIssueDate">Issue Date <span class="required">*</span></label>
+              <input id="medicalIssueDate" type="date" required>
+            </div>
+            <div>
+              <label for="medicalExpiryDate">Expiry Date <span class="required">*</span></label>
+              <input id="medicalExpiryDate" type="date" required>
+            </div>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <label>Upload Medical Certificate <span class="required">*</span></label>
+            <div class="upload-area" onclick="triggerFileUpload('medicalCert')" ondrop="dropHandler(event, 'medicalCert')" ondragover="dragOverHandler(event)" ondragleave="dragLeaveHandler(event)">
+              <div class="upload-icon">🏥</div>
+              <div style="margin-bottom: 8px; font-weight: 600;">Drop your medical certificate here or click to browse</div>
+              <div style="font-size: 12px; color: var(--muted);">Supports PDF, JPG, PNG • Max 10MB</div>
+              <input type="file" id="medicalCert" accept=".pdf,.jpg,.jpeg,.png" style="display: none;" onchange="handleFileUpload(event, 'medicalCert')">
+            </div>
+            <div class="file-list" id="medicalCertFiles"></div>
+          </div>
+
+          <div style="background: #fef3f2; padding: 16px; border-radius: 8px; border: 1px solid #fecaca; margin-top: 16px; font-size: 13px; color: var(--expired);">
+            <strong>Requirement:</strong> Valid Class 1 medical certificate issued within the last 12 months. Must meet ICAO medical standards and be valid for commercial aviation operations.
+          </div>
+        </div>
+
+        <!-- Radio Operator License Section -->
+        <div class="form-section">
+          <div class="section-title">📻 Radio Operator License</div>
+          <div class="form-grid">
+            <div>
+              <label for="rolNumber">ROL Certificate Number <span class="required">*</span></label>
+              <input id="rolNumber" type="text" placeholder="Enter ROL certificate number" required>
+            </div>
+            <div>
+              <label for="rolIssueDate">Issue Date <span class="required">*</span></label>
+              <input id="rolIssueDate" type="date" required>
+            </div>
+            <div>
+              <label for="rolExpiryDate">Expiry Date <span class="required">*</span></label>
+              <input id="rolExpiryDate" type="date" required>
+            </div>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <label>Upload Radio Operator License <span class="required">*</span></label>
+            <div class="upload-area" onclick="triggerFileUpload('radioLicense')" ondrop="dropHandler(event, 'radioLicense')" ondragover="dragOverHandler(event)" ondragleave="dragLeaveHandler(event)">
+              <div class="upload-icon">📻</div>
+              <div style="margin-bottom: 8px; font-weight: 600;">Drop your radio operator license here or click to browse</div>
+              <div style="font-size: 12px; color: var(--muted);">Supports PDF, JPG, PNG • Max 10MB</div>
+              <input type="file" id="radioLicense" accept=".pdf,.jpg,.jpeg,.png" style="display: none;" onchange="handleFileUpload(event, 'radioLicense')">
+            </div>
+            <div class="file-list" id="radioLicenseFiles"></div>
+          </div>
+
+          <div style="background: #fef3f2; padding: 16px; border-radius: 8px; border: 1px solid #fecaca; margin-top: 16px; font-size: 13px; color: var(--expired);">
+            <strong>Requirement:</strong> Valid Radio Operator License (ROL) certificate with appropriate endorsements for commercial aviation operations.
+          </div>
+        </div>
+
+        <!-- Flight Hours Verification Section -->
+        <div class="form-section">
+          <div class="section-title">⏱️ Flight Hours Verification Letter</div>
+          <div class="form-grid">
+            <div>
+              <label for="hoursAuthority">Issuing Authority/Previous Employer <span class="required">*</span></label>
+              <input id="hoursAuthority" type="text" placeholder="Previous airline or authority name" required>
+            </div>
+            <div>
+              <label for="hoursLetterDate">Letter Issue Date <span class="required">*</span></label>
+              <input id="hoursLetterDate" type="date" required>
+            </div>
+            <div>
+              <label for="totalFlightHours">Total Flight Hours Verified</label>
+              <input id="totalFlightHours" type="text" class="hhmm" placeholder="0:00">
+            </div>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <label>Upload Flight Hours Verification Letter <span class="required">*</span></label>
+            <div class="upload-area" onclick="triggerFileUpload('hoursLetter')" ondrop="dropHandler(event, 'hoursLetter')" ondragover="dragOverHandler(event)" ondragleave="dragLeaveHandler(event)">
+              <div class="upload-icon">⏱️</div>
+              <div style="margin-bottom: 8px; font-weight: 600;">Drop your flight hours verification letter here or click to browse</div>
+              <div style="font-size: 12px; color: var(--muted);">Supports PDF, JPG, PNG • Max 10MB</div>
+              <input type="file" id="hoursLetter" accept=".pdf,.jpg,.jpeg,.png" style="display: none;" onchange="handleFileUpload(event, 'hoursLetter')">
+            </div>
+            <div class="file-list" id="hoursLetterFiles"></div>
+          </div>
+
+          <div style="background: #fef3f2; padding: 16px; border-radius: 8px; border: 1px solid #fecaca; margin-top: 16px; font-size: 13px; color: var(--expired);">
+            <strong>Requirement:</strong> Official verification letter from previous airline/employer issued within 30 days. Must include total flight hours, aircraft types flown, and employment dates.
+          </div>
+        </div>
+
+        <!-- Passport Section -->
+        <div class="form-section">
+          <div class="section-title">📘 Passport</div>
+          <div class="form-grid">
+            <div>
+              <label for="passportNumber">Passport Number <span class="required">*</span></label>
+              <input id="passportNumber" type="text" placeholder="Enter passport number" required>
+            </div>
+            <div>
+              <label for="passportIssueDate">Issue Date <span class="required">*</span></label>
+              <input id="passportIssueDate" type="date" required>
+            </div>
+            <div>
+              <label for="passportExpiryDate">Expiry Date <span class="required">*</span></label>
+              <input id="passportExpiryDate" type="date" required>
+            </div>
+            <div>
+              <label for="passportCountry">Issuing Country <span class="required">*</span></label>
+              <select id="passportCountry" required>
+                <option value="">Select country</option>
+                <option value="AE">United Arab Emirates</option>
+                <option value="US">United States</option>
+                <option value="GB">United Kingdom</option>
+                <option value="CA">Canada</option>
+                <option value="AU">Australia</option>
+                <option value="DE">Germany</option>
+                <option value="FR">France</option>
+                <option value="IN">India</option>
+                <option value="PK">Pakistan</option>
+                <option value="ZA">South Africa</option>
+                <option value="OTHER">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <label>Upload Passport Pages <span class="required">*</span></label>
+            <div class="upload-area" onclick="triggerFileUpload('passport')" ondrop="dropHandler(event, 'passport')" ondragover="dragOverHandler(event)" ondragleave="dragLeaveHandler(event)">
+              <div class="upload-icon">📘</div>
+              <div style="margin-bottom: 8px; font-weight: 600;">Drop passport pages here or click to browse</div>
+              <div style="font-size: 12px; color: var(--muted);">Photo page + visa pages • Supports PDF, JPG, PNG • Max 10MB</div>
+              <input type="file" id="passport" accept=".pdf,.jpg,.jpeg,.png" multiple style="display: none;" onchange="handleFileUpload(event, 'passport')">
+            </div>
+            <div class="file-list" id="passportFiles"></div>
+          </div>
+
+          <div style="background: #fef3f2; padding: 16px; border-radius: 8px; border: 1px solid #fecaca; margin-top: 16px; font-size: 13px; color: var(--expired);">
+            <strong>Requirement:</strong> Clear scans of passport photo page and any UAE visa pages. Passport must be valid for at least 6 months from intended employment start date.
+          </div>
+        </div>
+
+        <!-- Document Upload Progress -->
+        <div class="form-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 2px solid var(--flydubai-blue);">
+          <div class="section-title" style="border: none; text-align: center;">📊 Document Upload Progress</div>
+          <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+            <div style="text-align: center; padding: 12px;">
+              <div style="font-size: 24px; margin-bottom: 8px;">📄</div>
+              <div style="font-weight: 600; color: var(--flydubai-navy); margin-bottom: 4px;">Pilot License</div>
+              <div class="upload-status" id="pilotLicenseStatus" style="font-size: 12px; color: var(--muted);">Not uploaded</div>
+            </div>
+            <div style="text-align: center; padding: 12px;">
+              <div style="font-size: 24px; margin-bottom: 8px;">🏥</div>
+              <div style="font-weight: 600; color: var(--flydubai-navy); margin-bottom: 4px;">Medical Certificate</div>
+              <div class="upload-status" id="medicalCertStatus" style="font-size: 12px; color: var(--muted);">Not uploaded</div>
+            </div>
+            <div style="text-align: center; padding: 12px;">
+              <div style="font-size: 24px; margin-bottom: 8px;">📻</div>
+              <div style="font-weight: 600; color: var(--flydubai-navy); margin-bottom: 4px;">Radio License</div>
+              <div class="upload-status" id="radioLicenseStatus" style="font-size: 12px; color: var(--muted);">Not uploaded</div>
+            </div>
+            <div style="text-align: center; padding: 12px;">
+              <div style="font-size: 24px; margin-bottom: 8px;">⏱️</div>
+              <div style="font-weight: 600; color: var(--flydubai-navy); margin-bottom: 4px;">Hours Letter</div>
+              <div class="upload-status" id="hoursLetterStatus" style="font-size: 12px; color: var(--muted);">Not uploaded</div>
+            </div>
+            <div style="text-align: center; padding: 12px;">
+              <div style="font-size: 24px; margin-bottom: 8px;">📘</div>
+              <div style="font-weight: 600; color: var(--flydubai-navy); margin-bottom: 4px;">Passport</div>
+              <div class="upload-status" id="passportStatus" style="font-size: 12px; color: var(--muted);">Not uploaded</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4: Review & Submit -->
+      <div class="form-step" data-step="4">
+        <h2 class="step-title">✅ Review & Submit</h2>
+        <p class="step-subtitle">Please review all your information before submitting your application. You can go back to previous steps to make changes.</p>
+
+        <div id="reviewData">
+          <!-- Review content will be populated by JavaScript -->
+        </div>
+
+        <!-- Declaration & Signature -->
+        <div class="form-section">
+          <div class="section-title">✍️ Declaration & Digital Signature</div>
+          <div style="background:linear-gradient(135deg,#fef7ed 0%,#fed7aa 100%);padding:20px;border-radius:12px;border:2px solid var(--flydubai-orange);margin-bottom:24px;">
+            <p style="font-size:14px;line-height:1.7;color:var(--flydubai-navy);margin:0;font-weight:500;text-align:justify;">
+              <strong>DECLARATION:</strong> I solemnly declare and affirm that all flight time, experience records, documentation, and validity periods contained herein are true, accurate, and complete in accordance with ICAO Annex 1 standards, UAE GCAA regulations, and applicable civil aviation requirements. I acknowledge that this declaration is made under penalty of regulatory sanctions and understand that any material misrepresentation, omission, or falsification may result in suspension or revocation of aviation privileges, termination of employment, disciplinary proceedings pursuant to UAE aviation law, and may constitute grounds for disqualification from aviation employment. I further acknowledge my continuing obligation to maintain current and valid documentation and the accuracy of this record in compliance with regulatory requirements.
+            </p>
+          </div>
+          
+          <div class="form-grid">
+            <div>
+              <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 16px;">
+                <input type="checkbox" id="declaration" required style="width: 20px; height: 20px;">
+                <span style="font-weight: 600; color: var(--flydubai-navy);">I accept the declaration above <span class="required">*</span></span>
+              </label>
+            </div>
+          </div>
+          
+          <div class="form-grid">
+            <div>
+              <label for="signatureDate">Date <span class="required">*</span></label>
+              <input type="date" id="signatureDate" required>
+            </div>
+            <div>
+              <label>Digital Signature <span class="required">*</span></label>
+              <input type="hidden" id="signaturePad">
+              <div style="border: 2px dashed var(--flydubai-orange); border-radius: 12px; background: #fff; padding: 16px;">
+                <canvas id="signatureCanvas" style="width: 100%; height: 120px; background: #fff; border-radius: 8px; cursor: crosshair;"></canvas>
+                <div style="display: flex; gap: 12px; margin-top: 12px; flex-wrap: wrap;">
+                  <input type="text" id="typedSignature" placeholder="Type name for signature" style="flex: 1; min-width: 200px; padding: 8px; border: 1px solid var(--line); border-radius: 6px;">
+                  <button type="button" class="btn" onclick="applyTypedSignature()">Apply Typed</button>
+                  <button type="button" class="btn warn" onclick="clearSignature()">Clear</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Final Submission -->
+        <div style="text-align: center; margin: 40px 0; padding: 32px; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 20px; border: 2px solid var(--success);">
+          <h3 style="color: var(--success); margin-bottom: 16px;">Ready to Submit Your Application</h3>
+          <p style="color: var(--muted); margin-bottom: 24px;">Please ensure all information is correct and all required documents are uploaded before submitting.</p>
+          <button class="btn primary" id="finalSubmitBtn" style="font-size: 16px; padding: 16px 32px;" onclick="submitApplication()">
+            📤 Submit Complete Application
+          </button>
+        </div>
+      </div>
+      </div>
+
+      <!-- Navigation -->
+      <div class="form-navigation">
+        <div class="nav-left">
+          <div class="auto-save-status" id="autoSaveStatus">
+            <span class="spinner" style="display: none;"></span>
+            <span class="status-text">Ready</span>
+          </div>
+        </div>
+        <div class="nav-right">
+          <button class="btn" id="prevBtn" onclick="previousStep()" style="display: none;">Previous</button>
+          <button class="btn primary" id="nextBtn" onclick="nextStep()">Next Step</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== Multi-Step Form System =====
+    let currentStep = 1;
+    const totalSteps = 4;
+    let formData = {};
+    let sessionId = generateSessionId();
+    let autoSaveTimer;
+
+    // Generate unique session ID
+    function generateSessionId() {
+      return 'pilot_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    // Initialize form system
+    function initializeForm() {
+      loadFormData();
+      checkForRecovery();
+      updateProgress();
+      setupAutoSave();
+      setupEventListeners();
+    }
+
+    // Check for previous session
+    function checkForRecovery() {
+      const savedData = localStorage.getItem('pilotFormData');
+      if (savedData) {
+        const data = JSON.parse(savedData);
+        if (data.sessionId && Date.now() - data.lastSaved < 7 * 24 * 60 * 60 * 1000) { // 7 days
+          document.getElementById('recoveryBanner').classList.add('show');
+        }
+      }
+    }
+
+    // Recover previous session
+    function recoverSession() {
+      const savedData = localStorage.getItem('pilotFormData');
+      if (savedData) {
+        const data = JSON.parse(savedData);
+        formData = data.formData || {};
+        // Always start on step 1, don't auto-advance
+        currentStep = 1;
+        sessionId = data.sessionId || generateSessionId();
+        
+        populateFormFields();
+        showStep(1); // Always show step 1
+        document.getElementById('recoveryBanner').classList.remove('show');
+        showAutoSaveStatus('Restored previous session', 'saved');
+      }
+    }
+
+    // Clear session and start fresh
+    function clearSession() {
+      localStorage.removeItem('pilotFormData');
+      formData = {};
+      currentStep = 1;
+      sessionId = generateSessionId();
+      showStep(1);
+      document.getElementById('recoveryBanner').classList.remove('show');
+      showAutoSaveStatus('Starting fresh session', 'saved');
+    }
+
+    // Setup auto-save functionality
+    function setupAutoSave() {
+      // Auto-save every 30 seconds
+      setInterval(() => {
+        if (hasFormChanges()) {
+          saveFormData();
+        }
+      }, 30000);
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // Add change listeners to all form inputs
+      document.addEventListener('input', (e) => {
+        if (e.target.matches('input, select, textarea')) {
+          // Trigger auto-save after 2 seconds of no typing
+          clearTimeout(autoSaveTimer);
+          showAutoSaveStatus('Typing...', 'saving');
+          
+          autoSaveTimer = setTimeout(() => {
+            collectFormData();
+            saveFormData();
+          }, 2000);
+        }
+      });
+    }
+
+    // Collect current form data
+    function collectFormData() {
+      // Step 1: Personal Information
+      if (currentStep >= 1) {
+        formData.personalInfo = {
+          pilotName: document.getElementById('pilotName')?.value || '',
+          nationality: document.getElementById('nationality')?.value || '',
+          contactEmail: document.getElementById('contactEmail')?.value || '',
+          dateOfBirth: document.getElementById('dateOfBirth')?.value || '',
+          phoneNumber: document.getElementById('phoneNumber')?.value || '',
+          designation: document.getElementById('designation')?.value || '',
+          expectedDateOfJoining: document.getElementById('expectedDateOfJoining')?.value || '',
+          previousEmployer: document.getElementById('previousEmployer')?.value || ''
+        };
+      }
+      
+      // Additional steps will be added here
+    }
+
+    // Save form data to localStorage
+    function saveFormData() {
+      const saveData = {
+        sessionId: sessionId,
+        currentStep: currentStep,
+        formData: formData,
+        lastSaved: Date.now(),
+        expiresAt: Date.now() + (30 * 24 * 60 * 60 * 1000) // 30 days
+      };
+      
+      localStorage.setItem('pilotFormData', JSON.stringify(saveData));
+      showAutoSaveStatus('All changes saved', 'saved');
+    }
+
+    // Load form data from localStorage
+    function loadFormData() {
+      const savedData = localStorage.getItem('pilotFormData');
+      if (savedData) {
+        const data = JSON.parse(savedData);
+        
+        // Check if data hasn't expired
+        if (Date.now() < data.expiresAt) {
+          formData = data.formData || {};
+          return true;
+        } else {
+          // Clear expired data
+          localStorage.removeItem('pilotFormData');
+        }
+      }
+      return false;
+    }
+
+    // Populate form fields with saved data
+    function populateFormFields() {
+      if (formData.personalInfo) {
+        const info = formData.personalInfo;
+        document.getElementById('pilotName').value = info.pilotName || '';
+        document.getElementById('nationality').value = info.nationality || '';
+        document.getElementById('contactEmail').value = info.contactEmail || '';
+        document.getElementById('dateOfBirth').value = info.dateOfBirth || '';
+        document.getElementById('phoneNumber').value = info.phoneNumber || '';
+        document.getElementById('designation').value = info.designation || '';
+        document.getElementById('expectedDateOfJoining').value = info.expectedDateOfJoining || '';
+        document.getElementById('previousEmployer').value = info.previousEmployer || '';
+      }
+    }
+
+    // Check if form has unsaved changes
+    function hasFormChanges() {
+      const currentData = { ...formData };
+      collectFormData();
+      return JSON.stringify(currentData) !== JSON.stringify(formData);
+    }
+
+    // Show auto-save status
+    function showAutoSaveStatus(message, type) {
+      const statusEl = document.getElementById('autoSaveStatus');
+      const spinner = statusEl.querySelector('.spinner');
+      const text = statusEl.querySelector('.status-text');
+      
+      statusEl.className = `auto-save-status ${type}`;
+      text.textContent = message;
+      
+      if (type === 'saving') {
+        spinner.style.display = 'inline-block';
+      } else {
+        spinner.style.display = 'none';
+      }
+      
+      // Clear status after 3 seconds
+      setTimeout(() => {
+        if (statusEl.classList.contains(type)) {
+          statusEl.className = 'auto-save-status';
+          text.textContent = 'Ready';
+          spinner.style.display = 'none';
+        }
+      }, 3000);
+    }
+
+    // Navigate to next step
+    function nextStep() {
+      if (validateCurrentStep()) {
+        collectFormData();
+        saveFormData();
+        
+        if (currentStep < totalSteps) {
+          currentStep++;
+          showStep(currentStep);
+        }
+      }
+    }
+
+    // Navigate to previous step  
+    function previousStep() {
+      collectFormData();
+      saveFormData();
+      
+      if (currentStep > 1) {
+        currentStep--;
+        showStep(currentStep);
+      }
+    }
+
+    // Show specific step
+    function showStep(step) {
+      // Hide all steps
+      document.querySelectorAll('.form-step').forEach(stepEl => {
+        stepEl.classList.remove('active');
+      });
+      
+      // Show current step
+      const currentStepEl = document.querySelector(`[data-step="${step}"]`);
+      if (currentStepEl && currentStepEl.classList.contains('form-step')) {
+        currentStepEl.classList.add('active');
+      }
+      
+      updateProgress();
+      updateNavigation();
+    }
+
+    // Update progress bar and steps
+    function updateProgress() {
+      const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
+      document.getElementById('progressFill').style.width = `${progress}%`;
+      
+      // Update step indicators
+      document.querySelectorAll('.step').forEach((stepEl, index) => {
+        const stepNumber = index + 1;
+        stepEl.classList.remove('active', 'completed');
+        
+        if (stepNumber < currentStep) {
+          stepEl.classList.add('completed');
+        } else if (stepNumber === currentStep) {
+          stepEl.classList.add('active');
+        }
+      });
+    }
+
+    // Update navigation buttons
+    function updateNavigation() {
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      
+      prevBtn.style.display = currentStep > 1 ? 'inline-flex' : 'none';
+      nextBtn.textContent = currentStep === totalSteps ? 'Submit Application' : 'Next Step';
+    }
+
+    // Validate current step
+    function validateCurrentStep() {
+      if (currentStep === 1) {
+        return validatePersonalInfo();
+      } else if (currentStep === 2) {
+        return validateFlightExperience();
+      } else if (currentStep === 3) {
+        return validateDocumentation();
+      } else if (currentStep === 4) {
+        return validateReviewAndSubmit();
+      }
+      return true;
+    }
+
+    // Validate personal information
+    function validatePersonalInfo() {
+      const requiredFields = ['pilotName', 'nationality', 'contactEmail', 'dateOfBirth', 'phoneNumber', 'designation'];
+      let isValid = true;
+      
+      requiredFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (!field.value.trim()) {
+          field.style.borderColor = '#dc2626';
+          isValid = false;
+          
+          // Reset border color on input
+          field.addEventListener('input', () => {
+            field.style.borderColor = '#e2e8f0';
+          }, { once: true });
+        }
+      });
+      
+      if (!isValid) {
+        alert('Please fill in all required fields before continuing.');
+      }
+      
+      return isValid;
+    }
+
+    // Validate flight experience step
+    function validateFlightExperience() {
+      const totalHoursField = document.getElementById('grandTotalHours');
+      if (!totalHoursField || !totalHoursField.value.trim()) {
+        alert('Please ensure flight hours are properly calculated.');
+        return false;
+      }
+      return true;
+    }
+
+    // Validate documentation step
+    function validateDocumentation() {
+      const requiredDocs = ['pilotLicenseFile', 'medicalFile', 'radioLicenseFile', 'flightHoursFile', 'passportFile'];
+      let missingDocs = [];
+      
+      requiredDocs.forEach(docId => {
+        const fileInput = document.getElementById(docId);
+        const uploadStatus = document.querySelector(`#${docId}Status`);
+        if (!fileInput || !fileInput.files.length) {
+          missingDocs.push(docId.replace('File', ''));
+        }
+      });
+      
+      if (missingDocs.length > 0) {
+        alert(`Please upload all required documents: ${missingDocs.join(', ')}`);
+        return false;
+      }
+      
+      return true;
+    }
+
+    // Validate review and submit step
+    function validateReviewAndSubmit() {
+      const declarationCheckbox = document.getElementById('declaration');
+      const signaturePad = document.getElementById('signaturePad');
+      
+      if (!declarationCheckbox || !declarationCheckbox.checked) {
+        alert('Please accept the declaration before submitting.');
+        return false;
+      }
+      
+      if (!signaturePad || !signaturePad.value.trim()) {
+        alert('Please provide your digital signature.');
+        return false;
+      }
+      
+      return true;
+    }
+
+    // Flight hours calculation and formatting
+    function formatTimeInput(input) {
+      let value = input.value.replace(/[^\d:]/g, '');
+      
+      if (value.includes(':')) {
+        const parts = value.split(':');
+        if (parts.length === 2) {
+          let hours = parts[0];
+          let minutes = parts[1];
+          
+          if (minutes.length > 2) {
+            minutes = minutes.substring(0, 2);
+          }
+          
+          if (parseInt(minutes) > 59) {
+            minutes = '59';
+          }
+          
+          value = `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
+        }
+      } else if (value.length >= 3) {
+        const hours = value.substring(0, value.length - 2);
+        const minutes = value.substring(value.length - 2);
+        
+        if (parseInt(minutes) > 59) {
+          value = `${hours}:59`;
+        } else {
+          value = `${hours}:${minutes}`;
+        }
+      }
+      
+      input.value = value;
+      calculateTotals();
+    }
+
+    // Calculate flight time totals
+    function calculateTotals() {
+      const timeInputs = document.querySelectorAll('input[data-time-field]');
+      let totalMinutes = 0;
+      
+      timeInputs.forEach(input => {
+        const timeValue = input.value;
+        if (timeValue && timeValue.includes(':')) {
+          const [hours, minutes] = timeValue.split(':');
+          totalMinutes += (parseInt(hours) || 0) * 60 + (parseInt(minutes) || 0);
+        }
+      });
+      
+      const totalHours = Math.floor(totalMinutes / 60);
+      const remainingMinutes = totalMinutes % 60;
+      const formattedTotal = `${totalHours.toString().padStart(4, '0')}:${remainingMinutes.toString().padStart(2, '0')}`;
+      
+      const grandTotalField = document.getElementById('grandTotalHours');
+      if (grandTotalField) {
+        grandTotalField.value = formattedTotal;
+      }
+    }
+
+    // File upload handling
+    function initializeFileUploads() {
+      const fileInputs = document.querySelectorAll('input[type="file"]');
+      
+      fileInputs.forEach(input => {
+        const dropZone = input.closest('.file-upload-area');
+        
+        if (dropZone) {
+          // Drag and drop events
+          dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+          });
+          
+          dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('drag-over');
+          });
+          
+          dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+              input.files = files;
+              handleFileUpload(input, files[0]);
+            }
+          });
+          
+          // Click to select
+          dropZone.addEventListener('click', () => {
+            input.click();
+          });
+        }
+        
+        // File selection event
+        input.addEventListener('change', (e) => {
+          if (e.target.files.length > 0) {
+            handleFileUpload(input, e.target.files[0]);
+          }
+        });
+      });
+    }
+
+    // Handle file upload to Vercel Blob
+    async function handleFileUpload(input, file) {
+      const maxSize = 10 * 1024 * 1024; // 10MB
+      
+      if (file.size > maxSize) {
+        alert('File too large. Maximum size is 10MB.');
+        input.value = '';
+        return;
+      }
+      
+      const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'];
+      if (!allowedTypes.includes(file.type)) {
+        alert('Invalid file type. Please upload PDF, JPG, or PNG files only.');
+        input.value = '';
+        return;
+      }
+      
+      const statusEl = document.getElementById(`${input.id}Status`);
+      if (statusEl) {
+        statusEl.innerHTML = `<div style="color: #059669;">📤 Uploading ${file.name}...</div>`;
+      }
+      
+      try {
+        // Convert file to base64
+        const base64 = await fileToBase64(file);
+        
+        const uploadData = {
+          file: base64,
+          sessionId: formData.sessionId,
+          documentType: input.id.replace('File', ''),
+          fileName: file.name
+        };
+        
+        const response = await fetch('/api/upload-document', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(uploadData)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          if (statusEl) {
+            statusEl.innerHTML = `
+              <div style="color: #059669; display: flex; align-items: center; gap: 8px;">
+                ✅ ${file.name} uploaded successfully
+                <span style="font-size: 12px; color: #6b7280;">(${(result.size / 1024).toFixed(1)}KB)</span>
+              </div>
+            `;
+          }
+          
+          // Store upload info in form data
+          if (!formData.uploads) formData.uploads = {};
+          formData.uploads[input.id] = {
+            url: result.url,
+            fileName: file.name,
+            size: result.size,
+            uploadedAt: result.uploadedAt
+          };
+          
+          saveFormData();
+        } else {
+          throw new Error(result.error || 'Upload failed');
+        }
+      } catch (error) {
+        console.error('Upload error:', error);
+        if (statusEl) {
+          statusEl.innerHTML = `<div style="color: #dc2626;">❌ Upload failed: ${error.message}</div>`;
+        }
+        input.value = '';
+      }
+    }
+
+    // Convert file to base64
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+    }
+
+    // Populate review step with form data
+    function populateReviewStep() {
+      if (currentStep === 4) {
+        const reviewContainer = document.getElementById('reviewData');
+        if (!reviewContainer) return;
+        
+        let reviewHTML = `
+          <div class="review-section">
+            <h4>Personal Information</h4>
+            <div class="review-grid">
+              <div><strong>Name:</strong> ${formData.personalInfo?.pilotName || 'Not provided'}</div>
+              <div><strong>Nationality:</strong> ${formData.personalInfo?.nationality || 'Not provided'}</div>
+              <div><strong>Email:</strong> ${formData.personalInfo?.contactEmail || 'Not provided'}</div>
+              <div><strong>Phone:</strong> ${formData.personalInfo?.phoneNumber || 'Not provided'}</div>
+              <div><strong>Designation:</strong> ${formData.personalInfo?.designation || 'Not provided'}</div>
+              <div><strong>Expected Date of Joining:</strong> ${formData.personalInfo?.expectedDateOfJoining || 'Not provided'}</div>
+              <div><strong>Previous Employer:</strong> ${formData.personalInfo?.previousEmployer || 'Not provided'}</div>
+              <div><strong>Date of Birth:</strong> ${formData.personalInfo?.dateOfBirth || 'Not provided'}</div>
+            </div>
+          </div>
+          
+          <div class="review-section">
+            <h4>Flight Experience</h4>
+            <div class="review-grid">
+              <div><strong>Total Flight Hours:</strong> ${formData.grandTotalHours || 'Not calculated'}</div>
+              <div><strong>Aircraft Types:</strong> Boeing 737 NG/MAX</div>
+            </div>
+          </div>
+          
+          <div class="review-section">
+            <h4>Uploaded Documents</h4>
+            <div class="review-grid">
+        `;
+        
+        const docTypes = {
+          pilotLicenseFile: 'Pilot License',
+          medicalFile: 'Medical Certificate', 
+          radioLicenseFile: 'Radio License',
+          flightHoursFile: 'Flight Hours Verification',
+          passportFile: 'Passport Copy'
+        };
+        
+        Object.entries(docTypes).forEach(([key, label]) => {
+          const upload = formData.uploads && formData.uploads[key];
+          const status = upload ? `✅ ${upload.fileName}` : '❌ Not uploaded';
+          reviewHTML += `<div><strong>${label}:</strong> ${status}</div>`;
+        });
+        
+        reviewHTML += `
+            </div>
+          </div>
+        `;
+        
+        reviewContainer.innerHTML = reviewHTML;
+      }
+    }
+
+    // Submit the complete application
+    async function submitApplication() {
+      if (!validateCurrentStep()) return;
+      
+      const submitBtn = document.getElementById('nextBtn');
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = 'Submitting...';
+      submitBtn.disabled = true;
+      
+      try {
+        // Collect all form data one final time
+        collectFormData();
+        
+        // Flatten personal info for email compatibility
+        const flattenedData = {
+          ...formData,
+          ...(formData.personalInfo || {}),
+          submittedAt: new Date().toISOString(),
+          applicationId: `FD-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`
+        };
+        
+        // Prepare submission data
+        const submissionData = flattenedData;
+        
+        const response = await fetch('/api/submit-form', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(submissionData)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          // Clear stored data after successful submission
+          localStorage.removeItem('pilotFormData');
+          localStorage.removeItem('pilotFormProgress');
+          
+          alert(`✅ Application submitted successfully!\n\nApplication ID: ${submissionData.applicationId}\n\nYou will receive a confirmation email shortly.`);
+          
+          // Optionally redirect or reset form
+          window.location.reload();
+        } else {
+          throw new Error(result.error || 'Submission failed');
+        }
+      } catch (error) {
+        console.error('Submission error:', error);
+        alert(`❌ Submission failed: ${error.message}\n\nPlease try again or contact support.`);
+      } finally {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+      }
+    }
+
+    // Enhanced form initialization
+    function initializeForm() {
+      generateSessionId();
+      loadFormData();
+      setupAutoSave();
+      initializeFileUploads();
+      initializeSignature();
+      showStep(currentStep);
+      
+      // Add time input formatting
+      document.addEventListener('input', (e) => {
+        if (e.target.dataset.timeField) {
+          formatTimeInput(e.target);
+        }
+      });
+      
+      // Update review step when navigating to it
+      const observer = new MutationObserver(() => {
+        if (currentStep === 4) {
+          populateReviewStep();
+        }
+      });
+      
+      observer.observe(document.querySelector('.form-container'), {
+        childList: true,
+        subtree: true
+      });
+    }
+
+    // Enhanced next step function
+    function nextStep() {
+      collectFormData();
+      
+      if (validateCurrentStep()) {
+        saveFormData();
+        
+        if (currentStep === totalSteps) {
+          submitApplication();
+        } else if (currentStep < totalSteps) {
+          currentStep++;
+          showStep(currentStep);
+          
+          // Populate review step when reached
+          if (currentStep === 4) {
+            populateReviewStep();
+          }
+        }
+      }
+    }
+
+    // Signature handling functions
+    let signatureCanvas;
+    let signatureContext;
+    let isDrawing = false;
+    
+    function initializeSignature() {
+      signatureCanvas = document.getElementById('signatureCanvas');
+      if (signatureCanvas) {
+        signatureContext = signatureCanvas.getContext('2d');
+        
+        // Set canvas size
+        const rect = signatureCanvas.getBoundingClientRect();
+        signatureCanvas.width = rect.width;
+        signatureCanvas.height = rect.height;
+        
+        // Drawing events
+        signatureCanvas.addEventListener('mousedown', startDrawing);
+        signatureCanvas.addEventListener('mousemove', draw);
+        signatureCanvas.addEventListener('mouseup', stopDrawing);
+        signatureCanvas.addEventListener('mouseout', stopDrawing);
+        
+        // Touch events for mobile
+        signatureCanvas.addEventListener('touchstart', handleTouch);
+        signatureCanvas.addEventListener('touchmove', handleTouch);
+        signatureCanvas.addEventListener('touchend', stopDrawing);
+        
+        // Set drawing style
+        signatureContext.strokeStyle = '#1a365d';
+        signatureContext.lineWidth = 2;
+        signatureContext.lineCap = 'round';
+      }
+    }
+    
+    function startDrawing(e) {
+      isDrawing = true;
+      const rect = signatureCanvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      signatureContext.beginPath();
+      signatureContext.moveTo(x, y);
+    }
+    
+    function draw(e) {
+      if (!isDrawing) return;
+      
+      const rect = signatureCanvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      signatureContext.lineTo(x, y);
+      signatureContext.stroke();
+      
+      // Update hidden field with signature data
+      updateSignatureField();
+    }
+    
+    function stopDrawing() {
+      if (isDrawing) {
+        isDrawing = false;
+        updateSignatureField();
+      }
+    }
+    
+    function handleTouch(e) {
+      e.preventDefault();
+      const touch = e.touches[0];
+      const mouseEvent = new MouseEvent(e.type === 'touchstart' ? 'mousedown' : 
+                                       e.type === 'touchmove' ? 'mousemove' : 'mouseup', {
+        clientX: touch.clientX,
+        clientY: touch.clientY
+      });
+      signatureCanvas.dispatchEvent(mouseEvent);
+    }
+    
+    function clearSignature() {
+      if (signatureContext) {
+        signatureContext.clearRect(0, 0, signatureCanvas.width, signatureCanvas.height);
+        updateSignatureField();
+      }
+      
+      const typedInput = document.getElementById('typedSignature');
+      if (typedInput) {
+        typedInput.value = '';
+      }
+    }
+    
+    function applyTypedSignature() {
+      const typedInput = document.getElementById('typedSignature');
+      const name = typedInput.value.trim();
+      
+      if (!name) {
+        alert('Please enter your name first.');
+        return;
+      }
+      
+      // Clear canvas
+      clearSignature();
+      
+      // Draw typed signature
+      if (signatureContext) {
+        signatureContext.font = '24px "Times New Roman", serif';
+        signatureContext.textAlign = 'center';
+        signatureContext.fillStyle = '#1a365d';
+        signatureContext.fillText(name, signatureCanvas.width / 2, signatureCanvas.height / 2 + 8);
+        
+        updateSignatureField();
+      }
+    }
+    
+    function updateSignatureField() {
+      const signaturePad = document.getElementById('signaturePad');
+      if (signaturePad && signatureCanvas) {
+        const dataURL = signatureCanvas.toDataURL();
+        signaturePad.value = dataURL;
+      }
+    }
+    
+    // Add aircraft section function (placeholder)
+    function addAircraftSection() {
+      alert('Additional aircraft types can be added. This feature will be implemented based on specific requirements.');
+    }
+
+    // Initialize the form when page loads
+    document.addEventListener('DOMContentLoaded', initializeForm);
+  </script>
+
+  <style>
+    .drag-over {
+      border-color: var(--flydubai-blue) !important;
+      background-color: rgba(0, 122, 204, 0.05) !important;
+    }
+    
+    .review-section {
+      margin-bottom: 24px;
+      padding: 20px;
+      background: #f8fafc;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+    }
+    
+    .review-section h4 {
+      margin: 0 0 16px 0;
+      color: var(--flydubai-navy);
+      font-weight: 600;
+    }
+    
+    .review-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 12px;
+    }
+    
+    .review-grid > div {
+      padding: 8px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .review-grid > div:last-child {
+      border-bottom: none;
+    }
+  </style>
+</body>
+</html>
