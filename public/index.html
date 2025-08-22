@@ -4206,12 +4206,77 @@
         return false;
       }
       
+      // Validate summary/grand total fields (9 fields: PIC/P1, SIC/P2, Solo, Instrument, Sim, Night, Instructor, P1 U/S, Grand Total)
+      const summaryTableInputs = document.querySelectorAll('.form-step[data-step="2"] table tbody input.hhmm');
+      summaryTableInputs.forEach((summaryInput, index) => {
+        if (summaryInput && (!summaryInput.value.trim() || summaryInput.value === '0:00')) {
+          hasTimeError = true;
+          if (!firstErrorField) firstErrorField = summaryInput;
+          
+          // Add visual error indication
+          summaryInput.style.borderColor = '#dc2626';
+          summaryInput.style.backgroundColor = '#fef2f2';
+          summaryInput.style.borderWidth = '2px';
+          summaryInput.style.boxShadow = '0 0 0 1px #dc2626';
+          
+          // Remove error styling when user starts typing
+          summaryInput.addEventListener('input', function() {
+            this.style.borderColor = '';
+            this.style.backgroundColor = '';
+            this.style.borderWidth = '';
+            this.style.boxShadow = '';
+          }, { once: true });
+        }
+      });
+      
+      // Validate footer total fields (Multi-Pilot and Night hours)
+      const footerMultiPilotField = document.querySelector('.footer-fields .hhmm.mp');
+      const footerNightField = document.querySelector('.footer-fields .hhmm.night');
+      
+      if (footerMultiPilotField && (!footerMultiPilotField.value.trim() || footerMultiPilotField.value === '0:00')) {
+        hasTimeError = true;
+        if (!firstErrorField) firstErrorField = footerMultiPilotField;
+        
+        // Add visual error indication
+        footerMultiPilotField.style.borderColor = '#dc2626';
+        footerMultiPilotField.style.backgroundColor = '#fef2f2';
+        footerMultiPilotField.style.borderWidth = '2px';
+        footerMultiPilotField.style.boxShadow = '0 0 0 1px #dc2626';
+        
+        // Remove error styling when user starts typing
+        footerMultiPilotField.addEventListener('input', function() {
+          this.style.borderColor = '';
+          this.style.backgroundColor = '';
+          this.style.borderWidth = '';
+          this.style.boxShadow = '';
+        }, { once: true });
+      }
+      
+      if (footerNightField && (!footerNightField.value.trim() || footerNightField.value === '0:00')) {
+        hasTimeError = true;
+        if (!firstErrorField) firstErrorField = footerNightField;
+        
+        // Add visual error indication
+        footerNightField.style.borderColor = '#dc2626';
+        footerNightField.style.backgroundColor = '#fef2f2';
+        footerNightField.style.borderWidth = '2px';
+        footerNightField.style.boxShadow = '0 0 0 1px #dc2626';
+        
+        // Remove error styling when user starts typing
+        footerNightField.addEventListener('input', function() {
+          this.style.borderColor = '';
+          this.style.backgroundColor = '';
+          this.style.borderWidth = '';
+          this.style.boxShadow = '';
+        }, { once: true });
+      }
+
       if (hasTimeError) {
         if (firstErrorField) {
           firstErrorField.focus();
           firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-        alert('Please fill in all flight time fields in the aircraft sections. Enter actual flight times or 0:01 for minimal time.');
+        alert('Please fill in all flight time fields including the total fields at the bottom of the page.');
         return false;
       }
       
@@ -5377,7 +5442,7 @@
         if (!allTimesCompleted) {
           console.log(`❌ ${sectionTitle}: Not all time fields completed`);
           isValid = false;
-          if (!firstIncompleteSection) firstIncompleteSection = { section, field: incompleteTimeField, message: 'Please fill in all flight time fields for this aircraft type. Enter actual flight times or 0:01 for minimal time.' };
+          if (!firstIncompleteSection) firstIncompleteSection = { section, field: incompleteTimeField, message: 'Please fill in all flight time fields for this aircraft type.' };
         } else {
           console.log(`✅ ${sectionTitle}: All time fields completed`);
         }
@@ -5395,26 +5460,76 @@
         }
       });
       
+      // Validate summary/grand total table fields
+      if (isValid) {  // Only check summary fields if aircraft sections are valid
+        const summaryTableInputs = document.querySelectorAll('.form-step[data-step="2"] table tbody input.hhmm');
+        summaryTableInputs.forEach((summaryInput, index) => {
+          if (summaryInput && (!summaryInput.value.trim() || summaryInput.value === '0:00')) {
+            console.log(`❌ Summary field ${index + 1} not completed`);
+            isValid = false;
+            if (!firstIncompleteSection) {
+              const fieldNames = ['PIC/P1', 'SIC/P2', 'Solo', 'Instrument', 'Sim', 'Night', 'Instructor', 'P1 U/S', 'Grand Total'];
+              const fieldName = fieldNames[index] || `field ${index + 1}`;
+              firstIncompleteSection = { section: null, field: summaryInput, message: `Please fill in the ${fieldName} field in the Flying Experience Summary table.` };
+            }
+          }
+        });
+      }
+      
+      // Validate footer total fields (Multi-Pilot and Night hours)
+      if (isValid) {  // Only check footer fields if other fields are valid
+        const footerMultiPilotField = document.querySelector('.footer-fields .hhmm.mp');
+        const footerNightField = document.querySelector('.footer-fields .hhmm.night');
+        
+        if (footerMultiPilotField && (!footerMultiPilotField.value.trim() || footerMultiPilotField.value === '0:00')) {
+          console.log('❌ Footer Multi-Pilot field not completed');
+          isValid = false;
+          if (!firstIncompleteSection) firstIncompleteSection = { section: null, field: footerMultiPilotField, message: 'Please fill in the Total Multi‑Pilot Block Hours field at the bottom of the page.' };
+        }
+        
+        if (footerNightField && (!footerNightField.value.trim() || footerNightField.value === '0:00')) {
+          console.log('❌ Footer Night Hours field not completed');
+          isValid = false;
+          if (!firstIncompleteSection) firstIncompleteSection = { section: null, field: footerNightField, message: 'Please fill in the Total Night Hours field at the bottom of the page.' };
+        }
+      }
+      
       if (!isValid && firstIncompleteSection) {
-        // Highlight the incomplete section
-        firstIncompleteSection.section.style.borderColor = '#ef4444';
-        firstIncompleteSection.section.style.borderWidth = '2px';
-        firstIncompleteSection.section.style.borderStyle = 'solid';
+        // Highlight the incomplete section (if it exists)
+        if (firstIncompleteSection.section) {
+          firstIncompleteSection.section.style.borderColor = '#ef4444';
+          firstIncompleteSection.section.style.borderWidth = '2px';
+          firstIncompleteSection.section.style.borderStyle = 'solid';
+        }
         
         // Focus the problematic field
         if (firstIncompleteSection.field) {
           firstIncompleteSection.field.focus();
           firstIncompleteSection.field.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          
+          // Add visual error styling to the field
+          firstIncompleteSection.field.style.borderColor = '#dc2626';
+          firstIncompleteSection.field.style.backgroundColor = '#fef2f2';
+          firstIncompleteSection.field.style.borderWidth = '2px';
+          firstIncompleteSection.field.style.boxShadow = '0 0 0 1px #dc2626';
         }
         
         // Show error message
-        alert(`Please complete all aircraft sections before adding a new one.\n\n${firstIncompleteSection.message}`);
+        alert(`Please complete all fields before adding a new aircraft section.\n\n${firstIncompleteSection.message}`);
         
         // Remove highlight after 3 seconds
         setTimeout(() => {
-          firstIncompleteSection.section.style.borderColor = '';
-          firstIncompleteSection.section.style.borderWidth = '';
-          firstIncompleteSection.section.style.borderStyle = '';
+          if (firstIncompleteSection.section) {
+            firstIncompleteSection.section.style.borderColor = '';
+            firstIncompleteSection.section.style.borderWidth = '';
+            firstIncompleteSection.section.style.borderStyle = '';
+          }
+          if (firstIncompleteSection.field) {
+            firstIncompleteSection.field.style.borderColor = '';
+            firstIncompleteSection.field.style.backgroundColor = '';
+            firstIncompleteSection.field.style.borderWidth = '';
+            firstIncompleteSection.field.style.boxShadow = '';
+          }
         }, 3000);
       }
       
