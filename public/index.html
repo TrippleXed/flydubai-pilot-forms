@@ -5149,17 +5149,32 @@
         setTimeout(() => {
           // Check if we have saved flight experience data
           const savedData = localStorage.getItem(`flydubai_form_${sessionId}`);
+          console.log('🔍 Checking for saved data with key:', `flydubai_form_${sessionId}`);
+          console.log('🔍 Raw saved data exists:', !!savedData);
+          
           if (savedData) {
             try {
               const parsedData = JSON.parse(savedData);
+              console.log('🔍 Parsed data structure:', {
+                hasFormData: !!parsedData.formData,
+                hasFlightExperience: !!parsedData.formData?.flightExperience,
+                hasAircraftSections: !!parsedData.formData?.flightExperience?.aircraftSections,
+                sectionsLength: parsedData.formData?.flightExperience?.aircraftSections?.length || 0
+              });
+              console.log('🔍 Aircraft sections data:', parsedData.formData?.flightExperience?.aircraftSections);
+              
               if (parsedData.formData?.flightExperience?.aircraftSections && parsedData.formData.flightExperience.aircraftSections.length > 0) {
                 console.log('📁 Found saved flight experience data, restoring sections instead of initializing fresh ones');
                 populateFormFields(); // Restore saved data
                 return;
+              } else {
+                console.log('⚠️ Aircraft sections array exists but is empty or invalid');
               }
             } catch (e) {
-              console.log('⚠️ Error parsing saved data, falling back to fresh initialization');
+              console.log('⚠️ Error parsing saved data:', e.message);
             }
+          } else {
+            console.log('⚠️ No saved data found in localStorage');
           }
           console.log('🆕 No saved flight experience data found, initializing fresh sections');
           initializeAircraftSections(); // Create fresh sections only if no saved data
