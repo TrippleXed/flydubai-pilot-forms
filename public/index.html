@@ -3091,6 +3091,46 @@
       if(t.classList && t.classList.contains('date-inp')){ const span = t.closest('.date-cell').querySelector('.date-print'); span.textContent = toDDMMMYYYY(t.value); }
     }, true);
 
+    // Add event listener for Add Aircraft Section button and Remove buttons
+    document.addEventListener('click', (e) => {
+      // Handle Add Aircraft Section button
+      if (e.target.id === 'btnAddSection') {
+        console.log('➕ Add Aircraft Section button clicked');
+        
+        // Validate before adding new section (from original)
+        if(!validateOtherFields()) {
+          console.log('❌ Validation failed, cannot add new section');
+          return;
+        }
+        
+        const count = sectionsWrap.querySelectorAll('.section').length + 1;
+        console.log('🛩️ Adding Aircraft Type', count);
+        
+        const newSection = makeAircraftSection({
+          label: `Aircraft Type ${count}`, 
+          typeText: '', 
+          locked: false
+        });
+        
+        sectionsWrap.appendChild(newSection);
+        console.log('✅ New aircraft section added');
+        
+        // Recompute totals
+        computeAll();
+      }
+      
+      // Handle Remove Section buttons
+      if (e.target.hasAttribute('data-remove-section')) {
+        console.log('🗑️ Remove section button clicked');
+        const section = e.target.closest('.section');
+        if (section) {
+          section.remove();
+          console.log('✅ Section removed');
+          computeAll();
+        }
+      }
+    });
+
     // Layout and spacing debugging functions
     function debugLayout() {
       console.log('🎨 === LAYOUT DEBUG ANALYSIS ===');
