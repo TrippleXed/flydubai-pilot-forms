@@ -19,7 +19,7 @@ export default async function handler(req, res) {
     const formData = req.body;
     
     // Create transporter (you'll need to add these environment variables)
-    const transporter = nodemailer.createTransporter({
+    const transporter = nodemailer.createTransport({
       service: 'gmail', // or your preferred email service
       auth: {
         user: process.env.EMAIL_USER,
@@ -33,7 +33,7 @@ export default async function handler(req, res) {
     // Send email
     const mailOptions = {
       from: process.env.EMAIL_USER,
-      to: process.env.RECIPIENT_EMAIL || 'hr.documentation@flydubai.com',
+      to: process.env.RECIPIENT_EMAIL || 'jason.cameron@flydubai.com',
       subject: `Flight Time Experience Form - ${formData.pilotName || 'Pilot Submission'}`,
       html: emailContent,
     };
@@ -55,8 +55,7 @@ export default async function handler(req, res) {
 }
 
 function generateEmailContent(formData) {
-  const flightHours = formData.flightHours || {};
-  const experience = formData.experience || {};
+  const aircraftSections = formData.aircraftSections || [];
   
   return `
     <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px;">
@@ -67,42 +66,33 @@ function generateEmailContent(formData) {
       <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
         <h2 style="color: #374151; margin-top: 0;">Personal Information</h2>
         <p><strong>Pilot Name:</strong> ${formData.pilotName || 'N/A'}</p>
-        <p><strong>Employee ID:</strong> ${formData.employeeId || 'N/A'}</p>
-        <p><strong>License Number:</strong> ${formData.licenseNumber || 'N/A'}</p>
-        <p><strong>Email:</strong> ${formData.email || 'N/A'}</p>
-        <p><strong>Phone:</strong> ${formData.phone || 'N/A'}</p>
+        <p><strong>Designation:</strong> ${formData.designation || 'N/A'}</p>
+        <p><strong>Date of Joining:</strong> ${formData.dateOfJoining || 'N/A'}</p>
+        <p><strong>Signature Date:</strong> ${formData.signatureDate || 'N/A'}</p>
       </div>
 
+      ${aircraftSections.length > 0 ? `
       <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-        <h2 style="color: #374151; margin-top: 0;">Flight Hours Summary</h2>
-        <table style="width: 100%; border-collapse: collapse;">
-          <tr style="background: #e5e7eb;">
-            <th style="padding: 8px; text-align: left; border: 1px solid #d1d5db;">Aircraft Type</th>
-            <th style="padding: 8px; text-align: left; border: 1px solid #d1d5db;">Total Hours</th>
-            <th style="padding: 8px; text-align: left; border: 1px solid #d1d5db;">PIC Hours</th>
-            <th style="padding: 8px; text-align: left; border: 1px solid #d1d5db;">SIC Hours</th>
-          </tr>
-          ${Object.entries(flightHours).map(([aircraft, hours]) => `
-            <tr>
-              <td style="padding: 8px; border: 1px solid #d1d5db;">${aircraft}</td>
-              <td style="padding: 8px; border: 1px solid #d1d5db;">${hours.total || 'N/A'}</td>
-              <td style="padding: 8px; border: 1px solid #d1d5db;">${hours.pic || 'N/A'}</td>
-              <td style="padding: 8px; border: 1px solid #d1d5db;">${hours.sic || 'N/A'}</td>
-            </tr>
-          `).join('')}
-        </table>
+        <h2 style="color: #374151; margin-top: 0;">Aircraft Experience</h2>
+        ${aircraftSections.map((section, index) => `
+          <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #d1d5db; border-radius: 8px; background: white;">
+            <h3 style="color: #1e3a8a; margin-top: 0;">Aircraft Type ${index + 1}: ${section.aircraftType || 'Not specified'}</h3>
+            ${Object.keys(section.flightData).length > 0 ? `
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                ${Object.entries(section.flightData).map(([key, value]) => `
+                  <p style="margin: 5px 0;"><strong>${key}:</strong> ${value}</p>
+                `).join('')}
+              </div>
+            ` : '<p><em>No flight data entered for this aircraft type.</em></p>'}
+          </div>
+        `).join('')}
       </div>
-
-      <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-        <h2 style="color: #374151; margin-top: 0;">Additional Information</h2>
-        <p><strong>Previous Airlines:</strong> ${formData.previousAirlines || 'N/A'}</p>
-        <p><strong>Certifications:</strong> ${formData.certifications || 'N/A'}</p>
-        <p><strong>Remarks:</strong> ${formData.remarks || 'N/A'}</p>
-      </div>
+      ` : ''}
 
       <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 12px;">
         <p>Submitted on: ${new Date().toLocaleString()}</p>
         <p>This form was submitted through the flydubai pilot documentation system.</p>
+        <p><strong>Note:</strong> This submission includes digital signature and declaration as per ICAO Annex 1 standards.</p>
       </div>
     </div>
   `;
