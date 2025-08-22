@@ -286,12 +286,12 @@
 
     /* Date picker specific styling for personal information */
     .form-step[data-step="1"] input[type="date"] {
-      width: 200px;
+      width: 200px !important;
       cursor: pointer;
       position: relative;
     }
 
-    /* Make the entire date input clickable */
+    /* Make the entire date input clickable - personal information specific */
     .form-step[data-step="1"] input[type="date"]::-webkit-calendar-picker-indicator {
       position: absolute;
       top: 0;
@@ -305,8 +305,33 @@
       cursor: pointer;
     }
 
-    /* Firefox date picker styling */
+    /* Firefox date picker styling - personal information specific */
     .form-step[data-step="1"] input[type="date"]::-moz-calendar-picker-indicator {
+      cursor: pointer;
+    }
+
+    /* Universal date picker styling - make all date inputs clickable anywhere */
+    input[type="date"] {
+      cursor: pointer;
+      position: relative;
+    }
+
+    /* Make the entire date input clickable for all date fields */
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: auto;
+      height: auto;
+      color: transparent;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    /* Firefox date picker styling for all date fields */
+    input[type="date"]::-moz-calendar-picker-indicator {
       cursor: pointer;
     }
 
