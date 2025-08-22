@@ -1251,6 +1251,49 @@
       border-color: #f87171 !important;
       box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3) !important;
     }
+    /* Signature section */
+    #signSection .sig-pad{ 
+      border: 2px dashed var(--flydubai-red);
+      border-radius: 16px;
+      background: #fff;
+      padding: 16px;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    
+    #sigCanvas{ 
+      width: 100%;
+      height: 160px;
+      background: #fff;
+      border-radius: 8px;
+      cursor: crosshair;
+    }
+    
+    #sigControls{ 
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    @media print{ #sigControls{ display:none !important } }
+
+    .btn.warn {
+      background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+      border-color: #dc2626;
+      color: white;
+      font-weight: 700;
+    }
+
+    .btn.warn:hover {
+      box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+    }
+
+    /* limit signature date width so it doesn't reach signature pad */
+    #signSection #sigDate{ max-width:180px }
+    
+    /* Signature section grid override */
+    #signSection .grid{
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
   </style>
 </head>
 <body>
@@ -1786,7 +1829,7 @@
             </div>
             <div>
               <label>Issue Date</label>
-              <input type="date" id="licenseIssue" onchange="calculateExpiry('license')" />
+              <input type="date" id="licenseIssue" />
             </div>
             <div>
               <label>Expiry Date</label>
@@ -1923,7 +1966,7 @@
             </div>
             <div>
               <label>Issue Date</label>
-              <input type="date" id="medicalIssue" onchange="calculateExpiry('medical')" />
+              <input type="date" id="medicalIssue" />
             </div>
             <div>
               <label>Expiry Date</label>
@@ -2057,7 +2100,7 @@
             </div>
             <div>
               <label>Issue Date</label>
-              <input type="date" id="rolIssue" onchange="calculateExpiry('rol')" />
+              <input type="date" id="rolIssue" />
             </div>
             <div>
               <label>Expiry Date</label>
@@ -2168,7 +2211,7 @@
             </div>
             <div>
               <label>Issue Date</label>
-              <input type="date" id="passportIssue" onchange="calculateExpiry('passport')" />
+              <input type="date" id="passportIssue" />
             </div>
             <div>
               <label>Expiry Date</label>
@@ -2564,11 +2607,39 @@
           </div>
         </div>
 
-        <div class="form-section">
-          <div class="section-title">Declaration</div>
-          <label style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px;">
+        <!-- Declaration & Signature -->
+        <div class="form-section" id="signSection">
+          <div class="section-title">✍️ Declaration & Digital Signature</div>
+          <div style="background:linear-gradient(135deg,#fef7ed 0%,#fed7aa 100%);padding:20px;border-radius:12px;border:2px solid var(--flydubai-red);margin-bottom:24px;">
+            <p style="font-size:14px;line-height:1.7;color:var(--flydubai-navy);margin:0;font-weight:500;text-align:justify;">
+              <strong>DECLARATION:</strong> I solemnly declare and affirm that all documentation, certifications, and validity periods contained herein are true, accurate, and complete in accordance with UAE GCAA regulations, ICAO standards, and applicable civil aviation requirements. I acknowledge that this declaration is made under penalty of regulatory sanctions and understand that any material misrepresentation, omission, or falsification may result in suspension or revocation of aviation privileges, termination of employment, and disciplinary proceedings pursuant to UAE aviation law. I further acknowledge my continuing obligation to maintain current and valid documentation in compliance with UAE employment and aviation regulatory requirements.
+            </p>
+          </div>
+          <div class="grid">
+            <div>
+              <label>Date</label>
+              <input type="date" id="sigDate" />
+              <span class="date-print" id="sigDatePrint"></span>
+            </div>
+            <div>
+              <label>Digital Signature</label>
+              <div class="sig-pad">
+                <canvas id="sigCanvas"></canvas>
+                <div id="sigControls" class="controls no-print">
+                  <input type="text" id="typedSig" placeholder="Type name to render as signature" style="flex:1;min-width:220px;padding:10px 12px;border:1px solid var(--line);border-radius:10px" />
+                  <button class="btn" id="sigApply">Apply Typed</button>
+                  <label class="btn" for="sigUpload">Upload Image</label>
+                  <input id="sigUpload" type="file" accept="image/*" style="display:none" />
+                  <button class="btn warn" id="sigClear">Clear</button>
+                </div>
+              </div>
+              <div class="muted" style="font-size:12px;margin-top:6px">You can draw, apply a typed name, or upload a signature image.</div>
+            </div>
+          </div>
+
+          <label style="display: flex; align-items: flex-start; gap: 12px; margin-top: 24px;">
             <input type="checkbox" id="declaration" required style="width: auto; margin-top: 4px;">
-            <span>I declare that all information provided in this application is true and accurate to the best of my knowledge. I understand that any false or misleading information may result in the rejection of my application or termination of employment.</span>
+            <span>I confirm that I have read and understood the declaration above, and that my digital signature represents my agreement to all terms stated herein.</span>
           </label>
         </div>
       </div>
@@ -3024,9 +3095,32 @@
       
       // Step 4: Review & Submit
       if (currentStep >= 4) {
+        // Collect signature data
+        const canvas = document.getElementById('sigCanvas');
+        let signatureData = '';
+        if (canvas) {
+          // Check if canvas has content (not just blank)
+          const ctx = canvas.getContext('2d');
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const hasSignature = imageData.data.some(channel => channel !== 0);
+          
+          if (hasSignature) {
+            signatureData = canvas.toDataURL();
+          }
+        }
+        
         formData.declaration = {
-          agreed: document.getElementById('declaration')?.checked || false
+          agreed: document.getElementById('declaration')?.checked || false,
+          signatureDate: document.getElementById('sigDate')?.value || '',
+          signatureData: signatureData,
+          typedSignature: document.getElementById('typedSig')?.value || ''
         };
+        console.log('✍️ Signature data collected:', {
+          hasAgreed: formData.declaration.agreed,
+          hasSignatureDate: !!formData.declaration.signatureDate,
+          hasSignatureData: !!formData.declaration.signatureData,
+          hasTypedSignature: !!formData.declaration.typedSignature
+        });
       }
     }
 
@@ -3395,6 +3489,51 @@
       if (formData.documentation) {
         console.log('📎 Restoring file upload indicators...');
         restoreFileUploadIndicators(formData.documentation);
+      }
+      
+      // Step 4: Restore signature and declaration data
+      if (formData.declaration) {
+        console.log('✍️ Restoring signature and declaration data...');
+        const decl = formData.declaration;
+        
+        // Restore declaration checkbox
+        const declarationBox = document.getElementById('declaration');
+        if (declarationBox && decl.agreed) {
+          declarationBox.checked = decl.agreed;
+        }
+        
+        // Restore signature date
+        const sigDate = document.getElementById('sigDate');
+        if (sigDate && decl.signatureDate) {
+          sigDate.value = decl.signatureDate;
+          // Update the display span
+          const sigDatePrint = document.getElementById('sigDatePrint');
+          if (sigDatePrint) {
+            sigDatePrint.textContent = toDDMMMYYYY(decl.signatureDate);
+          }
+        }
+        
+        // Restore typed signature field
+        const typedSig = document.getElementById('typedSig');
+        if (typedSig && decl.typedSignature) {
+          typedSig.value = decl.typedSignature;
+        }
+        
+        // Restore signature canvas if signature data exists
+        if (decl.signatureData) {
+          const canvas = document.getElementById('sigCanvas');
+          if (canvas) {
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            img.onload = function() {
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+              ctx.drawImage(img, 0, 0);
+            };
+            img.src = decl.signatureData;
+          }
+        }
+        
+        console.log('✅ Signature and declaration data restored');
       }
       
       console.log('✅ === FORM FIELDS POPULATION COMPLETE ===');
@@ -4302,11 +4441,37 @@
 
     // Validate declaration
     function validateDeclaration() {
+      console.log('✅ Validating declaration and signature...');
+      
+      // Check declaration checkbox
       const declaration = document.getElementById('declaration');
       if (!declaration.checked) {
         alert('Please accept the declaration before submitting your application.');
         return false;
       }
+      
+      // Check signature date
+      const sigDate = document.getElementById('sigDate');
+      if (!sigDate.value) {
+        alert('Please select the signature date before submitting.');
+        sigDate.focus();
+        return false;
+      }
+      
+      // Check if signature is present (canvas has content)
+      const canvas = document.getElementById('sigCanvas');
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const hasSignature = imageData.data.some(channel => channel !== 0);
+        
+        if (!hasSignature) {
+          alert('Please provide your digital signature before submitting. You can draw on the canvas, type your name and click "Apply Typed", or upload a signature image.');
+          return false;
+        }
+      }
+      
+      console.log('✅ Declaration and signature validation passed');
       return true;
     }
 
@@ -4358,41 +4523,267 @@
       const summaryEl = document.getElementById('applicationSummary');
       let html = '';
       
+      // Personal Information Section
       if (formData.personalInfo) {
+        const info = formData.personalInfo;
         html += `
-          <div style="margin-bottom: 24px; padding: 20px; background: #f8fafc; border-radius: 12px;">
-            <h3 style="color: var(--flydubai-navy); margin-bottom: 12px;">Personal Information</h3>
-            <div style="display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
-              <div><strong>Name:</strong> ${formData.personalInfo.pilotName}</div>
-              <div><strong>Nationality:</strong> ${formData.personalInfo.nationality}</div>
-              <div><strong>Email:</strong> ${formData.personalInfo.contactEmail}</div>
-              <div><strong>Date of Birth:</strong> ${formData.personalInfo.dateOfBirth}</div>
-              <div><strong>Phone:</strong> ${formData.personalInfo.phoneNumber}</div>
-              <div><strong>Designation:</strong> ${formData.personalInfo.designation}</div>
-              ${formData.personalInfo.expectedDateOfJoining ? `<div><strong>Expected Joining:</strong> ${formData.personalInfo.expectedDateOfJoining}</div>` : ''}
-              ${formData.personalInfo.previousEmployer ? `<div><strong>Previous Employer:</strong> ${formData.personalInfo.previousEmployer}</div>` : ''}
+          <div style="margin-bottom: 24px; padding: 20px; background: #f8fafc; border-radius: 12px; border-left: 4px solid var(--flydubai-red);">
+            <h3 style="color: var(--flydubai-navy); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+              <span>👨‍✈️</span> Personal Information
+            </h3>
+            <div style="display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+              ${info.pilotName ? `<div><strong>Full Name:</strong> ${info.pilotName}</div>` : ''}
+              ${info.nationality ? `<div><strong>Nationality:</strong> ${info.nationality}</div>` : ''}
+              ${info.contactEmail ? `<div><strong>Email:</strong> ${info.contactEmail}</div>` : ''}
+              ${info.dateOfBirth ? `<div><strong>Date of Birth:</strong> ${toDDMMMYYYY(info.dateOfBirth)}</div>` : ''}
+              ${info.countryCode || info.phoneNumber ? `<div><strong>Phone:</strong> ${info.countryCode || ''} ${info.phoneNumber || ''}</div>` : ''}
+              ${info.designation ? `<div><strong>Current Designation:</strong> ${info.designation}</div>` : ''}
+              ${info.expectedDateOfJoining ? `<div><strong>Expected Date of Joining:</strong> ${toDDMMMYYYY(info.expectedDateOfJoining)}</div>` : ''}
+              ${info.previousEmployer ? `<div><strong>Previous Employer:</strong> ${info.previousEmployer}</div>` : ''}
             </div>
           </div>
         `;
       }
       
+      // Flight Experience Section
       if (formData.flightExperience) {
+        const flight = formData.flightExperience;
         html += `
-          <div style="margin-bottom: 24px; padding: 20px; background: #f8fafc; border-radius: 12px;">
-            <h3 style="color: var(--flydubai-navy); margin-bottom: 12px;">Flight Experience</h3>
-            <div style="display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
-              <div><strong>License Type:</strong> ${formData.flightExperience.pilotLicense}</div>
-              <div><strong>License Number:</strong> ${formData.flightExperience.licenseNumber}</div>
-              <div><strong>License Authority:</strong> ${formData.flightExperience.licenseAuthority}</div>
-              <div><strong>Total Flight Hours:</strong> ${formData.flightExperience.totalFlightHours}</div>
-              ${formData.flightExperience.picHours ? `<div><strong>PIC Hours:</strong> ${formData.flightExperience.picHours}</div>` : ''}
-              ${formData.flightExperience.instrumentHours ? `<div><strong>Instrument Hours:</strong> ${formData.flightExperience.instrumentHours}</div>` : ''}
-              ${formData.flightExperience.turbineHours ? `<div><strong>Turbine Hours:</strong> ${formData.flightExperience.turbineHours}</div>` : ''}
-              ${formData.flightExperience.jetHours ? `<div><strong>Jet Hours:</strong> ${formData.flightExperience.jetHours}</div>` : ''}
-            </div>
-            ${formData.flightExperience.aircraftTypes ? `<div style="margin-top: 12px;"><strong>Aircraft Types:</strong><br>${formData.flightExperience.aircraftTypes}</div>` : ''}
-          </div>
+          <div style="margin-bottom: 24px; padding: 20px; background: #f8fafc; border-radius: 12px; border-left: 4px solid var(--flydubai-red);">
+            <h3 style="color: var(--flydubai-navy); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+              <span>✈️</span> Flight Experience
+            </h3>
         `;
+        
+        // Aircraft Sections
+        if (flight.aircraftSections && flight.aircraftSections.length > 0) {
+          html += `<div style="margin-bottom: 20px;">
+            <h4 style="color: var(--flydubai-navy); margin-bottom: 12px;">Aircraft Experience by Type</h4>`;
+          
+          flight.aircraftSections.forEach((aircraft, index) => {
+            if (aircraft.aircraftType || Object.values(aircraft.flightHours).some(h => h !== '0:00')) {
+              html += `
+                <div style="margin-bottom: 16px; padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <h5 style="margin: 0; color: var(--flydubai-navy);">${aircraft.aircraftType || `Aircraft Type ${index + 1}`}</h5>
+                    ${aircraft.dates.from || aircraft.dates.to ? `<span style="color: #64748b; font-size: 14px;">${toDDMMMYYYY(aircraft.dates.from)} - ${toDDMMMYYYY(aircraft.dates.to)}</span>` : ''}
+                  </div>
+                  ${aircraft.notes ? `<div style="margin-bottom: 8px; color: #64748b; font-style: italic;">${aircraft.notes}</div>` : ''}
+                  <div style="display: grid; gap: 6px; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); font-size: 14px;">
+                    <div><strong>PIC/P1:</strong> ${aircraft.flightHours.pic || '0:00'}</div>
+                    <div><strong>SIC/P2:</strong> ${aircraft.flightHours.sic || '0:00'}</div>
+                    <div><strong>Solo:</strong> ${aircraft.flightHours.solo || '0:00'}</div>
+                    <div><strong>Instrument:</strong> ${aircraft.flightHours.instrument || '0:00'}</div>
+                    <div><strong>Simulator:</strong> ${aircraft.flightHours.sim || '0:00'}</div>
+                    <div><strong>Night:</strong> ${aircraft.flightHours.night || '0:00'}</div>
+                    <div><strong>Instructor:</strong> ${aircraft.flightHours.instructor || '0:00'}</div>
+                    <div><strong>P1 Under Supervision:</strong> ${aircraft.flightHours.p1us || '0:00'}</div>
+                  </div>
+                </div>
+              `;
+            }
+          });
+          html += `</div>`;
+        }
+        
+        // Summary Hours
+        if (flight.summaryHours) {
+          const summary = flight.summaryHours;
+          html += `
+            <div style="margin-bottom: 16px;">
+              <h4 style="color: var(--flydubai-navy); margin-bottom: 12px;">Flying Experience Summary</h4>
+              <div style="padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <div style="display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); font-size: 14px;">
+                  <div><strong>PIC/P1:</strong> ${summary.pic || '0:00'}</div>
+                  <div><strong>SIC/P2:</strong> ${summary.sic || '0:00'}</div>
+                  <div><strong>Solo:</strong> ${summary.solo || '0:00'}</div>
+                  <div><strong>Instrument:</strong> ${summary.instrument || '0:00'}</div>
+                  <div><strong>Simulator:</strong> ${summary.sim || '0:00'}</div>
+                  <div><strong>Night:</strong> ${summary.night || '0:00'}</div>
+                  <div><strong>Instructor:</strong> ${summary.instructor || '0:00'}</div>
+                  <div><strong>P1US:</strong> ${summary.p1us || '0:00'}</div>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+        
+        // Grand Totals
+        if (flight.grandTotals) {
+          html += `
+            <div style="margin-bottom: 16px;">
+              <h4 style="color: var(--flydubai-navy); margin-bottom: 12px;">Grand Totals</h4>
+              <div style="padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <div style="display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); font-size: 14px;">
+                  <div><strong>Combined Block Hours:</strong> ${flight.grandTotals.combined || '0:00'}</div>
+                  <div><strong>Multi-Pilot Block Hours:</strong> ${flight.grandTotals.multiPilot || '0:00'}</div>
+                  <div><strong>Night Hours:</strong> ${flight.grandTotals.night || '0:00'}</div>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+        
+        html += `</div>`;
+      }
+      
+      // Documentation Section
+      if (formData.documentation) {
+        const docs = formData.documentation;
+        html += `
+          <div style="margin-bottom: 24px; padding: 20px; background: #f8fafc; border-radius: 12px; border-left: 4px solid var(--flydubai-red);">
+            <h3 style="color: var(--flydubai-navy); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+              <span>📋</span> Documentation & Certificates
+            </h3>
+        `;
+        
+        // Pilot License
+        if (docs.licenseType || docs.licenseNumber) {
+          html += `
+            <div style="margin-bottom: 20px;">
+              <h4 style="color: var(--flydubai-navy); margin-bottom: 12px;">🛂 Pilot License</h4>
+              <div style="padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <div style="display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                  ${docs.licenseType ? `<div><strong>License Type:</strong> ${docs.licenseType}</div>` : ''}
+                  ${docs.licenseNumber ? `<div><strong>License Number:</strong> ${docs.licenseNumber}</div>` : ''}
+                  ${docs.licenseIssue ? `<div><strong>Issue Date:</strong> ${toDDMMMYYYY(docs.licenseIssue)}</div>` : ''}
+                  ${docs.licenseExpiry ? `<div><strong>Expiry Date:</strong> ${toDDMMMYYYY(docs.licenseExpiry)}</div>` : ''}
+                  ${docs.licenseFile ? `<div><strong>Document:</strong> ${docs.licenseFile}</div>` : ''}
+                </div>
+              </div>
+            </div>
+          `;
+        }
+        
+        // Medical Certificate
+        if (docs.medicalClass || docs.medicalAuthority) {
+          html += `
+            <div style="margin-bottom: 20px;">
+              <h4 style="color: var(--flydubai-navy); margin-bottom: 12px;">🏥 Medical Certificate</h4>
+              <div style="padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <div style="display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                  ${docs.medicalClass ? `<div><strong>Medical Class:</strong> ${docs.medicalClass}</div>` : ''}
+                  ${docs.medicalAuthority ? `<div><strong>Authority:</strong> ${docs.medicalAuthority}</div>` : ''}
+                  ${docs.medicalIssue ? `<div><strong>Issue Date:</strong> ${toDDMMMYYYY(docs.medicalIssue)}</div>` : ''}
+                  ${docs.medicalExpiry ? `<div><strong>Expiry Date:</strong> ${toDDMMMYYYY(docs.medicalExpiry)}</div>` : ''}
+                  ${docs.medicalFile ? `<div><strong>Document:</strong> ${docs.medicalFile}</div>` : ''}
+                </div>
+              </div>
+            </div>
+          `;
+        }
+        
+        // Radio Operator License
+        if (docs.rolNumber || docs.rolAuthority) {
+          html += `
+            <div style="margin-bottom: 20px;">
+              <h4 style="color: var(--flydubai-navy); margin-bottom: 12px;">📻 Radio Operator License</h4>
+              <div style="padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <div style="display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                  ${docs.rolNumber ? `<div><strong>License Number:</strong> ${docs.rolNumber}</div>` : ''}
+                  ${docs.rolAuthority ? `<div><strong>Authority:</strong> ${docs.rolAuthority}</div>` : ''}
+                  ${docs.rolIssue ? `<div><strong>Issue Date:</strong> ${toDDMMMYYYY(docs.rolIssue)}</div>` : ''}
+                  ${docs.rolExpiry ? `<div><strong>Expiry Date:</strong> ${toDDMMMYYYY(docs.rolExpiry)}</div>` : ''}
+                  ${docs.rolFile ? `<div><strong>Document:</strong> ${docs.rolFile}</div>` : ''}
+                </div>
+              </div>
+            </div>
+          `;
+        }
+        
+        // Passport
+        if (docs.passportNumber || docs.passportNationality) {
+          html += `
+            <div style="margin-bottom: 20px;">
+              <h4 style="color: var(--flydubai-navy); margin-bottom: 12px;">🛂 Passport</h4>
+              <div style="padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <div style="display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                  ${docs.passportNumber ? `<div><strong>Passport Number:</strong> ${docs.passportNumber}</div>` : ''}
+                  ${docs.passportNationality ? `<div><strong>Nationality:</strong> ${docs.passportNationality}</div>` : ''}
+                  ${docs.passportIssue ? `<div><strong>Issue Date:</strong> ${toDDMMMYYYY(docs.passportIssue)}</div>` : ''}
+                  ${docs.passportExpiry ? `<div><strong>Expiry Date:</strong> ${toDDMMMYYYY(docs.passportExpiry)}</div>` : ''}
+                  ${docs.passportFile ? `<div><strong>Document:</strong> ${docs.passportFile}</div>` : ''}
+                </div>
+              </div>
+            </div>
+          `;
+        }
+        
+        // UAE Visa (only if not "No Current UAE Visa")
+        if (docs.visaStatus && docs.visaStatus !== 'No Current UAE Visa') {
+          html += `
+            <div style="margin-bottom: 20px;">
+              <h4 style="color: var(--flydubai-navy); margin-bottom: 12px;">🇦🇪 UAE Visa & Work Permit</h4>
+              <div style="padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <div style="display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                  <div><strong>Visa Status:</strong> ${docs.visaStatus}</div>
+                  ${docs.visaExpiry ? `<div><strong>Expiry Date:</strong> ${toDDMMMYYYY(docs.visaExpiry)}</div>` : ''}
+                  ${docs.visaFile ? `<div><strong>Document:</strong> ${docs.visaFile}</div>` : ''}
+                </div>
+              </div>
+            </div>
+          `;
+        }
+        
+        // English Proficiency (only if not "Attached to License")
+        if (docs.englishLevel || (docs.englishTestType && docs.englishTestType !== 'Attached to License')) {
+          html += `
+            <div style="margin-bottom: 20px;">
+              <h4 style="color: var(--flydubai-navy); margin-bottom: 12px;">🗣️ English Proficiency</h4>
+              <div style="padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <div style="display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                  ${docs.englishLevel ? `<div><strong>Level:</strong> ${docs.englishLevel}</div>` : ''}
+                  ${docs.englishTestType ? `<div><strong>Test Type:</strong> ${docs.englishTestType}</div>` : ''}
+                  ${docs.englishTestDate && docs.englishTestType !== 'Attached to License' ? `<div><strong>Test Date:</strong> ${toDDMMMYYYY(docs.englishTestDate)}</div>` : ''}
+                  ${docs.englishFile ? `<div><strong>Document:</strong> ${docs.englishFile}</div>` : ''}
+                </div>
+              </div>
+            </div>
+          `;
+        }
+        
+        // Additional Documents
+        const additionalDocs = [
+          { title: '✅ Flight Hours Verification Letter', authority: docs.flightHoursAuthority, date: docs.flightHoursIssue, file: docs.flightHoursFile },
+          { title: '📄 License Verification Letter', authority: docs.licenseVerificationAuthority, date: docs.licenseVerificationDate, file: docs.licenseVerificationFile },
+          { title: '🚫 No Incident/Accident Letter', authority: docs.incidentLetterAuthority, date: docs.incidentLetterDate, file: docs.incidentLetterFile }
+        ];
+        
+        additionalDocs.forEach(doc => {
+          if (doc.authority || doc.date || doc.file) {
+            html += `
+              <div style="margin-bottom: 20px;">
+                <h4 style="color: var(--flydubai-navy); margin-bottom: 12px;">${doc.title}</h4>
+                <div style="padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                  <div style="display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                    ${doc.authority ? `<div><strong>Authority:</strong> ${doc.authority}</div>` : ''}
+                    ${doc.date ? `<div><strong>Date:</strong> ${toDDMMMYYYY(doc.date)}</div>` : ''}
+                    ${doc.file ? `<div><strong>Document:</strong> ${doc.file}</div>` : ''}
+                  </div>
+                </div>
+              </div>
+            `;
+          }
+        });
+        
+        // Emirates ID
+        if (docs.emiratesIdNumber) {
+          html += `
+            <div style="margin-bottom: 20px;">
+              <h4 style="color: var(--flydubai-navy); margin-bottom: 12px;">🆔 Emirates ID</h4>
+              <div style="padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <div style="display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                  <div><strong>Emirates ID Number:</strong> ${docs.emiratesIdNumber}</div>
+                  ${docs.emiratesIdIssue ? `<div><strong>Issue Date:</strong> ${toDDMMMYYYY(docs.emiratesIdIssue)}</div>` : ''}
+                  ${docs.emiratesIdExpiry ? `<div><strong>Expiry Date:</strong> ${toDDMMMYYYY(docs.emiratesIdExpiry)}</div>` : ''}
+                  ${docs.emiratesIdFile ? `<div><strong>Document:</strong> ${docs.emiratesIdFile}</div>` : ''}
+                </div>
+              </div>
+            </div>
+          `;
+        }
+        
+        html += `</div>`;
       }
       
       summaryEl.innerHTML = html;
@@ -4785,48 +5176,6 @@
     }
 
     // Calculate expiry for documents with standard validity periods
-    function calculateExpiry(docType) {
-      const issueInput = document.getElementById(docType + 'Issue');
-      const expiryInput = document.getElementById(docType + 'Expiry');
-      
-      if (!issueInput.value) return;
-      
-      // Only auto-calculate if expiry field is empty to avoid overwriting user input
-      if (expiryInput.value) return;
-      
-      const issueDate = new Date(issueInput.value);
-      let expiryDate = new Date(issueDate);
-      
-      console.log(`📅 Calculating expiry for ${docType}:`, {
-        issueDate: issueInput.value,
-        parsedIssueDate: issueDate.toISOString(),
-        docType: docType
-      });
-      
-      // Standard validity periods
-      switch(docType) {
-        case 'medical':
-          expiryDate.setFullYear(expiryDate.getFullYear() + 1); // 1 year (12 months)
-          console.log(`🏥 Medical expiry calculated: ${expiryDate.toISOString()}`);
-          break;
-        case 'rol':
-          expiryDate.setFullYear(expiryDate.getFullYear() + 5); // 5 years
-          console.log(`📻 ROL expiry calculated: ${expiryDate.toISOString()}`);
-          break;
-        case 'license':
-          // Don't auto-calculate license expiry as it varies greatly
-          return;
-        case 'passport':
-          // Don't auto-calculate passport expiry as it varies by country
-          return;
-        default:
-          return; // Don't auto-calculate for other documents
-      }
-      
-      expiryInput.value = expiryDate.toISOString().split('T')[0];
-      console.log(`✅ Set ${docType} expiry to: ${expiryInput.value}`);
-      checkValidity(docType);
-    }
 
     // Original computeAll function from the original file
     function computeAll(){
@@ -5578,6 +5927,144 @@
       }
       
       console.log('🎨 Layout debugging functions available. Use debugLayout(), debugSpacing(), or debugAircraftSections() in console');
+      
+      // ===== Signature pad logic (draw / typed / upload) =====
+      (function initSignature(){
+        console.log('✍️ Initializing signature functionality...');
+        const canvas = document.getElementById('sigCanvas');
+        if(!canvas) {
+          console.log('⚠️ Signature canvas not found, skipping signature initialization');
+          return;
+        }
+        
+        const ctx = canvas.getContext('2d');
+        
+        function setupCanvas(){
+          const ratio = Math.max(window.devicePixelRatio || 1, 1);
+          const rect = canvas.getBoundingClientRect();
+          canvas.width = rect.width * ratio; 
+          canvas.height = 160 * ratio;
+          ctx.setTransform(ratio,0,0,ratio,0,0); 
+          ctx.lineWidth = 2; 
+          ctx.lineJoin='round'; 
+          ctx.lineCap='round'; 
+          ctx.strokeStyle = '#111827';
+        }
+        
+        function clearCanvas(){ 
+          ctx.clearRect(0,0,canvas.width,canvas.height); 
+        }
+        
+        function pos(e){ 
+          const r=canvas.getBoundingClientRect(); 
+          const p=e.touches? e.touches[0]: e; 
+          return {x:p.clientX - r.left, y:p.clientY - r.top}; 
+        }
+        
+        let drawing=false, lastX=0, lastY=0;
+        
+        function start(e){ 
+          drawing=true; 
+          const p=pos(e); 
+          lastX=p.x; 
+          lastY=p.y; 
+          e.preventDefault(); 
+        }
+        
+        function move(e){ 
+          if(!drawing) return; 
+          const p=pos(e); 
+          ctx.beginPath(); 
+          ctx.moveTo(lastX,lastY); 
+          ctx.lineTo(p.x,p.y); 
+          ctx.stroke(); 
+          lastX=p.x; 
+          lastY=p.y; 
+          e.preventDefault(); 
+        }
+        
+        function end(){ 
+          drawing=false; 
+        }
+        
+        setupCanvas(); 
+        window.addEventListener('resize', setupCanvas);
+        
+        // Mouse events
+        canvas.addEventListener('mousedown', start); 
+        canvas.addEventListener('mousemove', move); 
+        window.addEventListener('mouseup', end);
+        
+        // Touch events  
+        canvas.addEventListener('touchstart', start, {passive:false}); 
+        canvas.addEventListener('touchmove', move, {passive:false}); 
+        window.addEventListener('touchend', end);
+
+        // Clear button
+        const clearBtn = document.getElementById('sigClear');
+        if (clearBtn) {
+          clearBtn.addEventListener('click', clearCanvas);
+        }
+        
+        // Apply typed signature button
+        const applyBtn = document.getElementById('sigApply');
+        if (applyBtn) {
+          applyBtn.addEventListener('click', ()=>{
+            const txt = (document.getElementById('typedSig').value || '').trim(); 
+            if(!txt) return;
+            clearCanvas();
+            ctx.font = '36px cursive'; 
+            ctx.fillStyle = '#111827';
+            const metrics = ctx.measureText(txt); 
+            const cssW = canvas.getBoundingClientRect().width; 
+            const x = Math.max(10, (cssW - metrics.width)/2 );
+            ctx.fillText(txt, x, 110);
+          });
+        }
+        
+        // Upload signature image
+        const uploadInput = document.getElementById('sigUpload');
+        if (uploadInput) {
+          uploadInput.addEventListener('change', (ev)=>{
+            const file = ev.target.files && ev.target.files[0]; 
+            if(!file) return;
+            const img = new Image(); 
+            img.onload = ()=>{
+              clearCanvas();
+              const cssW = canvas.getBoundingClientRect().width, cssH = 160; 
+              const scale = Math.min(cssW*0.9 / img.width, cssH*0.9 / img.height);
+              const w = img.width * scale, h = img.height * scale; 
+              const x = (cssW - w)/2, y = (cssH - h)/2;
+              ctx.drawImage(img, x, y, w, h);
+            }; 
+            img.src = URL.createObjectURL(file);
+          });
+        }
+        
+        // Initialize signature date to today
+        const sigDate = document.getElementById('sigDate');
+        if (sigDate && !sigDate.value) {
+          sigDate.value = new Date().toISOString().split('T')[0];
+          // Update the display span
+          const sigDatePrint = document.getElementById('sigDatePrint');
+          if (sigDatePrint) {
+            sigDatePrint.textContent = toDDMMMYYYY(sigDate.value);
+          }
+        }
+        
+        // Add event listener to update date display when date changes
+        if (sigDate) {
+          sigDate.addEventListener('change', function() {
+            const sigDatePrint = document.getElementById('sigDatePrint');
+            if (sigDatePrint) {
+              sigDatePrint.textContent = toDDMMMYYYY(this.value);
+            }
+          });
+        }
+        
+        console.log('✅ Signature functionality initialized');
+      })();
+      
       console.log('✅ === INITIALIZATION COMPLETE ===');
       console.log('🚀 Deployment trigger:', new Date().toISOString());
       console.log('🔄 Force deployment update:', Date.now());
