@@ -3900,14 +3900,36 @@
               hasDateError = true;
               if (!firstErrorField) firstErrorField = dateInput;
               
-              // Add visual error indication
-              dateInput.style.borderColor = '#dc2626';
-              dateInput.style.backgroundColor = '#fef2f2';
+              // Add visual error indication with stronger styling
+              dateInput.style.borderColor = '#dc2626 !important';
+              dateInput.style.backgroundColor = '#fef2f2 !important';
+              dateInput.style.borderWidth = '2px';
+              dateInput.style.boxShadow = '0 0 0 1px #dc2626';
+              
+              // Also highlight the parent date-cell if it exists
+              const dateCell = dateInput.closest('.date-cell');
+              if (dateCell) {
+                dateCell.style.borderColor = '#dc2626';
+                dateCell.style.backgroundColor = '#fef2f2';
+                dateCell.style.border = '2px solid #dc2626';
+                dateCell.style.borderRadius = '4px';
+              }
               
               // Remove error styling when user starts typing
               dateInput.addEventListener('input', function() {
                 this.style.borderColor = '';
                 this.style.backgroundColor = '';
+                this.style.borderWidth = '';
+                this.style.boxShadow = '';
+                
+                // Also clear parent cell styling
+                const cell = this.closest('.date-cell');
+                if (cell) {
+                  cell.style.borderColor = '';
+                  cell.style.backgroundColor = '';
+                  cell.style.border = '';
+                  cell.style.borderRadius = '';
+                }
               }, { once: true });
             }
           });
