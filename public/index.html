@@ -2703,7 +2703,14 @@
       return heavyJets.includes(aircraftType);
     }
 
-    // Now dynamically added sections use the same makeAircraftSection function as the pre-loaded ones
+    // ===== Sections builder =====
+    let sectionCounter = 0;
+    const sectionsWrap = document.getElementById('sections');
+    
+    function makeAircraftSection({label, typeText, locked=false, b737Type=null}){
+      const id = ++sectionCounter;
+      const sec = document.createElement('section');
+      sec.className = 'section'; 
       sec.dataset.sectionId = id; 
       sec.dataset.locked = locked ? '1' : '0';
       
