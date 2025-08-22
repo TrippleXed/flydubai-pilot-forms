@@ -219,7 +219,30 @@
     }
     
     .form-section {
-      margin-bottom: 20px;
+      margin-bottom: 32px;
+      padding: 24px;
+      background: #fafbfc;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      position: relative;
+    }
+    
+    .form-section:hover {
+      border-color: var(--flydubai-blue);
+      box-shadow: 0 4px 8px rgba(59, 130, 246, 0.1);
+    }
+    
+    /* Add visual divider between document sections */
+    .form-section:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      bottom: -16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--flydubai-orange), transparent);
     }
     
     .section-title {
@@ -791,27 +814,23 @@
     }
 
     h2.section-h{
-      margin: 16px 0 12px;
-      font-size: 20px;
+      margin: 0 0 20px 0;
+      font-size: 18px;
       font-weight: 700;
       letter-spacing: -0.025em;
       color: var(--flydubai-navy);
       text-transform: uppercase;
       position: relative;
-      padding-left: 24px;
+      padding: 16px 24px;
+      background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+      border-left: 4px solid var(--flydubai-blue);
+      border-radius: 8px;
+      margin-left: -24px;
+      margin-right: -24px;
+      margin-top: -24px;
+      margin-bottom: 24px;
     }
     
-    h2.section-h::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 4px;
-      height: 24px;
-      background: var(--flydubai-orange);
-      border-radius: 2px;
-    }
 
     h3.section-h{
       margin: 12px 0 8px;
