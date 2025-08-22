@@ -4121,19 +4121,43 @@
         return false;
       }
       
-      // Check if at least one aircraft section has data and validate date fields
+      // Check if at least one aircraft section has data and validate all fields
       const sections = document.querySelectorAll('#sections .section');
       let hasData = false;
       let hasDateError = false;
+      let hasTimeError = false;
       let firstErrorField = null;
       
       sections.forEach((section, index) => {
         const aircraftType = section.querySelector('.ac-type')?.value;
         const inputs = section.querySelectorAll('.hhmm');
         const dateInputs = section.querySelectorAll('.date-inp');
+        const sectionTitle = section.querySelector('.section-title h3')?.textContent || `Section ${index + 1}`;
         
         if (aircraftType) {
           hasData = true;
+          
+          // Validate time fields in this section (all 6 must be filled)
+          inputs.forEach((timeInput, timeIndex) => {
+            if (timeInput && (!timeInput.value.trim() || timeInput.value === '0:00')) {
+              hasTimeError = true;
+              if (!firstErrorField) firstErrorField = timeInput;
+              
+              // Add visual error indication
+              timeInput.style.borderColor = '#dc2626';
+              timeInput.style.backgroundColor = '#fef2f2';
+              timeInput.style.borderWidth = '2px';
+              timeInput.style.boxShadow = '0 0 0 1px #dc2626';
+              
+              // Remove error styling when user starts typing
+              timeInput.addEventListener('input', function() {
+                this.style.borderColor = '';
+                this.style.backgroundColor = '';
+                this.style.borderWidth = '';
+                this.style.boxShadow = '';
+              }, { once: true });
+            }
+          });
           
           // Validate date fields in this section
           dateInputs.forEach((dateInput, dateIndex) => {
@@ -4179,6 +4203,15 @@
       
       if (!hasData) {
         alert('Please add at least one aircraft type and select it from the dropdown before continuing.');
+        return false;
+      }
+      
+      if (hasTimeError) {
+        if (firstErrorField) {
+          firstErrorField.focus();
+          firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        alert('Please fill in all flight time fields in the aircraft sections. Enter actual flight times or 0:01 for minimal time.');
         return false;
       }
       
@@ -5147,14 +5180,12 @@
       originalShowStepFunction(step);
       if (step === 2) {
         setTimeout(() => {
-          // Check if we have saved flight experience data
-          const saveKey = `flydubai_form_${sessionId}`;
+          // Check if we have saved flight experience data - use the actual save key
+          const saveKey = 'pilotFormData';
           const savedData = localStorage.getItem(saveKey);
           console.log('🔍 Checking for saved data with key:', saveKey);
-          console.log('🔍 SessionId variable:', sessionId);
           console.log('🔍 Raw saved data exists:', !!savedData);
           console.log('🔍 All localStorage keys:', Object.keys(localStorage));
-          console.log('🔍 localStorage keys matching our pattern:', Object.keys(localStorage).filter(key => key.includes('flydubai_form')));
           
           if (savedData) {
             try {
@@ -5163,7 +5194,8 @@
                 hasFormData: !!parsedData.formData,
                 hasFlightExperience: !!parsedData.formData?.flightExperience,
                 hasAircraftSections: !!parsedData.formData?.flightExperience?.aircraftSections,
-                sectionsLength: parsedData.formData?.flightExperience?.aircraftSections?.length || 0
+                sectionsLength: parsedData.formData?.flightExperience?.aircraftSections?.length || 0,
+                topLevelKeys: Object.keys(parsedData)
               });
               console.log('🔍 Aircraft sections data:', parsedData.formData?.flightExperience?.aircraftSections);
               
@@ -5329,20 +5361,25 @@
           console.log(`✅ ${sectionTitle}: Aircraft type selected - ${aircraftSelect?.value || 'Pre-selected'}`);
         }
         
-        // Check if at least one flight hour field has a meaningful value (not 0:00)
+        // Check that ALL time fields are filled (not empty or 0:00)
         const hourInputs = section.querySelectorAll('.hhmm');
-        const hasFlightHours = Array.from(hourInputs).some(input => {
+        let incompleteTimeField = null;
+        
+        const allTimesCompleted = Array.from(hourInputs).every(input => {
           const value = input.value || '0:00';
-          const minutes = parseHHMM(value);
-          return minutes > 0;
+          const isCompleted = value.trim() && value !== '0:00';
+          if (!isCompleted && !incompleteTimeField) {
+            incompleteTimeField = input;
+          }
+          return isCompleted;
         });
         
-        if (!hasFlightHours) {
-          console.log(`❌ ${sectionTitle}: No flight hours entered`);
+        if (!allTimesCompleted) {
+          console.log(`❌ ${sectionTitle}: Not all time fields completed`);
           isValid = false;
-          if (!firstIncompleteSection) firstIncompleteSection = { section, field: hourInputs[0], message: 'Please enter at least some flight hours for this aircraft type' };
+          if (!firstIncompleteSection) firstIncompleteSection = { section, field: incompleteTimeField, message: 'Please fill in all flight time fields for this aircraft type. Enter actual flight times or 0:01 for minimal time.' };
         } else {
-          console.log(`✅ ${sectionTitle}: Flight hours entered`);
+          console.log(`✅ ${sectionTitle}: All time fields completed`);
         }
         
         // Check notes field if "Other" aircraft type is selected
