@@ -2588,9 +2588,13 @@
       const v = el.value.trim(); 
       
       // Handle special cases for time entry shortcuts
-      if (v.match(/^\d{2,4}$/)) {
+      if (v.match(/^\d{1,4}$/)) {
         const num = parseInt(v, 10);
-        if (v.length === 2) {
+        if (v.length === 1) {
+          // 1 becomes 00:01 (single digit minutes)
+          el.value = `0:0${v}`;
+          return;
+        } else if (v.length === 2) {
           // 23 becomes 00:23 (minutes)
           el.value = `0:${v}`;
           return;
