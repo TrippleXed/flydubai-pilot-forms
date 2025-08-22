@@ -1588,7 +1588,10 @@
         <div style="display: grid; gap: 20px; grid-template-columns: 300px 240px 180px 180px; margin-bottom: 20px;">
           <div>
             <label for="contactEmail">Email Address <span class="required">*</span></label>
-            <input id="contactEmail" type="email" placeholder="your.email@example.com" required>
+            <input id="contactEmail" type="email" placeholder="your.email@example.com" 
+                   pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" 
+                   title="Please enter a valid email address (e.g., name@example.com)" 
+                   required>
           </div>
           <div>
             <label for="phoneNumber">Phone Number <span class="required">*</span></label>
@@ -3376,9 +3379,34 @@
         }
       });
       
+      // Additional email format validation
+      const emailField = document.getElementById('contactEmail');
+      if (emailField.value.trim()) {
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailRegex.test(emailField.value.trim())) {
+          emailField.classList.add('validation-error');
+          
+          // Add error message
+          const errorMsg = document.createElement('span');
+          errorMsg.className = 'error-message';
+          errorMsg.textContent = 'Please enter a valid email address (e.g., name@example.com)';
+          emailField.parentElement.appendChild(errorMsg);
+          
+          if (isValid) firstInvalidField = emailField;
+          isValid = false;
+          
+          // Clear validation styling on input
+          emailField.addEventListener('input', () => {
+            emailField.classList.remove('validation-error');
+            const msg = emailField.parentElement.querySelector('.error-message');
+            if (msg) msg.remove();
+          }, { once: true });
+        }
+      }
+      
       if (!isValid) {
         if (firstInvalidField) firstInvalidField.focus();
-        alert('Please fill in all required fields before continuing.');
+        alert('Please fill in all required fields and correct any errors before continuing.');
       }
       
       return isValid;
