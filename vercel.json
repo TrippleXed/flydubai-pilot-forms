@@ -4,6 +4,5 @@
     "api/submit-form.js": {
       "maxDuration": 30
     }
-  },
-  "cleanUrls": true
+  }
 }
