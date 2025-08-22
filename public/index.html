@@ -1044,19 +1044,16 @@
       transform: none !important;
     }
     
-    /* Enhanced focus styling for time fields */
+    /* Enhanced focus styling for time fields - matching original */
     .form-step[data-step="2"] td input[type="text"].hhmm:focus{
-      border-color: var(--flydubai-blue) !important;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25), 0 0 0 5px rgba(59, 130, 246, 0.2), inset 0 1px 3px rgba(0, 0, 0, 0.05) !important;
-      transform: translateY(-3px) !important;
-      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+      border: 3px solid var(--flydubai-blue) !important;
+      box-shadow: 0 0 15px rgba(59, 130, 246, 0.4) !important;
+      outline: none !important;
     }
     
-    /* Time field hover effect */
+    /* Time field hover effect - matching original */
     .form-step[data-step="2"] td input[type="text"].hhmm:hover{
       border-color: var(--flydubai-light-blue) !important;
-      box-shadow: 0 6px 16px rgba(59, 130, 246, 0.15), inset 0 1px 3px rgba(0, 0, 0, 0.05) !important;
-      transform: translateY(-1px) !important;
     }
     
     .form-step[data-step="2"] td input[type="date"]{
@@ -2464,6 +2461,34 @@
     
     function padHHMM(el){ 
       const v = el.value.trim(); 
+      
+      // Handle special cases for time entry shortcuts
+      if (v.match(/^\d{2,4}$/)) {
+        const num = parseInt(v, 10);
+        if (v.length === 2) {
+          // 23 becomes 00:23 (minutes)
+          el.value = `0:${v}`;
+          return;
+        } else if (v.length === 3) {
+          // 100 becomes 01:00 (hours:minutes)
+          const hours = Math.floor(num / 100);
+          const minutes = num % 100;
+          if (minutes < 60) {
+            el.value = `${hours}:${minutes.toString().padStart(2, '0')}`;
+            return;
+          }
+        } else if (v.length === 4) {
+          // 1234 becomes 12:34
+          const hours = Math.floor(num / 100);
+          const minutes = num % 100;
+          if (minutes < 60) {
+            el.value = `${hours}:${minutes.toString().padStart(2, '0')}`;
+            return;
+          }
+        }
+      }
+      
+      // Standard parsing for HH:MM format
       const mins = parseHHMM(v); 
       el.value = mins ? toHHMM(mins) : ""; 
     }
