@@ -5429,17 +5429,33 @@
         // Check that ALL time fields are filled (not empty or 0:00)
         const hourInputs = section.querySelectorAll('.hhmm');
         let incompleteTimeField = null;
+        let hasIncompleteTimeFields = false;
         
-        const allTimesCompleted = Array.from(hourInputs).every(input => {
+        // Apply red styling to ALL incomplete time fields in this section
+        Array.from(hourInputs).forEach(input => {
           const value = input.value || '0:00';
           const isCompleted = value.trim() && value !== '0:00';
-          if (!isCompleted && !incompleteTimeField) {
-            incompleteTimeField = input;
+          if (!isCompleted) {
+            hasIncompleteTimeFields = true;
+            if (!incompleteTimeField) incompleteTimeField = input; // Track first for focus
+            
+            // Add visual error indication to ALL incomplete fields
+            input.style.borderColor = '#dc2626';
+            input.style.backgroundColor = '#fef2f2';
+            input.style.borderWidth = '2px';
+            input.style.boxShadow = '0 0 0 1px #dc2626';
+            
+            // Remove error styling when user starts typing
+            input.addEventListener('input', function() {
+              this.style.borderColor = '';
+              this.style.backgroundColor = '';
+              this.style.borderWidth = '';
+              this.style.boxShadow = '';
+            }, { once: true });
           }
-          return isCompleted;
         });
         
-        if (!allTimesCompleted) {
+        if (hasIncompleteTimeFields) {
           console.log(`❌ ${sectionTitle}: Not all time fields completed`);
           isValid = false;
           if (!firstIncompleteSection) firstIncompleteSection = { section, field: incompleteTimeField, message: 'Please fill in all flight time fields for this aircraft type.' };
@@ -5467,6 +5483,21 @@
           if (summaryInput && (!summaryInput.value.trim() || summaryInput.value === '0:00')) {
             console.log(`❌ Summary field ${index + 1} not completed`);
             isValid = false;
+            
+            // Add visual error indication
+            summaryInput.style.borderColor = '#dc2626';
+            summaryInput.style.backgroundColor = '#fef2f2';
+            summaryInput.style.borderWidth = '2px';
+            summaryInput.style.boxShadow = '0 0 0 1px #dc2626';
+            
+            // Remove error styling when user starts typing
+            summaryInput.addEventListener('input', function() {
+              this.style.borderColor = '';
+              this.style.backgroundColor = '';
+              this.style.borderWidth = '';
+              this.style.boxShadow = '';
+            }, { once: true });
+            
             if (!firstIncompleteSection) {
               const fieldNames = ['PIC/P1', 'SIC/P2', 'Solo', 'Instrument', 'Sim', 'Night', 'Instructor', 'P1 U/S', 'Grand Total'];
               const fieldName = fieldNames[index] || `field ${index + 1}`;
@@ -5484,12 +5515,42 @@
         if (footerMultiPilotField && (!footerMultiPilotField.value.trim() || footerMultiPilotField.value === '0:00')) {
           console.log('❌ Footer Multi-Pilot field not completed');
           isValid = false;
+          
+          // Add visual error indication
+          footerMultiPilotField.style.borderColor = '#dc2626';
+          footerMultiPilotField.style.backgroundColor = '#fef2f2';
+          footerMultiPilotField.style.borderWidth = '2px';
+          footerMultiPilotField.style.boxShadow = '0 0 0 1px #dc2626';
+          
+          // Remove error styling when user starts typing
+          footerMultiPilotField.addEventListener('input', function() {
+            this.style.borderColor = '';
+            this.style.backgroundColor = '';
+            this.style.borderWidth = '';
+            this.style.boxShadow = '';
+          }, { once: true });
+          
           if (!firstIncompleteSection) firstIncompleteSection = { section: null, field: footerMultiPilotField, message: 'Please fill in the Total Multi‑Pilot Block Hours field at the bottom of the page.' };
         }
         
         if (footerNightField && (!footerNightField.value.trim() || footerNightField.value === '0:00')) {
           console.log('❌ Footer Night Hours field not completed');
           isValid = false;
+          
+          // Add visual error indication
+          footerNightField.style.borderColor = '#dc2626';
+          footerNightField.style.backgroundColor = '#fef2f2';
+          footerNightField.style.borderWidth = '2px';
+          footerNightField.style.boxShadow = '0 0 0 1px #dc2626';
+          
+          // Remove error styling when user starts typing
+          footerNightField.addEventListener('input', function() {
+            this.style.borderColor = '';
+            this.style.backgroundColor = '';
+            this.style.borderWidth = '';
+            this.style.boxShadow = '';
+          }, { once: true });
+          
           if (!firstIncompleteSection) firstIncompleteSection = { section: null, field: footerNightField, message: 'Please fill in the Total Night Hours field at the bottom of the page.' };
         }
       }
