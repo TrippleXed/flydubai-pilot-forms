@@ -2835,6 +2835,7 @@
           nationality: document.getElementById('nationality')?.value || '',
           contactEmail: document.getElementById('contactEmail')?.value || '',
           dateOfBirth: document.getElementById('dateOfBirth')?.value || '',
+          countryCode: document.getElementById('countryCode')?.value || '',
           phoneNumber: document.getElementById('phoneNumber')?.value || ''
         };
         
@@ -3070,6 +3071,7 @@
           { id: 'nationality', value: info.nationality },
           { id: 'contactEmail', value: info.contactEmail },
           { id: 'dateOfBirth', value: info.dateOfBirth },
+          { id: 'countryCode', value: info.countryCode },
           { id: 'phoneNumber', value: info.phoneNumber }
         ];
         
@@ -3641,12 +3643,13 @@
           showSubmissionSuccess();
         } else {
           console.error('❌ Form submission failed:', result);
-          showSubmissionError(result.error || 'Unknown error occurred');
+          const errorMessage = result.error || `HTTP ${response.status}: ${response.statusText}`;
+          showSubmissionError(errorMessage, true); // Show detailed error
         }
         
       } catch (error) {
         console.error('❌ Network error during submission:', error);
-        showSubmissionError('Network error. Please check your connection and try again.');
+        showSubmissionError(`Network error: ${error.message}`, true);
       } finally {
         // Restore button state
         nextBtn.textContent = originalText;
@@ -3694,7 +3697,7 @@
     }
     
     // Show submission error message
-    function showSubmissionError(errorText) {
+    function showSubmissionError(errorText, showDetails = false) {
       const message = document.createElement('div');
       message.style.cssText = `
         position: fixed;
@@ -3711,13 +3714,26 @@
         z-index: 10000;
         text-align: center;
         min-width: 300px;
+        max-width: 500px;
       `;
+      
+      const helpText = showDetails ? `
+        <div style="font-size: 12px; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.3); opacity: 0.8; text-align: left;">
+          <strong>Need help?</strong><br>
+          • Check that all required fields are filled<br>
+          • Ensure all files are uploaded<br>
+          • Try refreshing the page and resubmitting<br>
+          • If problem persists, check the Vercel function logs
+        </div>
+      ` : '';
+      
       message.innerHTML = `
         <div style="margin-bottom: 10px; font-size: 24px;">❌</div>
         <div>Submission Failed</div>
-        <div style="font-size: 14px; font-weight: 400; margin-top: 8px; opacity: 0.9;">
+        <div style="font-size: 14px; font-weight: 400; margin-top: 8px; opacity: 0.9; word-break: break-word;">
           ${errorText}
         </div>
+        ${helpText}
         <div style="font-size: 12px; margin-top: 12px;">
           <button onclick="this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode)" 
                   style="background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer;">
@@ -3845,21 +3861,51 @@
         return false;
       }
       
-      // Check if at least one aircraft section has data
+      // Check if at least one aircraft section has data and validate date fields
       const sections = document.querySelectorAll('#sections .section');
       let hasData = false;
+      let hasDateError = false;
+      let firstErrorField = null;
       
-      sections.forEach(section => {
+      sections.forEach((section, index) => {
         const aircraftType = section.querySelector('.ac-type')?.value;
         const inputs = section.querySelectorAll('.hhmm');
+        const dateInputs = section.querySelectorAll('.date-inp');
         
         if (aircraftType) {
           hasData = true;
+          
+          // Validate date fields in this section
+          dateInputs.forEach((dateInput, dateIndex) => {
+            if (dateInput && !dateInput.value.trim()) {
+              hasDateError = true;
+              if (!firstErrorField) firstErrorField = dateInput;
+              
+              // Add visual error indication
+              dateInput.style.borderColor = '#dc2626';
+              dateInput.style.backgroundColor = '#fef2f2';
+              
+              // Remove error styling when user starts typing
+              dateInput.addEventListener('input', function() {
+                this.style.borderColor = '';
+                this.style.backgroundColor = '';
+              }, { once: true });
+            }
+          });
         }
       });
       
       if (!hasData) {
         alert('Please add at least one aircraft type and select it from the dropdown before continuing.');
+        return false;
+      }
+      
+      if (hasDateError) {
+        if (firstErrorField) {
+          firstErrorField.focus();
+          firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        alert('Please fill in all required date fields in the flight experience sections.');
         return false;
       }
       
