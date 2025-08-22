@@ -4782,9 +4782,9 @@
       window.debugAircraftSections = debugAircraftSections;
       
       // Add event listener for joining date to re-validate documents
-      const dojInput = document.getElementById('doj');
-      if (dojInput) {
-        dojInput.addEventListener('change', () => {
+      const dojElement = document.getElementById('doj');
+      if (dojElement) {
+        dojElement.addEventListener('change', () => {
           // Re-validate all documents when joining date changes
           ['passport', 'license', 'medical', 'rol'].forEach(docType => {
             const expiryInput = document.getElementById(docType + 'Expiry');
