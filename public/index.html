@@ -1125,6 +1125,21 @@
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
+
+    /* Specific styling for remove button */
+    .btn.warn, .btn[data-remove-section] {
+      padding: 6px 16px !important;
+      font-size: 12px !important;
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%) !important;
+      border-color: #fca5a5 !important;
+      color: #dc2626 !important;
+    }
+
+    .btn.warn:hover, .btn[data-remove-section]:hover {
+      background: linear-gradient(135deg, #fecaca 0%, #f87171 100%) !important;
+      border-color: #f87171 !important;
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3) !important;
+    }
   </style>
 </head>
 <body>
