@@ -310,7 +310,12 @@
       cursor: pointer;
     }
 
-    /* Ensure designation dropdown matches date input width exactly */
+    /* Ensure designation dropdown and date fields have consistent width */
+    .form-step[data-step="1"] #dateOfBirth {
+      width: 180px !important;
+      box-sizing: border-box;
+    }
+
     .form-step[data-step="1"] #designation {
       width: 180px !important;
       box-sizing: border-box;
@@ -1563,6 +1568,10 @@
             </select>
           </div>
           <div>
+            <label for="dateOfBirth">Date of Birth <span class="required">*</span></label>
+            <input id="dateOfBirth" type="date" required>
+          </div>
+          <div>
             <label for="designation">flydubai Designation <span class="required">*</span></label>
             <select id="designation" required>
               <option value="">Select…</option>
@@ -1572,10 +1581,6 @@
               <option>Cadet</option>
               <option>Ab-Initio</option>
             </select>
-          </div>
-          <div>
-            <label for="dateOfBirth">Date of Birth <span class="required">*</span></label>
-            <input id="dateOfBirth" type="date" required>
           </div>
         </div>
 
