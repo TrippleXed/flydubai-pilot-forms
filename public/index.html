@@ -1301,29 +1301,12 @@
         <h2 class="step-title">👨‍✈️ Personal Information</h2>
         <p class="step-subtitle">Let's start with your basic information. All fields marked with <span class="required">*</span> are required.</p>
         
-        <div style="display: grid; gap: 20px; grid-template-columns: minmax(320px, 1fr) minmax(240px, 1fr) minmax(220px, 1fr); margin-bottom: 20px;">
+        <!-- Row 1: Name, Nationality, Designation, Date of Birth -->
+        <div style="display: grid; gap: 20px; grid-template-columns: 300px 200px 180px 160px; margin-bottom: 20px;">
           <div>
             <label for="pilotName">Full Name <span class="required">*</span></label>
             <input id="pilotName" type="text" placeholder="e.g., Jane D. Pilot" required>
           </div>
-          <div>
-            <label for="designation">flydubai Designation <span class="required">*</span></label>
-            <select id="designation" required>
-              <option value="">Select…</option>
-              <option>Captain</option>
-              <option>First Officer</option>
-              <option>Second Officer</option>
-              <option>Cadet</option>
-              <option>Ab-Initio</option>
-            </select>
-          </div>
-          <div>
-            <label for="doj">flydubai Date of Joining <span class="required">*</span></label>
-            <input id="doj" type="date" required>
-          </div>
-        </div>
-
-        <div class="form-grid">
           <div>
             <label for="nationality">Nationality <span class="required">*</span></label>
             <select id="nationality" required>
@@ -1569,20 +1552,37 @@
             </select>
           </div>
           <div>
-            <label for="contactEmail">Email Address <span class="required">*</span></label>
-            <input id="contactEmail" type="email" placeholder="your.email@example.com" required>
+            <label for="designation">flydubai Designation <span class="required">*</span></label>
+            <select id="designation" required>
+              <option value="">Select…</option>
+              <option>Captain</option>
+              <option>First Officer</option>
+              <option>Second Officer</option>
+              <option>Cadet</option>
+              <option>Ab-Initio</option>
+            </select>
           </div>
-        </div>
-
-        <div class="form-grid">
           <div>
             <label for="dateOfBirth">Date of Birth <span class="required">*</span></label>
             <input id="dateOfBirth" type="date" required>
+          </div>
+        </div>
+
+        <!-- Row 2: Email, Phone, Date of Joining -->
+        <div style="display: grid; gap: 20px; grid-template-columns: 280px 200px 160px 1fr; margin-bottom: 20px;">
+          <div>
+            <label for="contactEmail">Email Address <span class="required">*</span></label>
+            <input id="contactEmail" type="email" placeholder="your.email@example.com" required>
           </div>
           <div>
             <label for="phoneNumber">Phone Number <span class="required">*</span></label>
             <input id="phoneNumber" type="tel" placeholder="+971 50 123 4567" required>
           </div>
+          <div>
+            <label for="doj">Date of Joining <span class="required">*</span></label>
+            <input id="doj" type="date" required>
+          </div>
+          <div></div>
         </div>
       </div>
 
