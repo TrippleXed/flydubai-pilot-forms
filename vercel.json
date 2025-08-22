@@ -5,10 +5,5 @@
       "maxDuration": 30
     }
   },
-  "rewrites": [
-    {
-      "source": "/",
-      "destination": "/flighttimeexpform.html"
-    }
-  ]
+  "cleanUrls": true
 }
