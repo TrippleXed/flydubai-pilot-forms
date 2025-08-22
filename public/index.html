@@ -1365,9 +1365,15 @@
       });
       
       // Show current step
-      const currentStepEl = document.querySelector(`[data-step="${step}"]`);
-      if (currentStepEl && currentStepEl.classList.contains('form-step')) {
+      const currentStepEl = document.querySelector(`.form-step[data-step="${step}"]`);
+      if (currentStepEl) {
         currentStepEl.classList.add('active');
+      }
+      
+      // Generate summary if showing review step
+      if (step === 4) {
+        collectFormData();
+        generateApplicationSummary();
       }
       
       updateProgress();
@@ -1586,16 +1592,6 @@
       
       summaryEl.innerHTML = html;
     }
-
-    // Override showStep to generate summary
-    const originalShowStep = showStep;
-    showStep = function(step) {
-      originalShowStep(step);
-      if (step === 4) {
-        collectFormData();
-        generateApplicationSummary();
-      }
-    };
 
     // Initialize the form when page loads
     document.addEventListener('DOMContentLoaded', initializeForm);
