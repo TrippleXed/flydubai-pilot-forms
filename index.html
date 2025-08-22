@@ -49,7 +49,7 @@
     .logo {
       width: 200px;
       height: 40px;
-      background-image: url('public/Flydubai-Logo.png');
+      background-image: url('Flydubai-Logo.png');
       background-size: contain;
       background-repeat: no-repeat;
       background-position: left center;
@@ -262,24 +262,6 @@
   </style>
 </head>
 <body>
-  <script>
-    // Password Protection
-    const FORM_PASSWORD = "FlightTime2025";
-    
-    function checkPassword() {
-      const userPassword = prompt("Enter access code to continue:");
-      if (userPassword !== FORM_PASSWORD) {
-        alert("Incorrect access code");
-        window.location.href = "about:blank";
-        return false;
-      }
-      return true;
-    }
-    
-    if (!checkPassword()) {
-      document.body.innerHTML = "";
-    }
-  </script>
 
   <div class="container">
     <!-- Header -->
