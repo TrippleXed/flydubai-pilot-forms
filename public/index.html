@@ -2931,6 +2931,44 @@
       return sec;
     }
 
+    // Initialize default aircraft sections
+    function initializeAircraftSections() {
+      console.log('✈️ === INITIALIZING AIRCRAFT SECTIONS ===');
+      
+      // Clear any existing sections first
+      sectionsWrap.innerHTML = '';
+      sectionCounter = 0;
+      
+      // Create Aircraft Type 1 (Boeing 737 NG/MAX)
+      console.log('🛩️ Creating Aircraft Type 1: Boeing 737 NG/MAX');
+      const section1 = makeAircraftSection({
+        label: 'Aircraft Type 1',
+        typeText: 'Boeing 737 NG/MAX',
+        locked: true,
+        b737Type: 'ng-max'
+      });
+      sectionsWrap.appendChild(section1);
+      
+      // Create Aircraft Type 2 (Boeing 737 Classic)
+      console.log('🛩️ Creating Aircraft Type 2: Boeing 737 Classic');
+      const section2 = makeAircraftSection({
+        label: 'Aircraft Type 2', 
+        typeText: 'Boeing 737 Classic (300-500)',
+        locked: true,
+        b737Type: 'classic'
+      });
+      sectionsWrap.appendChild(section2);
+      
+      console.log('✈️ Default aircraft sections initialized');
+      
+      // Recompute totals after initialization
+      setTimeout(() => {
+        if (typeof computeAll === 'function') {
+          computeAll();
+        }
+      }, 50);
+    }
+
     // Update the showStep function to initialize aircraft sections
     const originalShowStepFunction = showStep;
     showStep = function(step) {
