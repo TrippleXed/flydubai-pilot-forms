@@ -887,6 +887,19 @@
       box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1) !important;
     }
 
+    .validation-error {
+      border-color: #dc2626 !important;
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1) !important;
+    }
+
+    .error-message {
+      color: #dc2626;
+      font-size: 12px;
+      font-weight: 500;
+      margin-top: 4px;
+      display: block;
+    }
+
     .section{
       border: 2px solid var(--line);
       border-radius: 20px;
@@ -2175,23 +2188,51 @@
 
     // Validate personal information
     function validatePersonalInfo() {
-      const requiredFields = ['pilotName', 'designation', 'doj', 'nationality', 'contactEmail', 'dateOfBirth', 'phoneNumber'];
+      const requiredFields = [
+        { id: 'pilotName', label: 'Pilot Name' },
+        { id: 'designation', label: 'Designation' },
+        { id: 'doj', label: 'Date of Joining' },
+        { id: 'nationality', label: 'Nationality' },
+        { id: 'contactEmail', label: 'Contact Email' },
+        { id: 'dateOfBirth', label: 'Date of Birth' },
+        { id: 'phoneNumber', label: 'Phone Number' }
+      ];
       let isValid = true;
+      let firstInvalidField = null;
       
-      requiredFields.forEach(fieldId => {
-        const field = document.getElementById(fieldId);
+      // Clear previous validation styling
+      requiredFields.forEach(({ id }) => {
+        const field = document.getElementById(id);
+        field.classList.remove('validation-error');
+        const errorMsg = field.parentElement.querySelector('.error-message');
+        if (errorMsg) errorMsg.remove();
+      });
+      
+      requiredFields.forEach(({ id, label }) => {
+        const field = document.getElementById(id);
         if (!field.value.trim()) {
-          field.style.borderColor = '#dc2626';
+          field.classList.add('validation-error');
+          
+          // Add error message
+          const errorMsg = document.createElement('span');
+          errorMsg.className = 'error-message';
+          errorMsg.textContent = `${label} is required`;
+          field.parentElement.appendChild(errorMsg);
+          
+          if (isValid) firstInvalidField = field;
           isValid = false;
           
-          // Reset border color on input
+          // Clear validation styling on input
           field.addEventListener('input', () => {
-            field.style.borderColor = '#e2e8f0';
+            field.classList.remove('validation-error');
+            const msg = field.parentElement.querySelector('.error-message');
+            if (msg) msg.remove();
           }, { once: true });
         }
       });
       
       if (!isValid) {
+        if (firstInvalidField) firstInvalidField.focus();
         alert('Please fill in all required fields before continuing.');
       }
       
@@ -2199,9 +2240,44 @@
     }
 
     // Validate flight experience
+    // Validation function to check if all "Other" fields are properly filled (from original)
+    function validateOtherFields(){
+      const sections = document.querySelectorAll('#sections .section');
+      let isValid = true;
+      
+      // Clear previous validation styling
+      sections.forEach(section => {
+        const notesField = section.querySelector('.ac-notes');
+        if(notesField) notesField.classList.remove('required-empty');
+      });
+      
+      for(let section of sections){
+        const aircraftSelect = section.querySelector('.ac-type');
+        const notesField = section.querySelector('.ac-notes');
+        if(aircraftSelect && aircraftSelect.value === 'Other - Specify in Notes'){
+          if(!notesField || !notesField.value.trim()){
+            const sectionTitle = section.querySelector('.section-title h3').textContent;
+            if(notesField) {
+              notesField.classList.add('required-empty');
+              if(isValid) notesField.focus(); // Focus on first invalid field
+            }
+            if(isValid) alert(`Please specify the aircraft type in the notes field for ${sectionTitle}`);
+            isValid = false;
+          }
+        }
+      }
+      
+      return isValid;
+    }
+
     function validateFlightExperience() {
+      // First validate "Other" fields like the original form
+      if (!validateOtherFields()) {
+        return false;
+      }
+      
       // Check if at least one aircraft section has data
-      const sections = document.querySelectorAll('#sections .form-section');
+      const sections = document.querySelectorAll('#sections .section');
       let hasData = false;
       
       sections.forEach(section => {
@@ -2210,15 +2286,6 @@
         
         if (aircraftType) {
           hasData = true;
-        }
-        
-        // Check if "Other" is selected but no notes provided
-        if (aircraftType === 'Other - Specify in Notes') {
-          const notes = section.querySelector('.ac-notes')?.value;
-          if (!notes || !notes.trim()) {
-            alert('Please specify the aircraft type in the notes field when "Other" is selected.');
-            return false;
-          }
         }
       });
       
@@ -2232,24 +2299,88 @@
 
     // Validate documentation
     function validateDocumentation() {
-      const requiredFiles = ['licenseFile', 'medicalFile'];
-      let isValid = true;
+      const requiredFields = [
+        { id: 'licenseType', label: 'License Type' },
+        { id: 'licenseNumber', label: 'License Number' },
+        { id: 'licenseIssue', label: 'License Issue Date' },
+        { id: 'licenseExpiry', label: 'License Expiry Date' },
+        { id: 'medicalClass', label: 'Medical Class' },
+        { id: 'medicalIssue', label: 'Medical Issue Date' },
+        { id: 'medicalExpiry', label: 'Medical Expiry Date' }
+      ];
       
-      requiredFiles.forEach(fileId => {
-        const fileInput = document.getElementById(fileId);
-        if (!fileInput.files || fileInput.files.length === 0) {
-          const uploadArea = fileInput.parentElement.querySelector('.upload-area');
-          uploadArea.style.borderColor = '#dc2626';
+      const requiredFiles = [
+        { id: 'licenseFile', label: 'License Document' },
+        { id: 'medicalFile', label: 'Medical Certificate' }
+      ];
+      
+      let isValid = true;
+      let firstInvalidField = null;
+      
+      // Clear previous validation styling
+      [...requiredFields, ...requiredFiles].forEach(({ id }) => {
+        const field = document.getElementById(id);
+        if (field) {
+          field.classList.remove('validation-error');
+          const errorMsg = field.parentElement?.querySelector('.error-message');
+          if (errorMsg) errorMsg.remove();
+        }
+      });
+      
+      // Validate required form fields
+      requiredFields.forEach(({ id, label }) => {
+        const field = document.getElementById(id);
+        if (field && !field.value.trim()) {
+          field.classList.add('validation-error');
+          
+          const errorMsg = document.createElement('span');
+          errorMsg.className = 'error-message';
+          errorMsg.textContent = `${label} is required`;
+          field.parentElement?.appendChild(errorMsg);
+          
+          if (isValid) firstInvalidField = field;
+          isValid = false;
+          
+          field.addEventListener('input', () => {
+            field.classList.remove('validation-error');
+            const msg = field.parentElement?.querySelector('.error-message');
+            if (msg) msg.remove();
+          }, { once: true });
+        }
+      });
+      
+      // Validate required file uploads
+      requiredFiles.forEach(({ id, label }) => {
+        const fileInput = document.getElementById(id);
+        if (fileInput && (!fileInput.files || fileInput.files.length === 0)) {
+          const formSection = fileInput.closest('.form-section');
+          if (formSection) {
+            formSection.style.borderColor = '#dc2626';
+            
+            // Create or update error message
+            let errorMsg = formSection.querySelector('.error-message');
+            if (!errorMsg) {
+              errorMsg = document.createElement('span');
+              errorMsg.className = 'error-message';
+              formSection.appendChild(errorMsg);
+            }
+            errorMsg.textContent = `${label} is required`;
+          }
+          
+          if (isValid) firstInvalidField = fileInput;
           isValid = false;
           
           fileInput.addEventListener('change', () => {
-            uploadArea.style.borderColor = '#e2e8f0';
+            if (formSection) formSection.style.borderColor = '';
+            const msg = formSection?.querySelector('.error-message');
+            if (msg) msg.remove();
           }, { once: true });
         }
       });
       
       if (!isValid) {
-        alert('Please upload all required documents before continuing.');
+        if (firstInvalidField) firstInvalidField.focus();
+        alert('Please complete all required fields and upload all required documents before continuing.');
       }
       
       return isValid;
@@ -2869,6 +3000,8 @@
     // Add event listeners
     document.addEventListener('click', (e) => {
       if (e.target.id === 'btnAddSection') {
+        // Validate before adding new section (from original)
+        if(!validateOtherFields()) return;
         addAircraftSection();
       }
       
@@ -2882,6 +3015,11 @@
     document.addEventListener('input', (e) => {
       if (e.target.classList.contains('hhmm')) {
         computeAll();
+      }
+      
+      // Clear validation styling when user types in notes field (from original)
+      if(e.target.classList.contains('ac-notes')){
+        e.target.classList.remove('required-empty');
       }
     });
 
