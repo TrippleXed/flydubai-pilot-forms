@@ -1708,7 +1708,8 @@
         });
         
         // Collect summary flight hours
-        const summaryInputs = document.querySelectorAll('#grandTotalHours').closest('tr').querySelectorAll('.hhmm');
+        const grandTotalElement = document.getElementById('grandTotalHours');
+        const summaryInputs = grandTotalElement ? grandTotalElement.closest('tr').querySelectorAll('.hhmm') : [];
         const summaryHours = {
           pic: summaryInputs[0]?.value || '0:00',
           sic: summaryInputs[1]?.value || '0:00',
@@ -1791,8 +1792,8 @@
         document.getElementById('dateOfBirth').value = info.dateOfBirth || '';
         document.getElementById('phoneNumber').value = info.phoneNumber || '';
         document.getElementById('designation').value = info.designation || '';
-        document.getElementById('expectedDateOfJoining').value = info.expectedDateOfJoining || '';
-        document.getElementById('previousEmployer').value = info.previousEmployer || '';
+        // expectedDateOfJoining field removed - skip this line
+        // previousEmployer field removed - skip this line
       }
       
       if (formData.flightExperience) {
