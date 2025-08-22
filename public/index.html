@@ -757,6 +757,51 @@
       margin-top: 16px;
     }
 
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 8px;
+    }
+    
+    .status-valid {
+      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      color: white;
+    }
+    
+    .status-expired {
+      background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+      color: white;
+    }
+    
+    .status-warning {
+      background: linear-gradient(135deg, #d97706 0%, #fbbf24 100%);
+      color: white;
+    }
+
+    .requirement-note {
+      background: linear-gradient(135deg, #fef7ed 0%, #fed7aa 100%);
+      border: 2px solid var(--flydubai-orange);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 16px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--flydubai-navy);
+      line-height: 1.5;
+    }
+
+    .requirement-note::before {
+      content: "📋 ";
+      font-weight: 700;
+      margin-right: 4px;
+    }
+
     .summary table th,
     .summary table td {
       border: 1px solid #ddd;
@@ -1183,13 +1228,10 @@
 
       <!-- Step 2: Flight Experience -->
       <div class="form-step" data-step="2">
-        <h2 class="step-title">✈️ Flight Experience by Aircraft Type</h2>
-        <p class="step-subtitle">Add your flight experience for each aircraft type you've flown. Click "Add Aircraft Type" to add multiple aircraft.</p>
-        
+        <h2 class="section-h">Flight Experience by Aircraft Type</h2>
         <div id="sections"></div>
-        
         <div class="controls no-print">
-          <button type="button" class="btn" id="btnAddSection">+ Add Aircraft Type</button>
+          <button class="btn" id="btnAddSection">+ Add another aircraft type</button>
         </div>
 
         <!-- Grand totals for all aircraft types -->
@@ -1233,7 +1275,7 @@
                   <td><input type="text" class="hhmm" placeholder="0:00"></td>
                   <td><input type="text" class="hhmm" placeholder="0:00"></td>
                   <td><input type="text" class="hhmm" placeholder="0:00"></td>
-                  <td style="background: linear-gradient(135deg, #e0f2fe 0%, #b3e5fc 100%); font-weight: bold;"><b id="grandTotalHours">0:00</b></td>
+                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
                 </tr>
               </tbody>
             </table>
@@ -1243,54 +1285,181 @@
 
       <!-- Step 3: Documentation -->
       <div class="form-step" data-step="3">
-        <h2 class="step-title">📋 Documentation</h2>
-        <p class="step-subtitle">Upload your required documents. All documents should be clear, legible, and in PDF format.</p>
-        
         <div class="form-section">
-          <div class="section-title">Required Documents</div>
-          
-          <div style="margin-bottom: 24px;">
-            <label>Pilot License <span class="required">*</span></label>
-            <div class="upload-area" onclick="document.getElementById('licenseFile').click()">
-              <div class="upload-icon">📄</div>
-              <p><strong>Click to upload</strong> or drag and drop your pilot license</p>
-              <p style="font-size: 12px; color: var(--muted);">PDF, max 10MB</p>
+          <h2 class="section-h">🛂 Pilot License (ATPL/CPL/PPL)</h2>
+          <div class="grid" style="grid-template-columns: 320px 200px 170px 170px;">
+            <div>
+              <label>License Type</label>
+              <select id="licenseType">
+                <option value="">Select License Type</option>
+                <option value="ATPL">ATPL (Airline Transport Pilot License)</option>
+                <option value="CPL">CPL (Commercial Pilot License)</option>
+                <option value="MPL">MPL (Multi-Crew Pilot License)</option>
+              </select>
             </div>
-            <input type="file" id="licenseFile" style="display: none;" accept=".pdf" onchange="handleFileUpload(this, 'license')">
-            <div id="licenseFileList" class="file-list"></div>
+            <div>
+              <label>License Number</label>
+              <input type="text" id="licenseNumber" placeholder="Enter license number" />
+            </div>
+            <div>
+              <label>Issue Date</label>
+              <input type="date" id="licenseIssue" onchange="calculateExpiry('license')" />
+            </div>
+            <div>
+              <label>Expiry Date</label>
+              <input type="date" id="licenseExpiry" onchange="checkValidity('license')" />
+            </div>
           </div>
-
-          <div style="margin-bottom: 24px;">
-            <label>Medical Certificate <span class="required">*</span></label>
-            <div class="upload-area" onclick="document.getElementById('medicalFile').click()">
-              <div class="upload-icon">🏥</div>
-              <p><strong>Click to upload</strong> or drag and drop your medical certificate</p>
-              <p style="font-size: 12px; color: var(--muted);">PDF, max 10MB</p>
+          <div class="grid" style="margin-top: 16px;">
+            <div>
+              <label>Upload Document</label>
+              <input type="file" id="licenseFile" accept=".pdf,.jpg,.png" />
             </div>
-            <input type="file" id="medicalFile" style="display: none;" accept=".pdf" onchange="handleFileUpload(this, 'medical')">
-            <div id="medicalFileList" class="file-list"></div>
+            <div></div>
+            <div></div>
+            <div></div>
           </div>
-
-          <div style="margin-bottom: 24px;">
-            <label>Logbook Pages</label>
-            <div class="upload-area" onclick="document.getElementById('logbookFile').click()">
-              <div class="upload-icon">📊</div>
-              <p><strong>Click to upload</strong> or drag and drop recent logbook pages</p>
-              <p style="font-size: 12px; color: var(--muted);">PDF, max 10MB</p>
-            </div>
-            <input type="file" id="logbookFile" style="display: none;" accept=".pdf" onchange="handleFileUpload(this, 'logbook')">
-            <div id="logbookFileList" class="file-list"></div>
+          <div id="licenseStatus"></div>
+          <div class="requirement-note">
+            <strong>Requirement:</strong> Current valid pilot license (ATPL/CPL/PPL) with appropriate aircraft type ratings. License must be valid for the duration of employment and recognized by UAE GCAA or convertible to UAE license.
           </div>
+        </div>
 
-          <div style="margin-bottom: 24px;">
-            <label>Resume/CV</label>
-            <div class="upload-area" onclick="document.getElementById('resumeFile').click()">
-              <div class="upload-icon">📝</div>
-              <p><strong>Click to upload</strong> or drag and drop your resume</p>
-              <p style="font-size: 12px; color: var(--muted);">PDF, max 10MB</p>
+        <div class="form-section">
+          <h2 class="section-h">🏥 Medical Certificate</h2>
+          <div class="grid" style="grid-template-columns: 250px 300px 170px 170px;">
+            <div>
+              <label>Medical Class</label>
+              <select id="medicalClass">
+                <option value="">Select Medical Class</option>
+                <option value="Class 1">Class 1 Medical Certificate</option>
+              </select>
             </div>
-            <input type="file" id="resumeFile" style="display: none;" accept=".pdf" onchange="handleFileUpload(this, 'resume')">
-            <div id="resumeFileList" class="file-list"></div>
+            <div>
+              <label>Issuing Medical Authority</label>
+              <select id="medicalAuthority">
+                <option value="">Select Aviation Medical Authority</option>
+                <option value="EASA">EASA (European Union Aviation Safety Agency)</option>
+                <option value="FAA USA">FAA (Federal Aviation Administration - USA)</option>
+                <option value="GCAA UAE">GCAA UAE (General Civil Aviation Authority)</option>
+                <option value="DGCA India">DGCA India (Directorate General of Civil Aviation)</option>
+                <option value="CASA Australia">CASA (Civil Aviation Safety Authority - Australia)</option>
+                <option value="CAA UK">CAA UK (Civil Aviation Authority - United Kingdom)</option>
+                <option value="TCCA Canada">Transport Canada Civil Aviation</option>
+                <option value="Other">Other Aviation Medical Authority</option>
+              </select>
+            </div>
+            <div>
+              <label>Issue Date</label>
+              <input type="date" id="medicalIssue" onchange="calculateExpiry('medical')" />
+            </div>
+            <div>
+              <label>Expiry Date</label>
+              <input type="date" id="medicalExpiry" onchange="checkValidity('medical')" />
+            </div>
+          </div>
+          <div class="grid" style="margin-top: 16px; grid-template-columns: 250px 300px 170px 170px;">
+            <div>
+              <label>Upload Document</label>
+              <input type="file" id="medicalFile" accept=".pdf,.jpg,.png" />
+            </div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+          <div id="medicalStatus"></div>
+          <div class="requirement-note">
+            <strong>Requirement:</strong> Valid Class 1 medical certificate issued within the last 12 months. Must meet ICAO medical standards and be valid for commercial aviation operations. Class 2 medical certificates are not accepted.
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="section-h">📻 Radio Operator License</h2>
+          <div class="grid" style="grid-template-columns: 250px 300px 170px 170px;">
+            <div>
+              <label>ROL Certificate Number</label>
+              <input type="text" id="rolNumber" placeholder="Enter ROL certificate number" />
+            </div>
+            <div>
+              <label>Issuing Radio Authority</label>
+              <select id="rolAuthority">
+                <option value="">Select Radio Authority</option>
+                <option value="EASA">EASA (European Union Aviation Safety Agency)</option>
+                <option value="FAA USA">FAA (Federal Aviation Administration - USA)</option>
+                <option value="GCAA UAE">GCAA UAE (General Civil Aviation Authority)</option>
+                <option value="DGCA India">DGCA India (Directorate General of Civil Aviation)</option>
+                <option value="CASA Australia">CASA (Civil Aviation Safety Authority - Australia)</option>
+                <option value="CAA UK">CAA UK (Civil Aviation Authority - United Kingdom)</option>
+                <option value="TCCA Canada">Transport Canada Civil Aviation</option>
+                <option value="Other">Other Radio Authority</option>
+              </select>
+            </div>
+            <div>
+              <label>Issue Date</label>
+              <input type="date" id="rolIssue" onchange="calculateExpiry('rol')" />
+            </div>
+            <div>
+              <label>Expiry Date</label>
+              <input type="date" id="rolExpiry" onchange="checkValidity('rol')" />
+            </div>
+          </div>
+          <div class="grid" style="margin-top: 16px; grid-template-columns: 250px 300px 170px 170px;">
+            <div>
+              <label>Upload Document</label>
+              <input type="file" id="rolFile" accept=".pdf,.jpg,.png" />
+            </div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+          <div id="rolStatus"></div>
+          <div class="requirement-note">
+            <strong>Requirement:</strong> Valid Radio Operator License (ROL) certificate with appropriate endorsements for commercial aviation operations. Certificate must be current and recognized internationally.
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="section-h">📘 Passport</h2>
+          <div class="grid">
+            <div>
+              <label>Passport Number</label>
+              <input type="text" id="passportNumber" placeholder="Enter passport number" />
+            </div>
+            <div>
+              <label>Passport Nationality</label>
+              <select id="passportNationality" style="width: 200px;">
+                <option value="">Select Passport</option>
+                <option value="American">American</option>
+                <option value="British">British</option>
+                <option value="Canadian">Canadian</option>
+                <option value="Australian">Australian</option>
+                <option value="Indian">Indian</option>
+                <option value="Pakistani">Pakistani</option>
+                <option value="Emirati">Emirati (UAE)</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label>Issue Date</label>
+              <input type="date" id="passportIssue" onchange="calculateExpiry('passport')" />
+            </div>
+            <div>
+              <label>Upload Document</label>
+              <input type="file" id="passportFile" accept=".pdf,.jpg,.png" />
+            </div>
+          </div>
+          <div class="grid" style="margin-top: 16px; grid-template-columns: 170px 170px 250px 250px;">
+            <div>
+              <label>Expiry Date</label>
+              <input type="date" id="passportExpiry" onchange="checkValidity('passport')" />
+            </div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+          <div id="passportStatus"></div>
+          <div class="requirement-note">
+            <strong>Requirement:</strong> Valid passport with minimum 6 months validity remaining after expected date of joining. Passport must have sufficient blank pages for visa stamps and be in good condition.
           </div>
         </div>
       </div>
@@ -2635,6 +2804,54 @@
         setTimeout(initializeAircraftSections, 100);
       }
     };
+
+    // Check document validity based on expiry dates
+    function checkValidity(docType) {
+      const today = new Date();
+      const expiryInput = document.getElementById(docType + 'Expiry');
+      const statusDiv = document.getElementById(docType + 'Status');
+      
+      if (!expiryInput.value || !statusDiv) return;
+      
+      const expiryDate = new Date(expiryInput.value);
+      const daysUntilExpiry = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+      
+      statusDiv.innerHTML = '';
+      
+      if (daysUntilExpiry < 0) {
+        statusDiv.innerHTML = '<span class="status-indicator status-expired">EXPIRED</span>';
+      } else if (daysUntilExpiry <= 30) {
+        statusDiv.innerHTML = '<span class="status-indicator status-warning">EXPIRES SOON</span>';
+      } else {
+        statusDiv.innerHTML = '<span class="status-indicator status-valid">VALID</span>';
+      }
+    }
+
+    // Calculate expiry for documents with standard validity periods
+    function calculateExpiry(docType) {
+      const issueInput = document.getElementById(docType + 'Issue');
+      const expiryInput = document.getElementById(docType + 'Expiry');
+      
+      if (!issueInput.value) return;
+      
+      const issueDate = new Date(issueInput.value);
+      let expiryDate = new Date(issueDate);
+      
+      // Standard validity periods
+      switch(docType) {
+        case 'medical':
+          expiryDate.setMonth(expiryDate.getMonth() + 12); // 12 months
+          break;
+        case 'rol':
+          expiryDate.setFullYear(expiryDate.getFullYear() + 5); // 5 years
+          break;
+        default:
+          return; // Don't auto-calculate for other documents
+      }
+      
+      expiryInput.value = expiryDate.toISOString().split('T')[0];
+      checkValidity(docType);
+    }
 
     // Initialize the form when page loads
     document.addEventListener('DOMContentLoaded', initializeForm);
