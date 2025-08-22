@@ -2750,6 +2750,16 @@
           showStep(currentStep);
           document.getElementById('recoveryBanner').classList.remove('show');
           showAutoSaveStatus('Restored previous session', 'saved');
+          
+          // Check if there were previously uploaded files and show notification
+          const hasUploadedFiles = data.formData?.documentation && Object.values(data.formData.documentation).some(value => 
+            typeof value === 'string' && value.includes('.') && value.length > 3
+          );
+          
+          if (hasUploadedFiles) {
+            showFileRestorationNotification();
+          }
+          
           console.log('✅ Session recovered successfully');
         } catch (error) {
           console.error('❌ Error recovering session:', error);
@@ -3275,7 +3285,118 @@
         }
       }
       
+      // Step 4: Restore file upload indicators
+      if (formData.documentation) {
+        console.log('📎 Restoring file upload indicators...');
+        restoreFileUploadIndicators(formData.documentation);
+      }
+      
       console.log('✅ === FORM FIELDS POPULATION COMPLETE ===');
+    }
+    
+    // Restore file upload indicators for previously uploaded files
+    function restoreFileUploadIndicators(documentation) {
+      const fileFields = [
+        { id: 'licenseFile', key: 'licenseFile', label: 'Pilot License' },
+        { id: 'medicalFile', key: 'medicalFile', label: 'Medical Certificate' },
+        { id: 'rolFile', key: 'rolFile', label: 'Radio Operator License' },
+        { id: 'passportFile', key: 'passportFile', label: 'Passport' },
+        { id: 'visaFile', key: 'visaFile', label: 'UAE Visa' },
+        { id: 'flightHoursFile', key: 'flightHoursFile', label: 'Flight Hours Verification' },
+        { id: 'licenseVerificationFile', key: 'licenseVerificationFile', label: 'License Verification' },
+        { id: 'incidentLetterFile', key: 'incidentLetterFile', label: 'No Incident Letter' },
+        { id: 'emiratesIdFile', key: 'emiratesIdFile', label: 'Emirates ID' },
+        { id: 'englishFile', key: 'englishFile', label: 'English Proficiency' }
+      ];
+      
+      fileFields.forEach(({ id, key, label }) => {
+        const fileName = documentation[key];
+        if (fileName) {
+          const fileInput = document.getElementById(id);
+          if (fileInput) {
+            // Create or update the file restoration indicator
+            let indicator = fileInput.parentElement.querySelector('.file-restoration-indicator');
+            if (!indicator) {
+              indicator = document.createElement('div');
+              indicator.className = 'file-restoration-indicator';
+              indicator.style.cssText = `
+                margin-top: 8px;
+                padding: 8px 12px;
+                background: #fff3cd;
+                border: 1px solid #ffc107;
+                border-radius: 6px;
+                font-size: 12px;
+                color: #856404;
+              `;
+              fileInput.parentElement.appendChild(indicator);
+            }
+            
+            indicator.innerHTML = `
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="color: #dc6545;">⚠️</span>
+                <div>
+                  <div style="font-weight: 600;">Previously uploaded: ${fileName}</div>
+                  <div style="font-size: 11px; opacity: 0.8;">Please re-upload this file to continue</div>
+                </div>
+              </div>
+            `;
+            
+            // Hide the indicator when a new file is selected
+            fileInput.addEventListener('change', function() {
+              if (this.files && this.files[0]) {
+                indicator.style.display = 'none';
+              }
+            }, { once: true });
+            
+            console.log(`📎 Added restoration indicator for ${label}: ${fileName}`);
+          }
+        }
+      });
+    }
+    
+    // Show notification about file restoration requirements
+    function showFileRestorationNotification() {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        background: #fef3c7;
+        border: 2px solid #f59e0b;
+        border-radius: 12px;
+        padding: 16px 20px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        z-index: 10000;
+        max-width: 400px;
+        font-size: 14px;
+        color: #92400e;
+      `;
+      
+      notification.innerHTML = `
+        <div style="display: flex; align-items: start; gap: 12px;">
+          <span style="font-size: 20px; margin-top: 2px;">📎</span>
+          <div>
+            <div style="font-weight: 600; margin-bottom: 8px;">Files Need Re-uploading</div>
+            <div style="line-height: 1.4; margin-bottom: 12px;">
+              Your form data has been restored, but uploaded files need to be re-selected for security reasons. 
+              Look for yellow warning boxes next to file upload fields.
+            </div>
+            <button onclick="this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode)" 
+                    style="background: #f59e0b; border: none; color: white; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;">
+              Got it
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(notification);
+      
+      // Auto-remove after 15 seconds
+      setTimeout(() => {
+        if (notification.parentNode) {
+          notification.parentNode.removeChild(notification);
+        }
+      }, 15000);
     }
 
     // Check if form has unsaved changes
