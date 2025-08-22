@@ -553,35 +553,35 @@
       margin-bottom: 30px;
     }
 
-    .experience-table {
+    .section table {
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 20px;
       background: white;
     }
 
-    .experience-table th,
-    .experience-table td {
+    .section table th,
+    .section table td {
       border: 1px solid #ddd;
       padding: 8px;
       text-align: center;
       vertical-align: middle;
     }
 
-    .experience-table th {
+    .section table th {
       background-color: var(--flydubai-blue);
       color: white;
       font-weight: bold;
       font-size: 14px;
     }
 
-    .experience-table tr:nth-child(even) {
+    .section table tr:nth-child(even) {
       background-color: #f9f9f9;
     }
 
-    .experience-table input[type="text"],
-    .experience-table input[type="date"],
-    .experience-table select {
+    .section table input[type="text"],
+    .section table input[type="date"],
+    .section table select {
       width: 100%;
       padding: 6px;
       border: 1px solid #ccc;
@@ -591,9 +591,9 @@
       transform: none;
     }
 
-    .experience-table input[type="text"]:focus,
-    .experience-table input[type="date"]:focus,
-    .experience-table select:focus {
+    .section table input[type="text"]:focus,
+    .section table input[type="date"]:focus,
+    .section table select:focus {
       border-color: var(--flydubai-blue);
       box-shadow: 0 0 3px rgba(59, 130, 246, 0.2);
       transform: none;
@@ -1834,9 +1834,10 @@
     // Add aircraft section functionality
     function addAircraftSection(b737Type = null, locked = false) {
       sectionCount++;
-      const sec = document.createElement('div');
+      const sec = document.createElement('section');
       sec.className = 'section';
       sec.setAttribute('data-section-id', sectionCount);
+      sec.dataset.locked = locked ? '1' : '0';
       
       const label = `Aircraft Type ${sectionCount}`;
       const typeText = b737Type ? (b737Type === 'ng-max' ? 'Boeing 737 NG/MAX' : 'Boeing 737 Classic (300-500)') : '';
@@ -2132,10 +2133,10 @@
       sec.innerHTML = `
         <div class="section-title">
           <h3>${label}${typeText?': '+typeText:''}</h3>
-          <div class="controls">${locked?'' : '<button class="btn warn" data-remove-section>Remove</button>'}</div>
+          <div class="controls no-print">${locked?'' : '<button class="btn warn" data-remove-section>Remove</button>'}</div>
         </div>
         ${locked && !b737Type ? '' : aircraftDropdown}
-        <table class="experience-table">
+        <table>
           <thead>
             <tr>
               <th><b>Flight Role</b></th>
@@ -2310,13 +2311,239 @@
       }
     });
 
-    // Add default Boeing 737 sections on form load
+    // Add default Boeing 737 sections on form load using original structure
     function initializeAircraftSections() {
       if (currentStep === 2 && document.getElementById('sections').children.length === 0) {
-        addAircraftSection('ng-max', true);
-        addAircraftSection('classic', true);
-        addAircraftSection();
+        const sectionsWrap = document.getElementById('sections');
+        sectionsWrap.appendChild(makeAircraftSection({label:'Aircraft Type 1', typeText:'', locked:true, b737Type:'ng-max'}));
+        sectionsWrap.appendChild(makeAircraftSection({label:'Aircraft Type 2', typeText:'', locked:true, b737Type:'classic'}));
+        sectionsWrap.appendChild(makeAircraftSection({label:'Aircraft Type 3', typeText:'', locked:false}));
       }
+    }
+
+    // Original makeAircraftSection function matching the original file exactly
+    function makeAircraftSection({label, typeText, locked=false, b737Type=null}) {
+      const id = ++sectionCount;
+      const sec = document.createElement('section');
+      sec.className = 'section'; 
+      sec.dataset.sectionId = id; 
+      sec.dataset.locked = locked ? '1' : '0';
+      
+      let aircraftDropdown = '';
+      if(b737Type) {
+        // Special dropdown for Boeing 737 variants
+        aircraftDropdown = `
+        <div style="display: grid; grid-template-columns: 400px auto 1fr; gap: 16px; align-items: end;">
+          <div>
+            <select class="ac-type" ${locked ? 'disabled' : ''} style="${locked ? 'background-color: #f3f4f6; cursor: not-allowed;' : ''}">
+              ${b737Type === 'ng-max' ? `
+                <option value="Boeing 737 NG/MAX">Boeing 737 NG/MAX</option>
+              ` : `
+                <option value="Boeing 737 Classic (300-500)">Boeing 737 Classic (300-500)</option>
+              `}
+            </select>
+          </div>
+          <div class="heavy-jet-indicator" style="display: flex; align-items: center; background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: white; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; box-shadow: 0 2px 4px rgba(5, 150, 105, 0.3);">
+            ✈ >50T MTOW
+          </div>
+          <div class="notes-field" style="display: none;">
+            <label>Notes/Comments (Required if "Other" selected above)</label>
+            <input type="text" class="ac-notes" placeholder="Please specify aircraft type, model, or any additional details..." style="width: 100%; padding: 14px 16px; border-radius: 12px; border: 2px solid var(--line); background: #ffffff; color: var(--ink); font-family: inherit; font-size: 14px;" />
+          </div>
+        </div>`;
+      } else {
+        // Regular dropdown for other aircraft - using the same comprehensive list as original
+        aircraftDropdown = `
+        <div style="display: grid; grid-template-columns: 400px auto 1fr; gap: 16px; align-items: end;">
+          <div>
+            <select class="ac-type">
+              <option value="">Select Aircraft Type...</option>
+              <optgroup label="Boeing Commercial Aircraft">
+                <option value="Boeing 757-200">Boeing 757-200</option>
+                <option value="Boeing 757-300">Boeing 757-300</option>
+                <option value="Boeing 767-200">Boeing 767-200</option>
+                <option value="Boeing 767-300">Boeing 767-300</option>
+                <option value="Boeing 777-200">Boeing 777-200</option>
+                <option value="Boeing 777-300">Boeing 777-300</option>
+                <option value="Boeing 787-8">Boeing 787-8 Dreamliner</option>
+                <option value="Boeing 787-9">Boeing 787-9 Dreamliner</option>
+                <option value="Boeing 787-10">Boeing 787-10 Dreamliner</option>
+              </optgroup>
+              <optgroup label="Airbus Commercial Aircraft">
+                <option value="Airbus A319">Airbus A319</option>
+                <option value="Airbus A320">Airbus A320</option>
+                <option value="Airbus A321">Airbus A321</option>
+                <option value="Airbus A330-200">Airbus A330-200</option>
+                <option value="Airbus A330-300">Airbus A330-300</option>
+                <option value="Airbus A340-200">Airbus A340-200</option>
+                <option value="Airbus A340-300">Airbus A340-300</option>
+                <option value="Airbus A350-900">Airbus A350-900</option>
+                <option value="Airbus A350-1000">Airbus A350-1000</option>
+                <option value="Airbus A380">Airbus A380</option>
+              </optgroup>
+              <optgroup label="Regional Jets & Commercial Aircraft">
+                <option value="McDonnell Douglas MD-80">McDonnell Douglas MD-80</option>
+                <option value="McDonnell Douglas MD-90">McDonnell Douglas MD-90</option>
+                <option value="Embraer E-Jet E170">Embraer E-Jet E170</option>
+                <option value="Embraer E-Jet E175">Embraer E-Jet E175</option>
+                <option value="Embraer E-Jet E190">Embraer E-Jet E190</option>
+                <option value="Embraer E-Jet E195">Embraer E-Jet E195</option>
+                <option value="Bombardier CRJ-100">Bombardier CRJ-100</option>
+                <option value="Bombardier CRJ-200">Bombardier CRJ-200</option>
+                <option value="Bombardier CRJ-700">Bombardier CRJ-700</option>
+                <option value="Bombardier CRJ-900">Bombardier CRJ-900</option>
+                <option value="Bombardier CRJ-1000">Bombardier CRJ-1000</option>
+                <option value="British Aerospace 146">British Aerospace BAe 146</option>
+                <option value="Avro RJ70">Avro RJ70</option>
+                <option value="Avro RJ85">Avro RJ85</option>
+                <option value="Avro RJ100">Avro RJ100</option>
+                <option value="Dornier 328JET">Dornier 328JET</option>
+                <option value="Fairchild Metro III">Fairchild Metro III</option>
+                <option value="Jetstream 41">BAe Jetstream 41</option>
+                <option value="Embraer EMB-120">Embraer EMB-120 Brasilia</option>
+              </optgroup>
+              <optgroup label="Cargo Aircraft">
+                <option value="Boeing 747-400F">Boeing 747-400F Freighter</option>
+                <option value="Boeing 767-300F">Boeing 767-300F Freighter</option>
+                <option value="Boeing 777F">Boeing 777F Freighter</option>
+                <option value="Airbus A330-200F">Airbus A330-200F Freighter</option>
+                <option value="McDonnell Douglas MD-11F">McDonnell Douglas MD-11F</option>
+              </optgroup>
+              <optgroup label="Business Jets & Private Aircraft">
+                <option value="Gulfstream G150">Gulfstream G150</option>
+                <option value="Gulfstream G280">Gulfstream G280</option>
+                <option value="Gulfstream G450">Gulfstream G450</option>
+                <option value="Gulfstream G500">Gulfstream G500</option>
+                <option value="Gulfstream G550">Gulfstream G550</option>
+                <option value="Gulfstream G600">Gulfstream G600</option>
+                <option value="Gulfstream G650">Gulfstream G650</option>
+                <option value="Gulfstream G700">Gulfstream G700</option>
+                <option value="Bombardier Global 5000">Bombardier Global 5000</option>
+                <option value="Bombardier Global 5500">Bombardier Global 5500</option>
+                <option value="Bombardier Global 6000">Bombardier Global 6000</option>
+                <option value="Bombardier Global 6500">Bombardier Global 6500</option>
+                <option value="Bombardier Global 7500">Bombardier Global 7500</option>
+                <option value="Bombardier Challenger 300">Bombardier Challenger 300</option>
+                <option value="Bombardier Challenger 350">Bombardier Challenger 350</option>
+                <option value="Bombardier Challenger 600">Bombardier Challenger 600</option>
+                <option value="Bombardier Challenger 650">Bombardier Challenger 650</option>
+                <option value="Dassault Falcon 2000">Dassault Falcon 2000</option>
+                <option value="Dassault Falcon 2000EX">Dassault Falcon 2000EX</option>
+                <option value="Dassault Falcon 2000LX">Dassault Falcon 2000LX</option>
+                <option value="Dassault Falcon 7X">Dassault Falcon 7X</option>
+                <option value="Dassault Falcon 8X">Dassault Falcon 8X</option>
+                <option value="Dassault Falcon 900">Dassault Falcon 900</option>
+                <option value="Cessna Citation Longitude">Cessna Citation Longitude</option>
+                <option value="Cessna Citation X">Cessna Citation X</option>
+                <option value="Embraer Lineage 1000">Embraer Lineage 1000</option>
+                <option value="Embraer Praetor 500">Embraer Praetor 500</option>
+                <option value="Embraer Praetor 600">Embraer Praetor 600</option>
+              </optgroup>
+              <optgroup label="Military & Special Aircraft">
+                <option value="Lockheed C-130 Hercules">Lockheed C-130 Hercules</option>
+                <option value="Boeing KC-135 Stratotanker">Boeing KC-135 Stratotanker</option>
+                <option value="Airbus A400M Atlas">Airbus A400M Atlas</option>
+                <option value="Boeing E-3 AWACS">Boeing E-3 AWACS</option>
+                <option value="Lockheed P-3 Orion">Lockheed P-3 Orion</option>
+                <option value="Boeing P-8 Poseidon">Boeing P-8 Poseidon</option>
+              </optgroup>
+              <optgroup label="Vintage & Classic Aircraft">
+                <option value="Douglas DC-3">Douglas DC-3</option>
+                <option value="Boeing 727">Boeing 727</option>
+                <option value="McDonnell Douglas DC-9">McDonnell Douglas DC-9</option>
+                <option value="Lockheed L-1011 TriStar">Lockheed L-1011 TriStar</option>
+                <option value="Sud Aviation Caravelle">Sud Aviation Caravelle</option>
+                <option value="BAC One-Eleven">BAC One-Eleven</option>
+                <option value="Fokker F28">Fokker F28</option>
+                <option value="Fokker 100">Fokker 100</option>
+              </optgroup>
+              <optgroup label="Other Aircraft Types">
+                <option value="Glider">Glider/Sailplane</option>
+                <option value="Ultralight">Ultralight Aircraft</option>
+                <option value="Experimental">Experimental Aircraft</option>
+                <option value="Other - Specify in Notes">Other - Specify in Notes</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="heavy-jet-indicator" style="display: none; align-items: center; background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: white; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; box-shadow: 0 2px 4px rgba(5, 150, 105, 0.3);">
+            ✈ >50T MTOW
+          </div>
+          <div class="notes-field" style="display: none;">
+            <label>Notes/Comments (Required if "Other" selected above)</label>
+            <input type="text" class="ac-notes" placeholder="Please specify aircraft type, model, or any additional details..." style="width: 100%; padding: 14px 16px; border-radius: 12px; border: 2px solid var(--line); background: #ffffff; color: var(--ink); font-family: inherit; font-size: 14px;" />
+          </div>
+        </div>`;
+      }
+      
+      sec.innerHTML = `
+        <div class="section-title">
+          <h3>${label}${typeText?': '+typeText:''}</h3>
+          <div class="controls no-print">${locked?'' : '<button class="btn warn" data-remove-section>Remove</button>'}</div>
+        </div>
+        ${locked && !b737Type ? '' : aircraftDropdown}
+        <table>
+          <thead>
+            <tr>
+              <th><b>Flight Role</b></th>
+              <th><b>Total Hours</b><span class="sub"><b>(HH:MM)</b></span></th>
+              <th><b>Total Block Hours in the Last 12 Months</b><span class="sub"><b>(HH:MM)</b></span></th>
+              <th><b>Date of First Flight</b><span class="sub"><b>(Last 12 Months)</b></span></th>
+              <th><b>Date of Last Flight</b><span class="sub"><b>(Last 12 Months)</b></span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="flight-role"><strong>PIC</strong></td>
+              <td><input type="text" class="hhmm totHours" placeholder="0:00" /></td>
+              <td><input type="text" class="hhmm blk12" placeholder="0:00" /></td>
+              <td>
+                <div class="date-cell">
+                  <input type="date" class="date-inp" />
+                  <span class="date-print"></span>
+                </div>
+              </td>
+              <td>
+                <div class="date-cell">
+                  <input type="date" class="date-inp" />
+                  <span class="date-print"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="flight-role">SIC</td>
+              <td><input type="text" class="hhmm totHours" placeholder="0:00" /></td>
+              <td><input type="text" class="hhmm blk12" placeholder="0:00" /></td>
+              <td>
+                <div class="date-cell">
+                  <input type="date" class="date-inp" />
+                  <span class="date-print"></span>
+                </div>
+              </td>
+              <td>
+                <div class="date-cell">
+                  <input type="date" class="date-inp" />
+                  <span class="date-print"></span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="footer-fields">
+          <div>
+            <label>Total Combined Block Hours (HH:MM)</label>
+            <div class="kpi"><b class="combined">0:00</b></div>
+          </div>
+          <div>
+            <label>Total Multi‑Pilot Block Hours (HH:MM)</label>
+            <input type="text" class="hhmm mp" placeholder="0:00" />
+          </div>
+          <div>
+            <label>Total Night Hours (HH:MM)</label>
+            <input type="text" class="hhmm night" placeholder="0:00" />
+          </div>
+        </div>
+      `;
+      return sec;
     }
 
     // Update the showStep function to initialize aircraft sections
