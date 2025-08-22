@@ -2649,9 +2649,30 @@
       }
     }
 
-    // Original makeAircraftSection function matching the original file exactly
-    function makeAircraftSection({label, typeText, locked=false, b737Type=null}) {
-      const id = ++sectionCount;
+    // ===== Utilities =====
+    function parseHHMM(str){ if(!str) return 0; const m = String(str).trim().match(/^\s*(\d+)\s*:\s*(\d{1,2})\s*$/); if(!m) return 0; let h = parseInt(m[1],10)||0; let mm = parseInt(m[2],10)||0; h += Math.floor(mm/60); mm = mm % 60; return h*60 + mm; }
+    function toHHMM(totalMinutes){ totalMinutes = Math.max(0, Math.floor(totalMinutes||0)); const h = Math.floor(totalMinutes/60); const m = totalMinutes % 60; return h+":"+(m<10?"0"+m:m); }
+    function padHHMM(el){ const v = el.value.trim(); const mins = parseHHMM(v); el.value = mins ? toHHMM(mins) : ""; }
+    const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]; function toDDMMMYYYY(iso){ if(!iso) return ""; const d = new Date(iso); if(Number.isNaN(d.getTime())) return ""; const dd = String(d.getDate()).padStart(2,'0'); const mmm = MONTHS[d.getMonth()]; const yyyy = d.getFullYear(); return `${dd}-${mmm}-${yyyy}`; }
+
+    // Heavy jet detection function from original file
+    function isHeavyJet(aircraftType) {
+      const heavyJets = [
+        'Boeing 757-200', 'Boeing 757-300', 'Boeing 767-200', 'Boeing 767-300', 
+        'Boeing 777-200', 'Boeing 777-300', 'Boeing 787-8', 'Boeing 787-9', 'Boeing 787-10',
+        'Airbus A330-200', 'Airbus A330-300', 'Airbus A340-200', 'Airbus A340-300',
+        'Airbus A350-900', 'Airbus A350-1000', 'Airbus A380',
+        'Boeing 747-400F', 'Boeing 767-300F', 'Boeing 777F', 'Airbus A330-200F', 'McDonnell Douglas MD-11F'
+      ];
+      return heavyJets.includes(aircraftType);
+    }
+
+    // ===== Sections builder =====
+    let sectionCounter = 0;
+    const sectionsWrap = document.getElementById('sections');
+    
+    function makeAircraftSection({label, typeText, locked=false, b737Type=null}){
+      const id = ++sectionCounter;
       const sec = document.createElement('section');
       sec.className = 'section'; 
       sec.dataset.sectionId = id; 
@@ -2930,6 +2951,71 @@
       expiryInput.value = expiryDate.toISOString().split('T')[0];
       checkValidity(docType);
     }
+
+    // Original computeAll function from the original file
+    function computeAll(){
+      let gtCombined = 0, gtMP = 0, gtNight = 0;
+      sectionsWrap.querySelectorAll('.section').forEach(sec=>{
+        let combined = 0;
+        sec.querySelectorAll('input.totHours').forEach(inp=> combined += parseHHMM(inp.value));
+        const combinedEl = sec.querySelector('.combined');
+        if(combinedEl) combinedEl.textContent = toHHMM(combined);
+        gtCombined += combined;
+        sec.querySelectorAll('input.mp').forEach(inp=> gtMP += parseHHMM(inp.value));
+        sec.querySelectorAll('input.night').forEach(inp=> gtNight += parseHHMM(inp.value));
+      });
+      document.getElementById('gtCombined').textContent = toHHMM(gtCombined);
+      document.getElementById('gtMP').textContent = toHHMM(gtMP);
+      document.getElementById('gtNight').textContent = toHHMM(gtNight);
+    }
+
+    // Original event listeners from the original file
+    document.addEventListener('input', (e)=>{
+      const t = e.target;
+      if(t.classList.contains('hhmm')){ computeAll(); }
+      if(t.classList.contains('date-inp')){ const span = t.closest('.date-cell').querySelector('.date-print'); span.textContent = toDDMMMYYYY(t.value); }
+      if(t.id === 'pilotName'){ const typed = document.getElementById('typedSig'); if(typed && !typed.value) typed.value = t.value; }
+      // Show/hide notes field and heavy jet indicator based on aircraft type selection
+      if(t.classList.contains('ac-type')){
+        const section = t.closest('.section');
+        const notesField = section.querySelector('.notes-field');
+        const heavyJetIndicator = section.querySelector('.heavy-jet-indicator');
+        
+        // Handle notes field
+        if(notesField){
+          if(t.value === 'Other - Specify in Notes'){
+            notesField.style.display = 'block';
+          } else {
+            notesField.style.display = 'none';
+            // Clear the notes field when hiding
+            const textarea = notesField.querySelector('.ac-notes');
+            if(textarea) {
+              textarea.value = '';
+              textarea.classList.remove('required-empty');
+            }
+          }
+        }
+        
+        // Handle heavy jet indicator
+        if(heavyJetIndicator){
+          if(isHeavyJet(t.value)){
+            heavyJetIndicator.style.display = 'flex';
+          } else {
+            heavyJetIndicator.style.display = 'none';
+          }
+        }
+      }
+      // Clear validation styling when user types in notes field
+      if(t.classList.contains('ac-notes')){
+        t.classList.remove('required-empty');
+      }
+    });
+
+    document.addEventListener('blur', (e)=>{
+      const t = e.target;
+      if(t.classList && t.classList.contains('hhmm')){ padHHMM(t); computeAll(); }
+      if(t.classList && t.classList.contains('date-inp')){ const span = t.closest('.date-cell').querySelector('.date-print'); span.textContent = toDDMMMYYYY(t.value); }
+    }, true);
 
     // Initialize the form when page loads
     document.addEventListener('DOMContentLoaded', initializeForm);
