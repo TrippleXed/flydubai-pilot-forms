@@ -1902,9 +1902,6 @@
       console.log('✅ Session cleared successfully');
     }
 
-    // Make functions globally accessible for onclick handlers
-    window.recoverSession = recoverSession;
-    window.clearSession = clearSession;
 
     // Setup auto-save functionality
     function setupAutoSave() {
@@ -3404,6 +3401,12 @@
       if(t.classList && t.classList.contains('hhmm')){ padHHMM(t); computeAll(); }
       if(t.classList && t.classList.contains('date-inp')){ const span = t.closest('.date-cell').querySelector('.date-print'); span.textContent = toDDMMMYYYY(t.value); }
     }, true);
+
+    // Make functions globally accessible
+    window.nextStep = nextStep;
+    window.previousStep = previousStep;
+    window.recoverSession = recoverSession;
+    window.clearSession = clearSession;
 
     // Initialize the form when page loads
     document.addEventListener('DOMContentLoaded', () => {
