@@ -283,6 +283,32 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 0 0 3px rgba(59, 130, 246, 0.1);
       transform: translateY(-1px);
     }
+
+    /* Date picker specific styling for personal information */
+    .form-step[data-step="1"] input[type="date"] {
+      width: 200px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    /* Make the entire date input clickable */
+    .form-step[data-step="1"] input[type="date"]::-webkit-calendar-picker-indicator {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: auto;
+      height: auto;
+      color: transparent;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    /* Firefox date picker styling */
+    .form-step[data-step="1"] input[type="date"]::-moz-calendar-picker-indicator {
+      cursor: pointer;
+    }
     
     .required {
       color: var(--expired);
