@@ -2986,6 +2986,20 @@
             dates,
             hasData: !!(aircraftType || notes || Object.values(flightHours).some(h => h !== '0:00') || dates.picFrom || dates.picTo || dates.sicFrom || dates.sicTo)
           });
+          console.log(`🔍 Section ${index + 1} detailed flight hours:`, {
+            picTotal: flightHours.picTotal,
+            picBlock: flightHours.picBlock, 
+            sicTotal: flightHours.sicTotal,
+            sicBlock: flightHours.sicBlock,
+            multiPilot: flightHours.multiPilot,
+            night: flightHours.night
+          });
+          console.log(`📅 Section ${index + 1} detailed dates:`, {
+            picFrom: dates.picFrom,
+            picTo: dates.picTo,
+            sicFrom: dates.sicFrom,
+            sicTo: dates.sicTo
+          });
           
           aircraftSections.push({
             aircraftType,
@@ -3267,6 +3281,8 @@
         
         sections.forEach((sectionData, index) => {
           console.log(`🛩️ Restoring section ${index + 1}:`, sectionData);
+          console.log(`🔍 Section ${index + 1} restoration - flight hours to restore:`, sectionData.flightHours);
+          console.log(`📅 Section ${index + 1} restoration - dates to restore:`, sectionData.dates);
           
           // Determine if this is a locked section based on aircraft type
           const isLocked = sectionData.aircraftType === 'Boeing 737 NG/MAX' || sectionData.aircraftType === 'Boeing 737 Classic (300-500)';
