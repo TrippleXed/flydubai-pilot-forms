@@ -4354,7 +4354,51 @@
         });
       }
       
-      console.log('✅ Authority dropdown handlers set up completed');;
+      console.log('✅ Authority dropdown handlers set up completed');
+      
+      // ===== Enter Key Navigation for Time Fields =====
+      console.log('🔗 Setting up Enter key navigation for time fields...');
+      
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && e.target.classList.contains('hhmm')) {
+          e.preventDefault(); // Prevent form submission
+          
+          // Find all time fields (hhmm class) in the current section
+          const currentSection = e.target.closest('.section') || document;
+          const timeFields = Array.from(currentSection.querySelectorAll('.hhmm'));
+          const currentIndex = timeFields.indexOf(e.target);
+          
+          if (currentIndex !== -1 && currentIndex < timeFields.length - 1) {
+            // Move to next time field in the same section
+            timeFields[currentIndex + 1].focus();
+            timeFields[currentIndex + 1].select();
+          } else {
+            // If it's the last field in the section, try to find the next section's first time field
+            const allSections = Array.from(document.querySelectorAll('.section'));
+            const currentSectionIndex = allSections.indexOf(e.target.closest('.section'));
+            
+            if (currentSectionIndex !== -1 && currentSectionIndex < allSections.length - 1) {
+              const nextSection = allSections[currentSectionIndex + 1];
+              const nextSectionTimeFields = nextSection.querySelectorAll('.hhmm');
+              if (nextSectionTimeFields.length > 0) {
+                nextSectionTimeFields[0].focus();
+                nextSectionTimeFields[0].select();
+              }
+            } else {
+              // If no next section, try to find any time field after the current one in the whole document
+              const allTimeFields = Array.from(document.querySelectorAll('.hhmm'));
+              const globalCurrentIndex = allTimeFields.indexOf(e.target);
+              if (globalCurrentIndex !== -1 && globalCurrentIndex < allTimeFields.length - 1) {
+                allTimeFields[globalCurrentIndex + 1].focus();
+                allTimeFields[globalCurrentIndex + 1].select();
+              }
+            }
+          }
+        }
+      });
+      
+      console.log('✅ Enter key navigation set up completed');
+      
       window.nextStep = nextStep;
       window.previousStep = previousStep;
       window.recoverSession = recoverSession;
