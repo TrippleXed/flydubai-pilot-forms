@@ -706,6 +706,93 @@
     .remove-aircraft:hover {
       background: #b91c1c;
     }
+
+    /* Original form styles from flighttimeexpform.html */
+    .section-h {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--flydubai-navy);
+      margin-bottom: 16px;
+      border-bottom: 2px solid var(--flydubai-blue);
+      padding-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .grand {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+      margin: 24px 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border-radius: 12px;
+      border: 1px solid var(--line);
+    }
+
+    .kpi {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--flydubai-navy);
+    }
+
+    .kpi b {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--flydubai-blue);
+      margin-left: 8px;
+    }
+
+    .summary {
+      margin: 32px 0;
+      padding: 24px;
+      background: linear-gradient(135deg, #fefefe 0%, #f9fafb 100%);
+      border-radius: 16px;
+      border: 2px solid var(--line);
+    }
+
+    .summary table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+
+    .summary table th,
+    .summary table td {
+      border: 1px solid #ddd;
+      padding: 12px 8px;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .summary table th {
+      background-color: var(--flydubai-blue);
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .summary table input[type="text"] {
+      width: 80px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .controls.no-print {
+      text-align: center;
+      margin: 24px 0;
+    }
+
+    .controls.no-print .btn {
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
   </style>
 </head>
 <body>
@@ -1101,58 +1188,52 @@
         
         <div id="sections"></div>
         
-        <div class="controls" style="margin-bottom: 32px;">
+        <div class="controls no-print">
           <button type="button" class="btn" id="btnAddSection">+ Add Aircraft Type</button>
         </div>
 
         <!-- Grand totals for all aircraft types -->
-        <div class="form-section" id="grandTotals">
-          <div class="section-title">GRAND TOTALS (All Aircraft Types)</div>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
-            <div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); padding: 16px; border-radius: 12px; text-align: center;">
-              <div style="font-size: 12px; color: var(--muted); margin-bottom: 4px;">COMBINED BLOCK HOURS</div>
-              <div style="font-size: 20px; font-weight: 700; color: var(--flydubai-navy);" id="gtCombined">0:00</div>
-            </div>
-            <div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); padding: 16px; border-radius: 12px; text-align: center;">
-              <div style="font-size: 12px; color: var(--muted); margin-bottom: 4px;">MULTI-PILOT BLOCK HOURS</div>
-              <div style="font-size: 20px; font-weight: 700; color: var(--flydubai-navy);" id="gtMP">0:00</div>
-            </div>
-            <div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); padding: 16px; border-radius: 12px; text-align: center;">
-              <div style="font-size: 12px; color: var(--muted); margin-bottom: 4px;">NIGHT HOURS</div>
-              <div style="font-size: 20px; font-weight: 700; color: var(--flydubai-navy);" id="gtNight">0:00</div>
-            </div>
+        <div class="section" id="grandTotals">
+          <div class="section-title">
+            <h3>GRAND TOTALS (All Aircraft Types)</h3>
+          </div>
+          <div class="grand">
+            <div class="kpi">Combined Block Hours: <b id="gtCombined">0:00</b></div>
+            <div class="kpi">Multi‑Pilot Block Hours: <b id="gtMP">0:00</b></div>
+            <div class="kpi">Night Hours: <b id="gtNight">0:00</b></div>
           </div>
         </div>
 
         <!-- SUMMARY SECTION -->
-        <div class="form-section">
-          <div class="section-title">FLYING EXPERIENCE SUMMARY - GENERAL</div>
-          <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+        <div class="summary">
+          <h2 class="section-h">FLYING EXPERIENCE SUMMARY</h2>
+          <h3 class="section-h" style="margin-top:6px">GENERAL</h3>
+          <div class="section">
+            <table>
               <thead>
-                <tr style="background: var(--flydubai-light-blue);">
-                  <th style="padding: 12px 8px; border: 1px solid var(--line); font-weight: 700;">PIC/P1</th>
-                  <th style="padding: 12px 8px; border: 1px solid var(--line); font-weight: 700;">SIC/P2</th>
-                  <th style="padding: 12px 8px; border: 1px solid var(--line); font-weight: 700;">SOLO</th>
-                  <th style="padding: 12px 8px; border: 1px solid var(--line); font-weight: 700;">INSTRUMENT</th>
-                  <th style="padding: 12px 8px; border: 1px solid var(--line); font-weight: 700;">SIM</th>
-                  <th style="padding: 12px 8px; border: 1px solid var(--line); font-weight: 700;">NIGHT</th>
-                  <th style="padding: 12px 8px; border: 1px solid var(--line); font-weight: 700;">INSTRUCTOR</th>
-                  <th style="padding: 12px 8px; border: 1px solid var(--line); font-weight: 700;">P1 U/S</th>
-                  <th style="padding: 12px 8px; border: 1px solid var(--line); font-weight: 700; background: linear-gradient(135deg, var(--flydubai-orange) 0%, #fb923c 100%); color: white;">GRAND TOTAL</th>
+                <tr>
+                  <th><b>PIC/P1</b></th>
+                  <th><b>SIC/P2</b></th>
+                  <th><b>SOLO</b></th>
+                  <th><b>INSTRUMENT</b></th>
+                  <th><b>SIM</b></th>
+                  <th><b>NIGHT</b></th>
+                  <th><b>INSTRUCTOR</b></th>
+                  <th><b>P1 U/S</b></th>
+                  <th><b>GRAND TOTAL</b></th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td style="padding: 8px; border: 1px solid var(--line);"><input type="text" class="hhmm" placeholder="0:00" style="width: 80px; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center;"></td>
-                  <td style="padding: 8px; border: 1px solid var(--line);"><input type="text" class="hhmm" placeholder="0:00" style="width: 80px; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center;"></td>
-                  <td style="padding: 8px; border: 1px solid var(--line);"><input type="text" class="hhmm" placeholder="0:00" style="width: 80px; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center;"></td>
-                  <td style="padding: 8px; border: 1px solid var(--line);"><input type="text" class="hhmm" placeholder="0:00" style="width: 80px; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center;"></td>
-                  <td style="padding: 8px; border: 1px solid var(--line);"><input type="text" class="hhmm" placeholder="0:00" style="width: 80px; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center;"></td>
-                  <td style="padding: 8px; border: 1px solid var(--line);"><input type="text" class="hhmm" placeholder="0:00" style="width: 80px; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center;"></td>
-                  <td style="padding: 8px; border: 1px solid var(--line);"><input type="text" class="hhmm" placeholder="0:00" style="width: 80px; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center;"></td>
-                  <td style="padding: 8px; border: 1px solid var(--line);"><input type="text" class="hhmm" placeholder="0:00" style="width: 80px; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center;"></td>
-                  <td style="padding: 8px; border: 1px solid var(--line); background: #fef3f2; font-weight: 700; text-align: center;" id="grandTotalHours">0:00</td>
+                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
+                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
+                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
+                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
+                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
+                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
+                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
+                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
+                  <td style="background: linear-gradient(135deg, #e0f2fe 0%, #b3e5fc 100%); font-weight: bold;"><b id="grandTotalHours">0:00</b></td>
                 </tr>
               </tbody>
             </table>
