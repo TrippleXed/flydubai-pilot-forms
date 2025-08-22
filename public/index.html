@@ -311,31 +311,29 @@
     }
 
     /* Ensure consistent field widths in personal information section */
-    .form-step[data-step="1"] #dateOfBirth {
-      width: 180px !important;
+    /* Column 1: Full name and Email (300px) */
+    .form-step[data-step="1"] #pilotName,
+    .form-step[data-step="1"] #contactEmail {
+      width: 300px !important;
       box-sizing: border-box;
     }
 
-    .form-step[data-step="1"] #designation {
-      width: 180px !important;
-      box-sizing: border-box;
-    }
-
+    /* Column 2: Date of Birth and Date of Joining (180px) */
+    .form-step[data-step="1"] #dateOfBirth,
     .form-step[data-step="1"] #doj {
       width: 180px !important;
       box-sizing: border-box;
     }
 
-    .form-step[data-step="1"] #nationality {
-      width: 240px !important;
-      box-sizing: border-box;
-    }
-
+    /* Column 3: Designation and Country Code (120px) */
+    .form-step[data-step="1"] #designation,
     .form-step[data-step="1"] #countryCode {
       width: 120px !important;
       box-sizing: border-box;
     }
 
+    /* Column 4: Nationality and Phone Number (180px) */
+    .form-step[data-step="1"] #nationality,
     .form-step[data-step="1"] #phoneNumber {
       width: 180px !important;
       box-sizing: border-box;
@@ -1333,7 +1331,7 @@
         <p class="step-subtitle">Let's start with your basic information. All fields marked with <span class="required">*</span> are required.</p>
         
         <!-- Row 1: Name, Date of Birth, Designation, Nationality -->
-        <div style="display: grid; gap: 20px; grid-template-columns: 300px 180px 180px 240px; margin-bottom: 20px;">
+        <div style="display: grid; gap: 20px; grid-template-columns: 300px 180px 120px 180px; margin-bottom: 20px;">
           <div>
             <label for="pilotName">Full Name <span class="required">*</span></label>
             <input id="pilotName" type="text" placeholder="e.g., Jane D. Pilot" required>
