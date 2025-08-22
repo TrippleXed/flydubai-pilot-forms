@@ -719,28 +719,107 @@
       letter-spacing: 0.05em;
     }
 
-    .grand {
-      display: flex;
-      gap: 32px;
-      flex-wrap: wrap;
+    .grand{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
       margin: 24px 0;
-      padding: 20px;
-      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-      border-radius: 12px;
-      border: 1px solid var(--line);
     }
 
-    .kpi {
+    .kpi{
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border: 2px solid var(--line);
+      padding: 20px 24px;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      position: relative;
+      overflow: hidden;
       font-size: 16px;
       font-weight: 500;
       color: var(--flydubai-navy);
     }
-
-    .kpi b {
+    
+    .kpi::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--flydubai-orange);
+    }
+    
+    .kpi b{
       font-size: 20px;
       font-weight: 700;
       color: var(--flydubai-blue);
-      margin-left: 8px;
+      font-family: 'Courier New', monospace;
+      display: block;
+      margin-top: 4px;
+    }
+
+    .footer-fields{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 24px;
+    }
+    
+    .footer-fields label{
+      font-weight: 700;
+      text-align: center;
+      color: var(--flydubai-navy);
+      margin-bottom: 12px;
+    }
+    
+    .date-cell{
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+    }
+    
+    .date-print{
+      display: none;
+      padding: 10px 16px;
+      border: 2px dashed var(--line);
+      border-radius: 12px;
+      color: var(--flydubai-navy);
+      font-weight: 600;
+      background: #f8fafc;
+    }
+
+    h2.section-h{
+      margin: 20px 0 16px;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: var(--flydubai-navy);
+      text-transform: uppercase;
+      position: relative;
+      padding-left: 24px;
+    }
+    
+    h2.section-h::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 24px;
+      background: var(--flydubai-orange);
+      border-radius: 2px;
+    }
+
+    h3.section-h{
+      margin: 16px 0 12px;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--flydubai-navy);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
     .summary {
@@ -848,34 +927,37 @@
     }
 
     .form-step[data-step="2"] table{
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      table-layout: fixed;
-      background: #ffffff;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      width: 100% !important;
+      border-collapse: collapse !important;
+      margin-top: 20px !important;
+      margin-bottom: 20px !important;
+      table-layout: fixed !important;
+      background: #ffffff !important;
+      border-radius: 16px !important;
+      overflow: hidden !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
     }
     
     .form-step[data-step="2"] th, .form-step[data-step="2"] td{
-      border-bottom: 1px solid var(--line);
-      padding: 16px 12px;
-      vertical-align: middle;
+      border: 1px solid #ddd !important;
+      border-bottom: 1px solid var(--line) !important;
+      padding: 16px 12px !important;
+      vertical-align: middle !important;
+      text-align: center !important;
     }
     
     .form-step[data-step="2"] th{
-      font-size: 14px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      text-align: center;
-      background: linear-gradient(135deg, var(--flydubai-blue) 0%, var(--flydubai-navy) 100%);
-      color: #ffffff;
+      font-size: 14px !important;
+      font-weight: 700 !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.05em !important;
+      text-align: center !important;
+      background: linear-gradient(135deg, var(--flydubai-blue) 0%, var(--flydubai-navy) 100%) !important;
+      color: #ffffff !important;
       position: relative;
-      padding: 20px 12px;
+      padding: 20px 12px !important;
       line-height: 1.3;
-      vertical-align: middle;
+      vertical-align: middle !important;
     }
 
     .form-step[data-step="2"] .flight-role {
@@ -918,27 +1000,42 @@
     }
     
     .form-step[data-step="2"] td input[type="text"].hhmm{
-      width: 96px;
-      padding: 10px 8px;
-      font-family: 'Courier New', monospace;
-      font-weight: 600;
-      text-align: center;
-      border: 3px solid #cbd5e1;
-      border-radius: 12px;
-      background: #ffffff;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), inset 0 1px 3px rgba(0, 0, 0, 0.05);
+      width: 96px !important;
+      padding: 10px 8px !important;
+      font-family: 'Courier New', monospace !important;
+      font-weight: 600 !important;
+      text-align: center !important;
+      border: 3px solid #cbd5e1 !important;
+      border-radius: 12px !important;
+      background: #ffffff !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), inset 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+      transform: none !important;
     }
     
     .form-step[data-step="2"] td input[type="date"]{
-      width: 150px;
-      display: block;
-      margin: 0 auto;
-      text-align: center;
-      padding: 10px 8px;
-      border: 3px solid #cbd5e1;
-      border-radius: 12px;
-      background: #ffffff;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), inset 0 1px 3px rgba(0, 0, 0, 0.05);
+      width: 150px !important;
+      display: block !important;
+      margin: 0 auto !important;
+      text-align: center !important;
+      padding: 10px 8px !important;
+      border: 3px solid #cbd5e1 !important;
+      border-radius: 12px !important;
+      background: #ffffff !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), inset 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+      transform: none !important;
+    }
+
+    .form-step[data-step="2"] td input[type="text"],
+    .form-step[data-step="2"] td input[type="date"],
+    .form-step[data-step="2"] td select {
+      width: 100% !important;
+      padding: 10px 8px !important;
+      border: 3px solid #cbd5e1 !important;
+      border-radius: 12px !important;
+      font-size: 14px !important;
+      background: #ffffff !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), inset 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+      transform: none !important;
     }
 
     .grid {
