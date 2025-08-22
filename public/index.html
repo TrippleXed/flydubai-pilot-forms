@@ -2962,20 +2962,21 @@
           const inputs = section.querySelectorAll('.hhmm');
           const dateInputs = section.querySelectorAll('.date-inp');
           
+          // Map the actual 6 fields in the current form structure
           const flightHours = {
-            pic: inputs[0]?.value || '0:00',
-            sic: inputs[1]?.value || '0:00',
-            solo: inputs[2]?.value || '0:00',
-            instrument: inputs[3]?.value || '0:00',
-            sim: inputs[4]?.value || '0:00',
-            night: inputs[5]?.value || '0:00',
-            instructor: inputs[6]?.value || '0:00',
-            p1us: inputs[7]?.value || '0:00'
+            picTotal: inputs[0]?.value || '0:00',    // PIC Total Hours
+            picBlock: inputs[1]?.value || '0:00',    // PIC Block Hours (last 12 months)
+            sicTotal: inputs[2]?.value || '0:00',    // SIC Total Hours
+            sicBlock: inputs[3]?.value || '0:00',    // SIC Block Hours (last 12 months)
+            multiPilot: inputs[4]?.value || '0:00',  // Multi-Pilot Hours
+            night: inputs[5]?.value || '0:00'        // Night Hours
           };
           
           const dates = {
-            from: dateInputs[0]?.value || '',
-            to: dateInputs[1]?.value || ''
+            picFrom: dateInputs[0]?.value || '',     // PIC first flight date
+            picTo: dateInputs[1]?.value || '',       // PIC last flight date  
+            sicFrom: dateInputs[2]?.value || '',     // SIC first flight date
+            sicTo: dateInputs[3]?.value || ''        // SIC last flight date
           };
           
           console.log(`✈️ Section ${index + 1} collected:`, {
@@ -2983,7 +2984,7 @@
             notes,
             flightHours,
             dates,
-            hasData: !!(aircraftType || notes || Object.values(flightHours).some(h => h !== '0:00') || dates.from || dates.to)
+            hasData: !!(aircraftType || notes || Object.values(flightHours).some(h => h !== '0:00') || dates.picFrom || dates.picTo || dates.sicFrom || dates.sicTo)
           });
           
           aircraftSections.push({
@@ -3301,25 +3302,21 @@
           console.log(`🔄 Restoring section ${index + 1} hours:`, hours);
           console.log(`🔄 Found ${hourInputs.length} hour input fields`);
           
-          if (hours && hourInputs.length >= 8) {
-            hourInputs[0].value = hours.pic || '0:00';      // PIC
-            hourInputs[1].value = hours.sic || '0:00';      // SIC  
-            hourInputs[2].value = hours.solo || '0:00';     // Solo
-            hourInputs[3].value = hours.instrument || '0:00'; // Instrument
-            hourInputs[4].value = hours.sim || '0:00';      // Simulator
-            hourInputs[5].value = hours.night || '0:00';    // Night
-            hourInputs[6].value = hours.instructor || '0:00'; // Instructor
-            hourInputs[7].value = hours.p1us || '0:00';     // P1US
+          if (hours && hourInputs.length >= 6) {
+            hourInputs[0].value = hours.picTotal || '0:00';    // PIC Total Hours
+            hourInputs[1].value = hours.picBlock || '0:00';    // PIC Block Hours
+            hourInputs[2].value = hours.sicTotal || '0:00';    // SIC Total Hours
+            hourInputs[3].value = hours.sicBlock || '0:00';    // SIC Block Hours
+            hourInputs[4].value = hours.multiPilot || '0:00';  // Multi-Pilot Hours
+            hourInputs[5].value = hours.night || '0:00';       // Night Hours
             
             console.log(`✅ Hours populated for section ${index + 1}:`, {
-              pic: hourInputs[0].value,
-              sic: hourInputs[1].value,
-              solo: hourInputs[2].value,
-              instrument: hourInputs[3].value,
-              sim: hourInputs[4].value,
-              night: hourInputs[5].value,
-              instructor: hourInputs[6].value,
-              p1us: hourInputs[7].value
+              picTotal: hourInputs[0].value,
+              picBlock: hourInputs[1].value,
+              sicTotal: hourInputs[2].value,
+              sicBlock: hourInputs[3].value,
+              multiPilot: hourInputs[4].value,
+              night: hourInputs[5].value
             });
           } else {
             console.log(`⚠️ Cannot populate hours for section ${index + 1}:`, {
@@ -3334,9 +3331,11 @@
           console.log(`📅 Restoring section ${index + 1} dates:`, dates);
           console.log(`📅 Found ${dateInputs.length} date input fields`);
           
-          if (dates && dateInputs.length >= 2) {
-            dateInputs[0].value = dates.from || '';  // From date
-            dateInputs[1].value = dates.to || '';    // To date
+          if (dates && dateInputs.length >= 4) {
+            dateInputs[0].value = dates.picFrom || '';     // PIC first flight date
+            dateInputs[1].value = dates.picTo || '';       // PIC last flight date
+            dateInputs[2].value = dates.sicFrom || '';     // SIC first flight date  
+            dateInputs[3].value = dates.sicTo || '';       // SIC last flight date
             
             // Update the date display spans if they exist
             dateInputs.forEach(dateInput => {
@@ -3347,8 +3346,10 @@
             });
             
             console.log(`✅ Dates populated for section ${index + 1}:`, {
-              from: dateInputs[0].value,
-              to: dateInputs[1].value
+              picFrom: dateInputs[0].value,
+              picTo: dateInputs[1].value,
+              sicFrom: dateInputs[2].value,
+              sicTo: dateInputs[3].value
             });
           } else {
             console.log(`⚠️ Cannot populate dates for section ${index + 1}:`, {
@@ -4566,19 +4567,23 @@
                 <div style="margin-bottom: 16px; padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
                   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                     <h5 style="margin: 0; color: var(--flydubai-navy);">${aircraft.aircraftType || `Aircraft Type ${index + 1}`}</h5>
-                    ${aircraft.dates.from || aircraft.dates.to ? `<span style="color: #64748b; font-size: 14px;">${toDDMMMYYYY(aircraft.dates.from)} - ${toDDMMMYYYY(aircraft.dates.to)}</span>` : ''}
                   </div>
                   ${aircraft.notes ? `<div style="margin-bottom: 8px; color: #64748b; font-style: italic;">${aircraft.notes}</div>` : ''}
-                  <div style="display: grid; gap: 6px; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); font-size: 14px;">
-                    <div><strong>PIC/P1:</strong> ${aircraft.flightHours.pic || '0:00'}</div>
-                    <div><strong>SIC/P2:</strong> ${aircraft.flightHours.sic || '0:00'}</div>
-                    <div><strong>Solo:</strong> ${aircraft.flightHours.solo || '0:00'}</div>
-                    <div><strong>Instrument:</strong> ${aircraft.flightHours.instrument || '0:00'}</div>
-                    <div><strong>Simulator:</strong> ${aircraft.flightHours.sim || '0:00'}</div>
-                    <div><strong>Night:</strong> ${aircraft.flightHours.night || '0:00'}</div>
-                    <div><strong>Instructor:</strong> ${aircraft.flightHours.instructor || '0:00'}</div>
-                    <div><strong>P1 Under Supervision:</strong> ${aircraft.flightHours.p1us || '0:00'}</div>
+                  <div style="display: grid; gap: 6px; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); font-size: 14px;">
+                    <div><strong>PIC Total Hours:</strong> ${aircraft.flightHours.picTotal || '0:00'}</div>
+                    <div><strong>PIC Block Hours:</strong> ${aircraft.flightHours.picBlock || '0:00'}</div>
+                    <div><strong>SIC Total Hours:</strong> ${aircraft.flightHours.sicTotal || '0:00'}</div>
+                    <div><strong>SIC Block Hours:</strong> ${aircraft.flightHours.sicBlock || '0:00'}</div>
+                    <div><strong>Multi-Pilot Hours:</strong> ${aircraft.flightHours.multiPilot || '0:00'}</div>
+                    <div><strong>Night Hours:</strong> ${aircraft.flightHours.night || '0:00'}</div>
                   </div>
+                  ${aircraft.dates.picFrom || aircraft.dates.picTo || aircraft.dates.sicFrom || aircraft.dates.sicTo ? `
+                    <div style="margin-top: 12px; padding: 8px 12px; background: #f8fafc; border-radius: 6px; font-size: 12px;">
+                      <strong>Flight Dates:</strong><br>
+                      ${aircraft.dates.picFrom || aircraft.dates.picTo ? `PIC: ${toDDMMMYYYY(aircraft.dates.picFrom)} - ${toDDMMMYYYY(aircraft.dates.picTo)}<br>` : ''}
+                      ${aircraft.dates.sicFrom || aircraft.dates.sicTo ? `SIC: ${toDDMMMYYYY(aircraft.dates.sicFrom)} - ${toDDMMMYYYY(aircraft.dates.sicTo)}` : ''}
+                    </div>
+                  ` : ''}
                 </div>
               `;
             }
