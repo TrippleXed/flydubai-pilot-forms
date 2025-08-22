@@ -1,4 +1,6 @@
 const nodemailer = require('nodemailer');
+const JSZip = require('jszip');
+const fs = require('fs').promises;
 
 export default async function handler(req, res) {
   // Set CORS headers
@@ -30,12 +32,16 @@ export default async function handler(req, res) {
     // Create HTML email content from form data
     const emailContent = generateEmailContent(formData);
 
+    // Create zip file with all attachments
+    const zipAttachment = await createZipAttachment(formData);
+
     // Send email
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: process.env.RECIPIENT_EMAIL || 'jason.cameron@flydubai.com',
       subject: `Pilot Application - ${formData.pilotName || 'Pilot Submission'} - ${formData.applicationId || 'No ID'}`,
       html: emailContent,
+      attachments: zipAttachment ? [zipAttachment] : [],
     };
 
     await transporter.sendMail(mailOptions);
@@ -100,12 +106,23 @@ function generateEmailContent(formData) {
       <!-- Documentation -->
       <div style="background: #fef7ed; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #f97316;">
         <h2 style="color: #1a365d; margin-top: 0; margin-bottom: 15px;">📄 Uploaded Documents</h2>
+        <div style="background: #fff7ed; padding: 15px; border-radius: 6px; margin-bottom: 15px; text-align: center; border: 2px solid #f97316;">
+          <h3 style="margin: 0 0 10px 0; color: #ea580c; font-size: 18px;">📦 All documents attached as ZIP file</h3>
+          <p style="margin: 0; color: #7c2d12; font-size: 14px;">Download and extract the attached ZIP file to access all uploaded documents</p>
+        </div>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
           ${generateDocumentStatus(formData.uploads, 'pilotLicenseFile', 'Pilot License')}
           ${generateDocumentStatus(formData.uploads, 'medicalFile', 'Medical Certificate')}
           ${generateDocumentStatus(formData.uploads, 'radioLicenseFile', 'Radio License')}
+          ${generateDocumentStatus(formData.uploads, 'rolFile', 'ROL Certificate')}
           ${generateDocumentStatus(formData.uploads, 'flightHoursFile', 'Flight Hours Verification')}
           ${generateDocumentStatus(formData.uploads, 'passportFile', 'Passport Copy')}
+          ${generateDocumentStatus(formData.uploads, 'visaFile', 'UAE Visa')}
+          ${generateDocumentStatus(formData.uploads, 'licenseVerificationFile', 'License Verification Letter')}
+          ${generateDocumentStatus(formData.uploads, 'hoursVerificationFile', 'Hours Verification Letter')}
+          ${generateDocumentStatus(formData.uploads, 'incidentLetterFile', 'No Incident Letter')}
+          ${generateDocumentStatus(formData.uploads, 'emiratesIdFile', 'Emirates ID')}
+          ${generateDocumentStatus(formData.uploads, 'englishFile', 'English Proficiency Certificate')}
         </div>
       </div>
 
@@ -142,4 +159,79 @@ function generateDocumentStatus(uploads, docId, docName) {
   const size = doc ? `(${(doc.size / 1024).toFixed(1)}KB)` : '';
   
   return `<p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>${docName}:</strong> ${status}<br><span style="font-size: 12px; color: #6b7280;">${fileName} ${size}</span></p>`;
+}
+
+async function createZipAttachment(formData) {
+  try {
+    if (!formData.uploads || Object.keys(formData.uploads).length === 0) {
+      console.log('No uploaded files found');
+      return null;
+    }
+
+    const zip = new JSZip();
+    let hasFiles = false;
+
+    // Document types and their folder names in the zip
+    const documentTypes = {
+      pilotLicenseFile: 'Pilot_License',
+      medicalFile: 'Medical_Certificate', 
+      radioLicenseFile: 'Radio_License',
+      rolFile: 'ROL_Certificate',
+      flightHoursFile: 'Flight_Hours_Verification',
+      passportFile: 'Passport',
+      visaFile: 'UAE_Visa',
+      licenseVerificationFile: 'License_Verification_Letter',
+      hoursVerificationFile: 'Hours_Verification_Letter', 
+      incidentLetterFile: 'No_Incident_Letter',
+      emiratesIdFile: 'Emirates_ID',
+      englishFile: 'English_Proficiency_Certificate'
+    };
+
+    // Add each uploaded file to the zip
+    for (const [docId, folderName] of Object.entries(documentTypes)) {
+      const fileData = formData.uploads[docId];
+      
+      if (fileData && fileData.filePath) {
+        try {
+          // Read the file from the file system
+          const fileBuffer = await fs.readFile(fileData.filePath);
+          
+          // Get file extension from original filename
+          const fileExtension = fileData.fileName.split('.').pop();
+          const zipFileName = `${folderName}.${fileExtension}`;
+          
+          // Add file to zip
+          zip.file(zipFileName, fileBuffer);
+          hasFiles = true;
+          
+          console.log(`Added ${zipFileName} to zip`);
+        } catch (fileError) {
+          console.error(`Error reading file ${fileData.fileName}:`, fileError);
+        }
+      }
+    }
+
+    if (!hasFiles) {
+      console.log('No valid files to zip');
+      return null;
+    }
+
+    // Generate the zip file buffer
+    const zipBuffer = await zip.generateAsync({ type: 'nodebuffer' });
+    
+    // Create attachment object for nodemailer
+    const applicationId = formData.applicationId || 'Unknown';
+    const pilotName = (formData.pilotName || 'Pilot').replace(/[^a-zA-Z0-9]/g, '_');
+    const zipFileName = `${pilotName}_${applicationId}_Documents.zip`;
+
+    return {
+      filename: zipFileName,
+      content: zipBuffer,
+      contentType: 'application/zip'
+    };
+
+  } catch (error) {
+    console.error('Error creating zip file:', error);
+    return null;
+  }
 }
