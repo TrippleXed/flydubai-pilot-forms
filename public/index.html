@@ -2129,34 +2129,154 @@
 
     // Populate form fields with saved data
     function populateFormFields() {
+      console.log('📝 === POPULATING FORM FIELDS ===');
+      console.log('📊 Form data to populate:', formData);
+      
+      // Step 1: Personal Information
       if (formData.personalInfo) {
+        console.log('👤 Populating personal information...');
         const info = formData.personalInfo;
-        document.getElementById('pilotName').value = info.pilotName || '';
-        document.getElementById('nationality').value = info.nationality || '';
-        document.getElementById('contactEmail').value = info.contactEmail || '';
-        document.getElementById('dateOfBirth').value = info.dateOfBirth || '';
-        document.getElementById('phoneNumber').value = info.phoneNumber || '';
-        document.getElementById('designation').value = info.designation || '';
-        // expectedDateOfJoining field removed - skip this line
-        // previousEmployer field removed - skip this line
+        
+        const personalFields = [
+          { id: 'pilotName', value: info.pilotName },
+          { id: 'designation', value: info.designation },
+          { id: 'doj', value: info.doj },
+          { id: 'nationality', value: info.nationality },
+          { id: 'contactEmail', value: info.contactEmail },
+          { id: 'dateOfBirth', value: info.dateOfBirth },
+          { id: 'phoneNumber', value: info.phoneNumber }
+        ];
+        
+        personalFields.forEach(field => {
+          const element = document.getElementById(field.id);
+          if (element && field.value) {
+            element.value = field.value;
+            console.log(`✅ ${field.id}: ${field.value}`);
+          } else if (!element) {
+            console.log(`⚠️ Element not found: ${field.id}`);
+          }
+        });
       }
       
-      if (formData.flightExperience) {
-        const exp = formData.flightExperience;
-        document.getElementById('pilotLicense').value = exp.pilotLicense || '';
-        document.getElementById('licenseNumber').value = exp.licenseNumber || '';
-        document.getElementById('licenseAuthority').value = exp.licenseAuthority || '';
-        document.getElementById('totalFlightHours').value = exp.totalFlightHours || '';
-        document.getElementById('picHours').value = exp.picHours || '';
-        document.getElementById('instrumentHours').value = exp.instrumentHours || '';
-        document.getElementById('aircraftTypes').value = exp.aircraftTypes || '';
-        document.getElementById('turbineHours').value = exp.turbineHours || '';
-        document.getElementById('jetHours').value = exp.jetHours || '';
+      // Step 2: Flight Experience - Restore Aircraft Sections
+      if (formData.flightExperience && formData.flightExperience.aircraftSections) {
+        console.log('✈️ Populating flight experience sections...');
+        const sections = formData.flightExperience.aircraftSections;
+        
+        // Clear existing sections first
+        sectionsWrap.innerHTML = '';
+        sectionCounter = 0;
+        
+        sections.forEach((sectionData, index) => {
+          console.log(`🛩️ Restoring section ${index + 1}:`, sectionData);
+          
+          // Determine if this is a locked section based on aircraft type
+          const isLocked = sectionData.aircraftType === 'Boeing 737 NG/MAX' || sectionData.aircraftType === 'Boeing 737 Classic (300-500)';
+          const b737Type = sectionData.aircraftType === 'Boeing 737 NG/MAX' ? 'ng-max' : 
+                          sectionData.aircraftType === 'Boeing 737 Classic (300-500)' ? 'classic' : null;
+          
+          const section = makeAircraftSection({
+            label: `Aircraft Type ${index + 1}`,
+            typeText: isLocked ? sectionData.aircraftType : '',
+            locked: isLocked,
+            b737Type: b737Type
+          });
+          
+          sectionsWrap.appendChild(section);
+          
+          // Populate aircraft type if not locked
+          if (!isLocked) {
+            const aircraftSelect = section.querySelector('.ac-type');
+            if (aircraftSelect && sectionData.aircraftType) {
+              aircraftSelect.value = sectionData.aircraftType;
+            }
+          }
+          
+          // Populate notes
+          const notesField = section.querySelector('.ac-notes');
+          if (notesField && sectionData.notes) {
+            notesField.value = sectionData.notes;
+          }
+          
+          // Populate flight hours
+          const hourInputs = section.querySelectorAll('.hhmm');
+          const hours = sectionData.flightHours;
+          if (hours && hourInputs.length >= 8) {
+            hourInputs[0].value = hours.pic || '0:00';      // PIC
+            hourInputs[1].value = hours.sic || '0:00';      // SIC  
+            hourInputs[2].value = hours.solo || '0:00';     // Solo
+            hourInputs[3].value = hours.instrument || '0:00'; // Instrument
+            hourInputs[4].value = hours.sim || '0:00';      // Simulator
+            hourInputs[5].value = hours.night || '0:00';    // Night
+            hourInputs[6].value = hours.instructor || '0:00'; // Instructor
+            hourInputs[7].value = hours.p1us || '0:00';     // P1US
+            
+            console.log(`✅ Hours populated for section ${index + 1}`);
+          }
+        });
+        
+        // Restore summary hours if available
+        if (formData.flightExperience.summaryHours) {
+          console.log('📊 Populating summary hours...');
+          const summaryRow = document.querySelector('#grandTotalHours');
+          if (summaryRow) {
+            const summaryInputs = summaryRow.querySelectorAll('.hhmm');
+            const summaryHours = formData.flightExperience.summaryHours;
+            
+            if (summaryInputs.length >= 8) {
+              summaryInputs[0].value = summaryHours.pic || '0:00';
+              summaryInputs[1].value = summaryHours.sic || '0:00';
+              summaryInputs[2].value = summaryHours.solo || '0:00';
+              summaryInputs[3].value = summaryHours.instrument || '0:00';
+              summaryInputs[4].value = summaryHours.sim || '0:00';
+              summaryInputs[5].value = summaryHours.night || '0:00';
+              summaryInputs[6].value = summaryHours.instructor || '0:00';
+              summaryInputs[7].value = summaryHours.p1us || '0:00';
+            }
+          }
+        }
+        
+        // Recompute totals after populating all sections
+        setTimeout(() => {
+          if (typeof computeAll === 'function') {
+            computeAll();
+          }
+        }, 100);
       }
       
+      // Step 3: Documentation - populate key document fields
+      if (formData.documentation) {
+        console.log('📄 Populating documentation fields...');
+        const docs = formData.documentation;
+        
+        // Populate document fields that exist in the form
+        const docFields = [
+          { id: 'pilotLicense', value: docs.pilotLicense },
+          { id: 'licenseNumber', value: docs.licenseNumber },
+          { id: 'licenseAuthority', value: docs.licenseAuthority },
+          { id: 'medicalClass', value: docs.medicalClass },
+          { id: 'medicalAuthority', value: docs.medicalAuthority }
+        ];
+        
+        docFields.forEach(field => {
+          const element = document.getElementById(field.id);
+          if (element && field.value) {
+            element.value = field.value;
+            console.log(`✅ ${field.id}: ${field.value}`);
+          }
+        });
+      }
+      
+      // Step 4: Declaration
       if (formData.declaration) {
-        document.getElementById('declaration').checked = formData.declaration.agreed || false;
+        const declarationCheckbox = document.getElementById('declaration');
+        if (declarationCheckbox) {
+          declarationCheckbox.checked = formData.declaration.agreed || false;
+          console.log(`✅ Declaration: ${declarationCheckbox.checked}`);
+        }
       }
+      
+      console.log('✅ === FORM FIELDS POPULATION COMPLETE ===');
     }
 
     // Check if form has unsaved changes
