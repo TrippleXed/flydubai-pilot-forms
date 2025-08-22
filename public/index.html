@@ -2364,7 +2364,7 @@
 
 
         <div class="form-section">
-          <h2 class="section-h">🌐 English Proficiency Certificate</h2>
+          <h2 class="section-h">🌐 English Proficiency Certificate (if applicable)</h2>
           <div class="grid">
             <div>
               <label>Proficiency Level</label>
@@ -3389,22 +3389,75 @@
     // Validate documentation
     function validateDocumentation() {
       const requiredFields = [
+        // Pilot License fields
         { id: 'licenseType', label: 'License Type' },
         { id: 'licenseNumber', label: 'License Number' },
         { id: 'licenseIssue', label: 'License Issue Date' },
         { id: 'licenseExpiry', label: 'License Expiry Date' },
+        
+        // Medical Certificate fields
         { id: 'medicalClass', label: 'Medical Class' },
         { id: 'medicalIssue', label: 'Medical Issue Date' },
-        { id: 'medicalExpiry', label: 'Medical Expiry Date' }
+        { id: 'medicalExpiry', label: 'Medical Expiry Date' },
+        
+        // Radio Operator License fields
+        { id: 'rolNumber', label: 'ROL Certificate Number' },
+        { id: 'rolIssue', label: 'ROL Issue Date' },
+        { id: 'rolExpiry', label: 'ROL Expiry Date' },
+        
+        // Passport fields
+        { id: 'passportNumber', label: 'Passport Number' },
+        { id: 'passportIssue', label: 'Passport Issue Date' },
+        { id: 'passportExpiry', label: 'Passport Expiry Date' },
+        
+        // UAE Visa fields
+        { id: 'visaStatus', label: 'Current Visa Status' },
+        { id: 'visaNumber', label: 'Visa/Entry Permit Number' },
+        { id: 'visaExpiry', label: 'Visa Expiry Date' },
+        
+        // License Verification Letter fields
+        { id: 'licenseVerificationAuthority', label: 'License Verification Authority' },
+        { id: 'licenseVerificationDate', label: 'Verification Letter Date' },
+        
+        // No Incident/Accident Letter fields
+        { id: 'incidentLetterAuthority', label: 'Incident Letter Authority' },
+        { id: 'incidentLetterDate', label: 'Letter Issue Date' }
       ];
       
       const requiredFiles = [
-        { id: 'licenseFile', label: 'License Document' },
-        { id: 'medicalFile', label: 'Medical Certificate' }
+        { id: 'licenseFile', label: 'Pilot License Document' },
+        { id: 'medicalFile', label: 'Medical Certificate' },
+        { id: 'rolFile', label: 'Radio Operator License' },
+        { id: 'passportFile', label: 'Passport Copy' },
+        { id: 'visaFile', label: 'UAE Visa & Work Permit' },
+        { id: 'flightHoursFile', label: 'Flight Hours Verification Letter' },
+        { id: 'licenseVerificationFile', label: 'License Verification Letter' },
+        { id: 'incidentLetterFile', label: 'No Incident/Accident Letter' }
+      ];
+      
+      // Optional documents (only validate if user has started filling them)
+      const optionalDocuments = [
+        { 
+          fields: [
+            { id: 'emiratesIdNumber', label: 'Emirates ID Number' }
+          ],
+          file: { id: 'emiratesIdFile', label: 'Emirates ID Copy' },
+          sectionName: 'Emirates ID'
+        },
+        { 
+          fields: [
+            { id: 'englishLevel', label: 'English Proficiency Level' },
+            { id: 'englishTestType', label: 'Test Type' },
+            { id: 'englishTestDate', label: 'Test Date' }
+          ],
+          file: { id: 'englishFile', label: 'English Proficiency Certificate' },
+          sectionName: 'English Proficiency Certificate'
+        }
       ];
       
       let isValid = true;
       let firstInvalidField = null;
+      let errorMessages = [];
       
       // Clear previous validation styling
       [...requiredFields, ...requiredFiles].forEach(({ id }) => {
@@ -3416,6 +3469,13 @@
         }
       });
       
+      // Clear form section error styling
+      document.querySelectorAll('.form-section').forEach(section => {
+        section.style.borderColor = '';
+        const errorMsg = section.querySelector('.error-message');
+        if (errorMsg) errorMsg.remove();
+      });
+      
       // Validate required form fields
       requiredFields.forEach(({ id, label }) => {
         const field = document.getElementById(id);
@@ -3425,10 +3485,15 @@
           const errorMsg = document.createElement('span');
           errorMsg.className = 'error-message';
           errorMsg.textContent = `${label} is required`;
+          errorMsg.style.color = '#dc2626';
+          errorMsg.style.fontSize = '12px';
+          errorMsg.style.marginTop = '4px';
+          errorMsg.style.display = 'block';
           field.parentElement?.appendChild(errorMsg);
           
           if (isValid) firstInvalidField = field;
           isValid = false;
+          errorMessages.push(`${label} is required`);
           
           field.addEventListener('input', () => {
             field.classList.remove('validation-error');
@@ -3445,31 +3510,106 @@
           const formSection = fileInput.closest('.form-section');
           if (formSection) {
             formSection.style.borderColor = '#dc2626';
+            formSection.style.backgroundColor = '#fef2f2';
             
             // Create or update error message
             let errorMsg = formSection.querySelector('.error-message');
             if (!errorMsg) {
-              errorMsg = document.createElement('span');
+              errorMsg = document.createElement('div');
               errorMsg.className = 'error-message';
+              errorMsg.style.color = '#dc2626';
+              errorMsg.style.fontSize = '14px';
+              errorMsg.style.fontWeight = '600';
+              errorMsg.style.padding = '8px 16px';
+              errorMsg.style.marginTop = '12px';
+              errorMsg.style.backgroundColor = '#fee2e2';
+              errorMsg.style.border = '1px solid #fca5a5';
+              errorMsg.style.borderRadius = '6px';
               formSection.appendChild(errorMsg);
             }
-            errorMsg.textContent = `${label} is required`;
+            errorMsg.innerHTML = `<strong>⚠️ ${label} is required</strong><br>Please upload the required document to continue.`;
           }
           
           if (isValid) firstInvalidField = fileInput;
           isValid = false;
+          errorMessages.push(`${label} document must be uploaded`);
           
           fileInput.addEventListener('change', () => {
-            if (formSection) formSection.style.borderColor = '';
+            if (formSection) {
+              formSection.style.borderColor = '';
+              formSection.style.backgroundColor = '';
+            }
             const msg = formSection?.querySelector('.error-message');
             if (msg) msg.remove();
           }, { once: true });
         }
       });
       
+      // Validate optional documents (if user started filling them, they must complete them)
+      optionalDocuments.forEach(({ fields, file, sectionName }) => {
+        const hasStartedSection = fields.some(({ id }) => {
+          const field = document.getElementById(id);
+          return field && field.value.trim();
+        });
+        
+        if (hasStartedSection) {
+          // If user started this optional section, all fields become required
+          fields.forEach(({ id, label }) => {
+            const field = document.getElementById(id);
+            if (field && !field.value.trim()) {
+              field.classList.add('validation-error');
+              
+              const errorMsg = document.createElement('span');
+              errorMsg.className = 'error-message';
+              errorMsg.textContent = `${label} is required (since you started filling ${sectionName})`;
+              errorMsg.style.color = '#dc2626';
+              errorMsg.style.fontSize = '12px';
+              errorMsg.style.marginTop = '4px';
+              errorMsg.style.display = 'block';
+              field.parentElement?.appendChild(errorMsg);
+              
+              if (isValid) firstInvalidField = field;
+              isValid = false;
+              errorMessages.push(`${label} is required since you started filling ${sectionName}`);
+            }
+          });
+          
+          // File is also required if section was started
+          const fileInput = document.getElementById(file.id);
+          if (fileInput && (!fileInput.files || fileInput.files.length === 0)) {
+            const formSection = fileInput.closest('.form-section');
+            if (formSection) {
+              formSection.style.borderColor = '#dc2626';
+              formSection.style.backgroundColor = '#fef2f2';
+              
+              let errorMsg = formSection.querySelector('.error-message');
+              if (!errorMsg) {
+                errorMsg = document.createElement('div');
+                errorMsg.className = 'error-message';
+                errorMsg.style.color = '#dc2626';
+                errorMsg.style.fontSize = '14px';
+                errorMsg.style.fontWeight = '600';
+                errorMsg.style.padding = '8px 16px';
+                errorMsg.style.marginTop = '12px';
+                errorMsg.style.backgroundColor = '#fee2e2';
+                errorMsg.style.border = '1px solid #fca5a5';
+                errorMsg.style.borderRadius = '6px';
+                formSection.appendChild(errorMsg);
+              }
+              errorMsg.innerHTML = `<strong>⚠️ ${file.label} is required</strong><br>Since you started filling ${sectionName}, the document upload is now required.`;
+            }
+            
+            if (isValid) firstInvalidField = fileInput;
+            isValid = false;
+            errorMessages.push(`${file.label} is required since you started filling ${sectionName}`);
+          }
+        }
+      });
+      
       if (!isValid) {
         if (firstInvalidField) firstInvalidField.focus();
-        alert('Please complete all required fields and upload all required documents before continuing.');
+        const summaryMessage = `Please complete the following required items:\n\n${errorMessages.slice(0, 5).map(msg => `• ${msg}`).join('\n')}${errorMessages.length > 5 ? `\n\n... and ${errorMessages.length - 5} more items` : ''}`;
+        alert(summaryMessage);
       }
       
       return isValid;
