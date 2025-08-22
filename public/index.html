@@ -4597,6 +4597,80 @@
       
       console.log('✅ English test type handler set up completed');
       
+      // ===== 30-Day Letter Validation =====
+      console.log('🔗 Setting up 30-day letter validation...');
+      
+      // Function to check if letter date is within 30 days of joining date
+      function validateLetterDate(letterDateId, letterName) {
+        const dojInput = document.getElementById('doj');
+        const letterDateInput = document.getElementById(letterDateId);
+        
+        if (!dojInput?.value || !letterDateInput?.value) return;
+        
+        const joiningDate = new Date(dojInput.value);
+        const letterDate = new Date(letterDateInput.value);
+        const daysDifference = Math.abs((joiningDate - letterDate) / (1000 * 60 * 60 * 24));
+        
+        console.log(`📋 Checking ${letterName}:`, {
+          joiningDate: joiningDate.toDateString(),
+          letterDate: letterDate.toDateString(),
+          daysDifference: daysDifference
+        });
+        
+        if (daysDifference > 30) {
+          const message = `⚠️ Important Notice Regarding ${letterName}\n\n` +
+            `The ${letterName.toLowerCase()} is dated more than 30 days from your flydubai joining date.\n\n` +
+            `📅 Letter Date: ${letterDate.toLocaleDateString()}\n` +
+            `📅 Joining Date: ${joiningDate.toLocaleDateString()}\n` +
+            `📊 Days Difference: ${Math.round(daysDifference)} days\n\n` +
+            `📋 REQUIREMENT: All verification letters must be issued within 30 days of your employment start date.\n\n` +
+            `⏰ IMPORTANT: Please ensure this letter is reissued within 30 days of your joining date, ` +
+            `otherwise your start date may need to be postponed until flydubai receives the updated documentation.\n\n` +
+            `💼 We recommend coordinating with your previous employer or the issuing authority to obtain ` +
+            `an updated letter closer to your joining date to avoid any delays in your employment commencement.`;
+          
+          setTimeout(() => alert(message), 500);
+        }
+      }
+      
+      // Add event listeners for the three letter dates
+      const licenseVerificationDate = document.getElementById('licenseVerificationDate');
+      const flightHoursDate = document.getElementById('flightHoursDate');
+      const incidentLetterDate = document.getElementById('incidentLetterDate');
+      
+      if (licenseVerificationDate) {
+        licenseVerificationDate.addEventListener('change', () => {
+          validateLetterDate('licenseVerificationDate', 'License Verification Letter');
+        });
+      }
+      
+      if (flightHoursDate) {
+        flightHoursDate.addEventListener('change', () => {
+          validateLetterDate('flightHoursDate', 'Flight Hours Verification Letter');
+        });
+      }
+      
+      if (incidentLetterDate) {
+        incidentLetterDate.addEventListener('change', () => {
+          validateLetterDate('incidentLetterDate', 'No Incident/Accident Letter');
+        });
+      }
+      
+      // Also validate when date of joining changes
+      const dojInput = document.getElementById('doj');
+      if (dojInput) {
+        dojInput.addEventListener('change', () => {
+          // Validate all three letters when joining date changes
+          setTimeout(() => {
+            validateLetterDate('licenseVerificationDate', 'License Verification Letter');
+            validateLetterDate('flightHoursDate', 'Flight Hours Verification Letter');
+            validateLetterDate('incidentLetterDate', 'No Incident/Accident Letter');
+          }, 100);
+        });
+      }
+      
+      console.log('✅ 30-day letter validation set up completed');
+      
       // ===== Enter Key Navigation for Time Fields =====
       console.log('🔗 Setting up Enter key navigation for time fields...');
       
