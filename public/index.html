@@ -3563,11 +3563,195 @@
       if(t.classList && t.classList.contains('date-inp')){ const span = t.closest('.date-cell').querySelector('.date-print'); span.textContent = toDDMMMYYYY(t.value); }
     }, true);
 
-    // Make functions globally accessible
-    window.nextStep = nextStep;
-    window.previousStep = previousStep;
-    window.recoverSession = recoverSession;
-    window.clearSession = clearSession;
+    // Layout and spacing debugging functions
+    function debugLayout() {
+      console.log('🎨 === LAYOUT DEBUG ANALYSIS ===');
+      
+      // Check all form steps
+      const steps = document.querySelectorAll('.form-step');
+      console.log('📋 Form steps found:', steps.length);
+      
+      steps.forEach((step, index) => {
+        const stepNumber = step.getAttribute('data-step');
+        const isActive = step.classList.contains('active');
+        const computedStyle = window.getComputedStyle(step);
+        
+        console.log(`📄 Step ${stepNumber}:`, {
+          active: isActive,
+          display: computedStyle.display,
+          visibility: computedStyle.visibility,
+          height: computedStyle.height,
+          padding: computedStyle.padding,
+          margin: computedStyle.margin
+        });
+        
+        // Check sections within each step
+        const sections = step.querySelectorAll('.form-section, .section');
+        console.log(`  📦 Sections in Step ${stepNumber}:`, sections.length);
+        
+        sections.forEach((section, sIndex) => {
+          const sectionStyle = window.getComputedStyle(section);
+          const title = section.querySelector('h2, h3, .section-title')?.textContent?.slice(0, 30) || `Section ${sIndex + 1}`;
+          
+          console.log(`    🏷️ ${title}:`, {
+            marginTop: sectionStyle.marginTop,
+            marginBottom: sectionStyle.marginBottom,
+            paddingTop: sectionStyle.paddingTop,
+            paddingBottom: sectionStyle.paddingBottom,
+            height: sectionStyle.height,
+            minHeight: sectionStyle.minHeight
+          });
+        });
+      });
+    }
+
+    function debugSpacing() {
+      console.log('📏 === SPACING DEBUG ANALYSIS ===');
+      
+      // Check aircraft sections specifically
+      const aircraftSections = document.querySelectorAll('#sections .section, #sections .form-section');
+      console.log('✈️ Aircraft sections found:', aircraftSections.length);
+      
+      aircraftSections.forEach((section, index) => {
+        const title = section.querySelector('.section-title h3, .section-title')?.textContent || `Aircraft ${index + 1}`;
+        const titleElement = section.querySelector('.section-title');
+        const style = window.getComputedStyle(section);
+        const titleStyle = titleElement ? window.getComputedStyle(titleElement) : null;
+        
+        console.log(`✈️ ${title}:`, {
+          sectionMargin: {
+            top: style.marginTop,
+            bottom: style.marginBottom
+          },
+          sectionPadding: {
+            top: style.paddingTop,
+            bottom: style.paddingBottom
+          },
+          titleMargin: titleStyle ? {
+            top: titleStyle.marginTop,
+            bottom: titleStyle.marginBottom
+          } : 'No title',
+          titlePadding: titleStyle ? {
+            top: titleStyle.paddingTop,
+            bottom: titleStyle.paddingBottom
+          } : 'No title'
+        });
+        
+        // Check remove buttons
+        const removeButton = section.querySelector('[data-remove-section], .remove-btn');
+        if (removeButton) {
+          const buttonStyle = window.getComputedStyle(removeButton);
+          const buttonContainer = removeButton.closest('div, .section-title');
+          const containerStyle = buttonContainer ? window.getComputedStyle(buttonContainer) : null;
+          
+          console.log(`  🗑️ Remove button spacing:`, {
+            buttonMargin: {
+              top: buttonStyle.marginTop,
+              bottom: buttonStyle.marginBottom
+            },
+            buttonPadding: {
+              top: buttonStyle.paddingTop,
+              bottom: buttonStyle.paddingBottom
+            },
+            containerMargin: containerStyle ? {
+              top: containerStyle.marginTop,
+              bottom: containerStyle.marginBottom
+            } : 'No container',
+            containerPadding: containerStyle ? {
+              top: containerStyle.paddingTop,
+              bottom: containerStyle.paddingBottom
+            } : 'No container'
+          });
+        }
+      });
+      
+      // Check form inputs and their containers
+      const inputs = document.querySelectorAll('input, select, textarea');
+      const inputSpacing = {};
+      
+      inputs.forEach(input => {
+        const container = input.closest('div');
+        const containerStyle = container ? window.getComputedStyle(container) : null;
+        const inputStyle = window.getComputedStyle(input);
+        const type = input.type || input.tagName.toLowerCase();
+        
+        if (!inputSpacing[type]) {
+          inputSpacing[type] = {
+            count: 0,
+            marginTop: [],
+            marginBottom: [],
+            paddingTop: [],
+            paddingBottom: []
+          };
+        }
+        
+        inputSpacing[type].count++;
+        inputSpacing[type].marginTop.push(inputStyle.marginTop);
+        inputSpacing[type].marginBottom.push(inputStyle.marginBottom);
+        inputSpacing[type].paddingTop.push(inputStyle.paddingTop);
+        inputSpacing[type].paddingBottom.push(inputStyle.paddingBottom);
+      });
+      
+      console.log('📝 Input spacing analysis:', inputSpacing);
+    }
+
+    function debugAircraftSections() {
+      console.log('✈️ === AIRCRAFT SECTION DEBUG ===');
+      
+      const preLoadedSections = document.querySelectorAll('#sections .section');
+      console.log('🛩️ Pre-loaded sections:', preLoadedSections.length);
+      
+      preLoadedSections.forEach((section, index) => {
+        const title = section.querySelector('.section-title h3')?.textContent || `Section ${index + 1}`;
+        const titleElement = section.querySelector('.section-title');
+        const removeButton = section.querySelector('[data-remove-section]');
+        
+        console.log(`🛩️ ${title}:`, {
+          hasTitle: !!titleElement,
+          titleClasses: titleElement ? Array.from(titleElement.classList) : [],
+          hasRemoveButton: !!removeButton,
+          removeButtonClasses: removeButton ? Array.from(removeButton.classList) : [],
+          sectionClasses: Array.from(section.classList),
+          innerHTML: section.innerHTML.slice(0, 200) + '...'
+        });
+        
+        // Compare with makeAircraftSection structure
+        console.log(`  📐 Layout comparison:`, {
+          titleStructure: titleElement ? {
+            tag: titleElement.tagName,
+            children: titleElement.children.length,
+            textContent: titleElement.textContent?.slice(0, 50)
+          } : null,
+          removeButtonStructure: removeButton ? {
+            tag: removeButton.tagName,
+            type: removeButton.type,
+            textContent: removeButton.textContent?.trim()
+          } : null
+        });
+      });
+      
+      // Test makeAircraftSection to compare
+      console.log('🔬 Testing makeAircraftSection structure:');
+      const testSection = makeAircraftSection({label: 'TEST', typeText: '', locked: false});
+      const testTitle = testSection.querySelector('.section-title');
+      const testRemoveButton = testSection.querySelector('[data-remove-section]');
+      
+      console.log('🧪 Test section structure:', {
+        titleClasses: testTitle ? Array.from(testTitle.classList) : [],
+        removeButtonClasses: testRemoveButton ? Array.from(testRemoveButton.classList) : [],
+        sectionClasses: Array.from(testSection.classList),
+        titleStructure: testTitle ? {
+          tag: testTitle.tagName,
+          children: testTitle.children.length,
+          textContent: testTitle.textContent?.slice(0, 50)
+        } : null,
+        removeButtonStructure: testRemoveButton ? {
+          tag: testRemoveButton.tagName,
+          type: testRemoveButton.type,
+          textContent: testRemoveButton.textContent?.trim()
+        } : null
+      });
+    }
 
     // Initialize the form when page loads
     document.addEventListener('DOMContentLoaded', () => {
@@ -3578,6 +3762,14 @@
       console.log('✅ computeAll function available:', typeof computeAll);
       console.log('✅ sectionCounter initialized:', sectionCounter);
       console.log('✅ sectionsWrap element found:', !!sectionsWrap);
+      
+      // Make functions globally accessible after they're defined
+      console.log('🔗 Attaching global functions...');
+      window.nextStep = nextStep;
+      window.previousStep = previousStep;
+      window.recoverSession = recoverSession;
+      window.clearSession = clearSession;
+      
       console.log('✅ Global functions attached:', {
         nextStep: typeof window.nextStep,
         previousStep: typeof window.previousStep,
@@ -3597,6 +3789,13 @@
       console.log('🏗️ Critical elements check:', criticalElements);
       
       initializeForm();
+      
+      // Add layout debugging function
+      window.debugLayout = debugLayout;
+      window.debugSpacing = debugSpacing;
+      window.debugAircraftSections = debugAircraftSections;
+      
+      console.log('🎨 Layout debugging functions available. Use debugLayout(), debugSpacing(), or debugAircraftSections() in console');
       console.log('✅ === INITIALIZATION COMPLETE ===');
     });
   </script>
