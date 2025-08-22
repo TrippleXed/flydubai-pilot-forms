@@ -4635,7 +4635,7 @@
       
       // Add event listeners for the three letter dates
       const licenseVerificationDate = document.getElementById('licenseVerificationDate');
-      const flightHoursDate = document.getElementById('flightHoursDate');
+      const flightHoursIssue = document.getElementById('flightHoursIssue');
       const incidentLetterDate = document.getElementById('incidentLetterDate');
       
       if (licenseVerificationDate) {
@@ -4644,9 +4644,9 @@
         });
       }
       
-      if (flightHoursDate) {
-        flightHoursDate.addEventListener('change', () => {
-          validateLetterDate('flightHoursDate', 'Flight Hours Verification Letter');
+      if (flightHoursIssue) {
+        flightHoursIssue.addEventListener('change', () => {
+          validateLetterDate('flightHoursIssue', 'Flight Hours Verification Letter');
         });
       }
       
@@ -4663,7 +4663,7 @@
           // Validate all three letters when joining date changes
           setTimeout(() => {
             validateLetterDate('licenseVerificationDate', 'License Verification Letter');
-            validateLetterDate('flightHoursDate', 'Flight Hours Verification Letter');
+            validateLetterDate('flightHoursIssue', 'Flight Hours Verification Letter');
             validateLetterDate('incidentLetterDate', 'No Incident/Accident Letter');
           }, 100);
         });
