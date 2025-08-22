@@ -2855,6 +2855,7 @@
           const aircraftType = section.querySelector('.ac-type')?.value || '';
           const notes = section.querySelector('.ac-notes')?.value || '';
           const inputs = section.querySelectorAll('.hhmm');
+          const dateInputs = section.querySelectorAll('.date-inp');
           
           const flightHours = {
             pic: inputs[0]?.value || '0:00',
@@ -2867,12 +2868,19 @@
             p1us: inputs[7]?.value || '0:00'
           };
           
+          const dates = {
+            from: dateInputs[0]?.value || '',
+            to: dateInputs[1]?.value || ''
+          };
+          
           console.log(`✈️ Section ${aircraftSections.length + 1} hours:`, flightHours);
+          console.log(`📅 Section ${aircraftSections.length + 1} dates:`, dates);
           
           aircraftSections.push({
             aircraftType,
             notes,
-            flightHours
+            flightHours,
+            dates
           });
         });
         
@@ -3175,6 +3183,35 @@
             console.log(`⚠️ Cannot populate hours for section ${index + 1}:`, {
               hasHours: !!hours,
               hourInputsCount: hourInputs.length
+            });
+          }
+          
+          // Populate date fields
+          const dateInputs = section.querySelectorAll('.date-inp');
+          const dates = sectionData.dates;
+          console.log(`📅 Restoring section ${index + 1} dates:`, dates);
+          console.log(`📅 Found ${dateInputs.length} date input fields`);
+          
+          if (dates && dateInputs.length >= 2) {
+            dateInputs[0].value = dates.from || '';  // From date
+            dateInputs[1].value = dates.to || '';    // To date
+            
+            // Update the date display spans if they exist
+            dateInputs.forEach(dateInput => {
+              const span = dateInput.closest('.date-cell')?.querySelector('.date-print');
+              if (span && dateInput.value) {
+                span.textContent = toDDMMMYYYY(dateInput.value);
+              }
+            });
+            
+            console.log(`✅ Dates populated for section ${index + 1}:`, {
+              from: dateInputs[0].value,
+              to: dateInputs[1].value
+            });
+          } else {
+            console.log(`⚠️ Cannot populate dates for section ${index + 1}:`, {
+              hasDates: !!dates,
+              dateInputsCount: dateInputs.length
             });
           }
         });
