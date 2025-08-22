@@ -720,6 +720,56 @@
   </div>
 
   <script>
+    // ===== Password Protection =====
+    (function() {
+      const FORM_PASSWORD = "FlightTime2025";
+      let attempts = 0;
+      const maxAttempts = 3;
+      
+      function checkPassword() {
+        const userPassword = prompt("Enter access code to continue:");
+        
+        if (userPassword === null) {
+          // User clicked cancel
+          document.body.innerHTML = `
+            <div style="display: flex; justify-content: center; align-items: center; height: 100vh; background: linear-gradient(135deg, #6d28d9 0%, #7c3aed 12%, #8b5cf6 25%, #a855f7 37%, #c084fc 50%, #6366f1 62%, #8b5cf6 75%, #9333ea 87%, #7c3aed 100%);">
+              <div style="text-align: center; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);">
+                <h1 style="color: #1e3a8a; margin-bottom: 20px;">Access Required</h1>
+                <p style="color: #64748b; margin-bottom: 30px;">This form requires an access code to continue.</p>
+                <button onclick="location.reload()" style="background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer;">Try Again</button>
+              </div>
+            </div>
+          `;
+          return;
+        }
+        
+        if (userPassword === FORM_PASSWORD) {
+          // Correct password - continue to form
+          return;
+        } else {
+          attempts++;
+          if (attempts >= maxAttempts) {
+            document.body.innerHTML = `
+              <div style="display: flex; justify-content: center; align-items: center; height: 100vh; background: linear-gradient(135deg, #6d28d9 0%, #7c3aed 12%, #8b5cf6 25%, #a855f7 37%, #c084fc 50%, #6366f1 62%, #8b5cf6 75%, #9333ea 87%, #7c3aed 100%);">
+                <div style="text-align: center; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);">
+                  <h1 style="color: #dc2626; margin-bottom: 20px;">Access Denied</h1>
+                  <p style="color: #64748b; margin-bottom: 30px;">Too many incorrect attempts. Please contact your administrator for the correct access code.</p>
+                  <p style="color: #64748b; font-size: 14px;">Contact: FOF.Admin@flydubai.com</p>
+                </div>
+              </div>
+            `;
+            return;
+          } else {
+            alert(`Incorrect access code. ${maxAttempts - attempts} attempt(s) remaining.`);
+            checkPassword();
+          }
+        }
+      }
+      
+      // Check password when page loads
+      checkPassword();
+    })();
+
     // ===== Utilities =====
     function parseHHMM(str){ if(!str) return 0; const m = String(str).trim().match(/^\s*(\d+)\s*:\s*(\d{1,2})\s*$/); if(!m) return 0; let h = parseInt(m[1],10)||0; let mm = parseInt(m[2],10)||0; h += Math.floor(mm/60); mm = mm % 60; return h*60 + mm; }
     function toHHMM(totalMinutes){ totalMinutes = Math.max(0, Math.floor(totalMinutes||0)); const h = Math.floor(totalMinutes/60); const m = totalMinutes % 60; return h+":"+(m<10?"0"+m:m); }
