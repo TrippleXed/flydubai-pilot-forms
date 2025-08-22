@@ -88,8 +88,8 @@
     }
     
     .header .logo {
-      width: 300px;
-      height: 60px;
+      width: 400px;
+      height: 80px;
       background-image: url('Flydubai-Logo.png');
       background-size: contain;
       background-repeat: no-repeat;
@@ -516,8 +516,8 @@
       }
       
       .header .logo {
-        width: 200px;
-        height: 40px;
+        width: 280px;
+        height: 56px;
       }
       
       .form-step {
@@ -2022,14 +2022,14 @@
               <input type="date" id="passportIssue" onchange="calculateExpiry('passport')" />
             </div>
             <div>
-              <label>Upload Document</label>
-              <input type="file" id="passportFile" accept=".pdf,.jpg,.png" />
+              <label>Expiry Date</label>
+              <input type="date" id="passportExpiry" onchange="checkValidity('passport')" />
             </div>
           </div>
           <div class="grid" style="margin-top: 16px; grid-template-columns: 170px 170px 250px 250px;">
             <div>
-              <label>Expiry Date</label>
-              <input type="date" id="passportExpiry" onchange="checkValidity('passport')" />
+              <label>Upload Document</label>
+              <input type="file" id="passportFile" accept=".pdf,.jpg,.png" />
             </div>
             <div></div>
             <div></div>
@@ -2377,7 +2377,7 @@
             </div>
             <div>
               <label>Test Type</label>
-              <select id="englishTestType">
+              <select id="englishTestType" onchange="toggleEnglishTestDate()">
                 <option value="">Select Test Type</option>
                 <option value="ICAO English Test">ICAO English Test</option>
                 <option value="Aviation English Test">Aviation English Test</option>
@@ -2388,7 +2388,7 @@
                 <option value="Other">Other Approved Test</option>
               </select>
             </div>
-            <div>
+            <div id="englishTestDateDiv">
               <label>Test Date</label>
               <input type="date" id="englishTestDate" />
             </div>
@@ -2492,6 +2492,19 @@
       // Standard parsing for HH:MM format
       const mins = parseHHMM(v); 
       el.value = mins ? toHHMM(mins) : ""; 
+    }
+
+    // ===== English Proficiency Functions =====
+    function toggleEnglishTestDate() {
+      const testType = document.getElementById('englishTestType').value;
+      const testDateDiv = document.getElementById('englishTestDateDiv');
+      
+      if (testType === 'Attached to License') {
+        testDateDiv.style.display = 'none';
+        document.getElementById('englishTestDate').value = ''; // Clear the field
+      } else {
+        testDateDiv.style.display = 'block';
+      }
     }
 
     // ===== Multi-Step Form System =====
@@ -4050,6 +4063,7 @@
       const today = new Date();
       const expiryInput = document.getElementById(docType + 'Expiry');
       const statusDiv = document.getElementById(docType + 'Status');
+      const dojInput = document.getElementById('doj');
       
       if (!expiryInput.value || !statusDiv) return;
       
@@ -4058,9 +4072,32 @@
       
       statusDiv.innerHTML = '';
       
+      // Check if document expires before today
       if (daysUntilExpiry < 0) {
         statusDiv.innerHTML = '<span class="status-indicator status-expired">EXPIRED</span>';
-      } else if (daysUntilExpiry <= 30) {
+        return;
+      }
+      
+      // Check validity against joining date if available
+      if (dojInput && dojInput.value) {
+        const joiningDate = new Date(dojInput.value);
+        const daysAfterJoining = Math.ceil((expiryDate - joiningDate) / (1000 * 60 * 60 * 24));
+        
+        // Passport must be valid for at least 6 months (180 days) after joining
+        if (docType === 'passport' && daysAfterJoining < 180) {
+          statusDiv.innerHTML = '<span class="status-indicator status-expired">EXPIRES TOO SOON AFTER JOINING (Need 6+ months)</span>';
+          return;
+        }
+        
+        // License documents must be valid for at least 90 days after joining
+        if (['license', 'medical', 'rol'].includes(docType) && daysAfterJoining < 90) {
+          statusDiv.innerHTML = '<span class="status-indicator status-expired">EXPIRES TOO SOON AFTER JOINING (Need 90+ days)</span>';
+          return;
+        }
+      }
+      
+      // Standard validity checks
+      if (daysUntilExpiry <= 30) {
         statusDiv.innerHTML = '<span class="status-indicator status-warning">EXPIRES SOON</span>';
       } else {
         statusDiv.innerHTML = '<span class="status-indicator status-valid">VALID</span>';
@@ -4743,6 +4780,20 @@
       window.debugLayout = debugLayout;
       window.debugSpacing = debugSpacing;
       window.debugAircraftSections = debugAircraftSections;
+      
+      // Add event listener for joining date to re-validate documents
+      const dojInput = document.getElementById('doj');
+      if (dojInput) {
+        dojInput.addEventListener('change', () => {
+          // Re-validate all documents when joining date changes
+          ['passport', 'license', 'medical', 'rol'].forEach(docType => {
+            const expiryInput = document.getElementById(docType + 'Expiry');
+            if (expiryInput && expiryInput.value) {
+              checkValidity(docType);
+            }
+          });
+        });
+      }
       
       console.log('🎨 Layout debugging functions available. Use debugLayout(), debugSpacing(), or debugAircraftSections() in console');
       console.log('✅ === INITIALIZATION COMPLETE ===');
