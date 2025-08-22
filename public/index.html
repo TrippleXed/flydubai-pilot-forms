@@ -2601,6 +2601,22 @@
       mm = mm % 60; 
       return h*60 + mm; 
     }
+
+    // Date formatting function
+    function toDDMMMYYYY(dateStr) {
+      if (!dateStr) return '';
+      const date = new Date(dateStr);
+      if (isNaN(date.getTime())) return '';
+      
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = months[date.getMonth()];
+      const year = date.getFullYear();
+      
+      return `${day} ${month} ${year}`;
+    }
     
     function toHHMM(totalMinutes){ 
       totalMinutes = Math.max(0, Math.floor(totalMinutes||0)); 
@@ -2849,6 +2865,12 @@
       }
       
       // Step 2: Flight Experience
+      console.log('🔍 Checking flight experience collection condition:', {
+        currentStep,
+        shouldCollect: currentStep >= 2,
+        stepComparison: `${currentStep} >= 2`
+      });
+      
       if (currentStep >= 2) {
         console.log('🔍 === COLLECTING FLIGHT EXPERIENCE DATA ===');
         const sectionsFound = document.querySelectorAll('#sections .form-section, #sections .section');
