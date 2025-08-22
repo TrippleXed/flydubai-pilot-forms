@@ -4893,6 +4893,64 @@
       
       console.log('✅ English test type handler set up completed');
       
+      // ===== Visa Status Handler =====
+      console.log('🔗 Setting up visa status handler...');
+      
+      const visaStatus = document.getElementById('visaStatus');
+      const visaExpiryDiv = visaStatus?.closest('.grid').children[1]; // The div containing visa expiry date
+      const visaFileDiv = visaStatus?.closest('.grid').children[2];   // The div containing visa file upload
+      
+      if (visaStatus && visaExpiryDiv && visaFileDiv) {
+        // Function to toggle visa fields visibility
+        function toggleVisaFields() {
+          const isNoVisa = visaStatus.value === 'No Current UAE Visa';
+          const displayValue = isNoVisa ? 'none' : 'block';
+          
+          visaExpiryDiv.style.display = displayValue;
+          visaFileDiv.style.display = displayValue;
+          
+          // Clear values if hiding fields
+          if (isNoVisa) {
+            const visaExpiryInput = document.getElementById('visaExpiry');
+            const visaFileInput = document.getElementById('visaFile');
+            
+            if (visaExpiryInput) {
+              visaExpiryInput.value = '';
+              // Remove any validation errors
+              const formSection = visaExpiryInput.closest('.form-section');
+              if (formSection) {
+                formSection.style.borderColor = '';
+                formSection.style.backgroundColor = '';
+                const errorMsg = formSection.querySelector('.error-message');
+                if (errorMsg) errorMsg.remove();
+              }
+            }
+            
+            if (visaFileInput) {
+              visaFileInput.value = '';
+              // Remove any validation errors
+              const formSection = visaFileInput.closest('.form-section');
+              if (formSection) {
+                formSection.style.borderColor = '';
+                formSection.style.backgroundColor = '';
+                const errorMsg = formSection.querySelector('.error-message');
+                if (errorMsg) errorMsg.remove();
+              }
+            }
+          }
+          
+          console.log(`🛂 Visa fields ${isNoVisa ? 'hidden' : 'shown'} based on status: ${visaStatus.value}`);
+        }
+        
+        // Add change event listener
+        visaStatus.addEventListener('change', toggleVisaFields);
+        
+        // Initialize on page load
+        toggleVisaFields();
+      }
+      
+      console.log('✅ Visa status handler set up completed');
+      
       // ===== 30-Day Letter Validation =====
       console.log('🔗 Setting up 30-day letter validation...');
       
