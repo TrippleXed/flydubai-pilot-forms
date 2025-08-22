@@ -3106,6 +3106,40 @@
           }
         });
         
+        // Add event listeners to all restored time fields
+        console.log('🔧 Adding event listeners to restored time fields...');
+        const restoredTimeFields = sectionsWrap.querySelectorAll('.hhmm');
+        console.log(`🔧 Found ${restoredTimeFields.length} time fields in restored sections`);
+        restoredTimeFields.forEach((field, index) => {
+          // Add specific blur event listener to ensure processing works
+          field.addEventListener('blur', function() {
+            console.log(`🎯 Direct blur event on restored time field: ${this.className}, value: "${this.value}"`);
+            padHHMM(this);
+            computeAll();
+          });
+          
+          // Add Enter key navigation
+          field.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              const allFields = Array.from(document.querySelectorAll('.hhmm'));
+              const currentIndex = allFields.indexOf(this);
+              const nextField = allFields[currentIndex + 1];
+              
+              if (nextField) {
+                console.log('🔄 Moving to next time field via Enter key');
+                nextField.focus();
+              } else {
+                // This is the very last time field - blur it to trigger processing
+                console.log('🔚 Last time field in form, triggering blur to process value');
+                e.target.blur();
+              }
+            }
+          });
+          
+          console.log(`  - Restored time field ${index + 1}: ${field.className} event listeners added`);
+        });
+        
         // Restore summary hours if available
         if (formData.flightExperience.summaryHours) {
           console.log('📊 Populating summary hours...');
