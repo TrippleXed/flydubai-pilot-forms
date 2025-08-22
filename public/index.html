@@ -2586,6 +2586,7 @@
     
     function padHHMM(el){ 
       const v = el.value.trim(); 
+      console.log(`🔧 padHHMM processing: "${v}" for field ${el.className}`);
       
       // Handle special cases for time entry shortcuts
       if (v.match(/^\d{1,4}$/)) {
@@ -2593,6 +2594,7 @@
         if (v.length === 1) {
           // 1 becomes 00:01 (single digit minutes)
           el.value = `0:0${v}`;
+          console.log(`  ✅ Single digit converted: "${v}" → "0:0${v}"`);
           return;
         } else if (v.length === 2) {
           // 23 becomes 00:23 (minutes)
@@ -4363,7 +4365,11 @@
 
     document.addEventListener('blur', (e)=>{
       const t = e.target;
-      if(t.classList && t.classList.contains('hhmm')){ padHHMM(t); computeAll(); }
+      if(t.classList && t.classList.contains('hhmm')){ 
+        console.log(`⏰ Time field blur detected: ${t.className}, value: "${t.value}"`);
+        padHHMM(t); 
+        computeAll(); 
+      }
       if(t.classList && t.classList.contains('date-inp')){ const span = t.closest('.date-cell').querySelector('.date-print'); span.textContent = toDDMMMYYYY(t.value); }
     }, true);
 
@@ -4479,6 +4485,15 @@
         
         sectionsWrap.appendChild(newSection);
         console.log('✅ New aircraft section added');
+        
+        // Ensure all time fields in the new section are properly initialized
+        const newTimeFields = newSection.querySelectorAll('.hhmm');
+        console.log(`🔧 Initializing ${newTimeFields.length} time fields in new section`);
+        newTimeFields.forEach((field, index) => {
+          // Ensure the field has the right placeholder and is ready for input
+          if (!field.value) field.value = '0:00';
+          console.log(`  - Time field ${index + 1}: ${field.className} initialized`);
+        });
         
         // Recompute totals
         computeAll();
