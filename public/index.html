@@ -4195,6 +4195,25 @@
       });
       sectionsWrap.appendChild(section2);
       
+      // Initialize event listeners for all time fields in both default sections
+      const allTimeFields = sectionsWrap.querySelectorAll('.hhmm');
+      console.log(`🔧 Adding event listeners to ${allTimeFields.length} time fields in default sections`);
+      allTimeFields.forEach((field, index) => {
+        // Add specific blur event listener to ensure processing works
+        field.addEventListener('blur', function() {
+          console.log(`🎯 Direct blur event on default time field: ${this.className}, value: "${this.value}"`);
+          padHHMM(this);
+          computeAll();
+        });
+        
+        // Also add input event for real-time feedback
+        field.addEventListener('input', function() {
+          console.log(`⌨️ Input event on default time field: ${this.className}, value: "${this.value}"`);
+        });
+        
+        console.log(`  - Default time field ${index + 1}: ${field.className} event listeners added`);
+      });
+      
       console.log('✈️ Default aircraft sections initialized');
       
       // Recompute totals after initialization
@@ -4493,6 +4512,18 @@
           // Ensure the field has the right placeholder and is ready for input
           if (!field.value) field.value = '0:00';
           console.log(`  - Time field ${index + 1}: ${field.className} initialized`);
+          
+          // Add specific blur event listener to ensure processing works
+          field.addEventListener('blur', function() {
+            console.log(`🎯 Direct blur event on new time field: ${this.className}, value: "${this.value}"`);
+            padHHMM(this);
+            computeAll();
+          });
+          
+          // Also add input event for real-time feedback
+          field.addEventListener('input', function() {
+            console.log(`⌨️ Input event on new time field: ${this.className}, value: "${this.value}"`);
+          });
         });
         
         // Recompute totals
