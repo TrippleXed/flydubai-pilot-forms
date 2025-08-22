@@ -1764,6 +1764,260 @@
             <strong>Requirement:</strong> Valid passport with minimum 6 months validity remaining after expected date of joining. Passport must have sufficient blank pages for visa stamps and be in good condition.
           </div>
         </div>
+
+        <div class="form-section">
+          <h2 class="section-h">🛂 UAE Visa & Work Permit</h2>
+          <div class="grid">
+            <div>
+              <label>Current Visa Status</label>
+              <select id="visaStatus">
+                <option value="">Select Visa Status</option>
+                <option value="Tourist Visa">Tourist Visa</option>
+                <option value="Visit Visa">Visit Visa</option>
+                <option value="Residence Visa">Residence Visa</option>
+                <option value="Employment Visa">Employment Visa</option>
+                <option value="No Current UAE Visa">No Current UAE Visa</option>
+              </select>
+            </div>
+            <div>
+              <label>Visa Expiry Date</label>
+              <input type="date" id="visaExpiry" onchange="checkValidity('visa')" />
+            </div>
+            <div>
+              <label>Upload Current Visa Copy</label>
+              <input type="file" id="visaFile" accept=".pdf,.jpg,.png" />
+            </div>
+            <div></div>
+          </div>
+          <div id="visaStatus"></div>
+          <div class="requirement-note">
+            <strong>Requirement:</strong> Valid UAE entry visa or residence permit. If currently outside UAE, company will provide visa assistance. Work permit will be processed after job offer acceptance.
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="section-h">⏱️ Flight Hours Verification Letter</h2>
+          <div class="grid">
+            <div>
+              <label>Issuing Authority/Company</label>
+              <input type="text" id="flightHoursAuthority" placeholder="Previous airline, flight school, or aviation authority" />
+            </div>
+            <div>
+              <label>Letter Issue Date</label>
+              <input type="date" id="flightHoursIssue" />
+            </div>
+            <div>
+              <label>Upload Verification Letter</label>
+              <input type="file" id="flightHoursFile" accept=".pdf,.jpg,.png" />
+            </div>
+            <div></div>
+          </div>
+          <div class="requirement-note">
+            <strong>Requirement:</strong> Official letter from previous employer or aviation authority verifying your total flight hours, aircraft types flown, and positions held. Must be on company letterhead with official signature and stamp.
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="section-h">📋 License Verification Letter</h2>
+          <div class="grid">
+            <div>
+              <label>Issuing Aviation Authority</label>
+              <select id="licenseVerificationAuthority">
+                <option value="">Select Aviation Authority</option>
+                <option value="EASA">EASA (European Union Aviation Safety Agency)</option>
+                <option value="FAA USA">FAA (Federal Aviation Administration - USA)</option>
+                <option value="GCAA UAE">GCAA UAE (General Civil Aviation Authority)</option>
+                <option value="DGCA India">DGCA India (Directorate General of Civil Aviation)</option>
+                <option value="CASA Australia">CASA (Civil Aviation Safety Authority - Australia)</option>
+                <option value="CAA UK">CAA UK (Civil Aviation Authority - United Kingdom)</option>
+                <option value="TCCA Canada">Transport Canada Civil Aviation</option>
+                <option value="Other">Other Aviation Authority</option>
+              </select>
+            </div>
+            <div>
+              <label>Verification Letter Date</label>
+              <input type="date" id="licenseVerificationDate" />
+            </div>
+            <div>
+              <label>Upload Verification Letter</label>
+              <input type="file" id="licenseVerificationFile" accept=".pdf,.jpg,.png" />
+            </div>
+            <div></div>
+          </div>
+          <div class="requirement-note">
+            <strong>Requirement:</strong> Official letter from the aviation authority that issued your license confirming its validity, ratings, and any restrictions. Required for license conversion to UAE GCAA license.
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="section-h">✅ No Incident/Accident Letter</h2>
+          <div class="grid" style="grid-template-columns: 400px 170px 300px 250px;">
+            <div>
+              <label>Issuing Aviation Authority</label>
+              <select id="incidentLetterAuthority">
+                <option value="">Select Aviation Authority</option>
+                <option value="EASA">EASA (European Union Aviation Safety Agency)</option>
+                <option value="FAA USA">FAA (Federal Aviation Administration - USA)</option>
+                <option value="GCAA UAE">GCAA UAE (General Civil Aviation Authority)</option>
+                <option value="DGCA India">DGCA India (Directorate General of Civil Aviation)</option>
+                <option value="CASA Australia">CASA (Civil Aviation Safety Authority - Australia)</option>
+                <option value="CAA UK">CAA UK (Civil Aviation Authority - United Kingdom)</option>
+                <option value="TCCA Canada">Transport Canada Civil Aviation</option>
+                <option value="Previous Airline/Employer">Previous Airline/Employer</option>
+                <option value="Other">Other Authority</option>
+              </select>
+            </div>
+            <div>
+              <label>Letter Issue Date</label>
+              <input type="date" id="incidentLetterDate" />
+            </div>
+            <div>
+              <label>Upload Letter</label>
+              <input type="file" id="incidentLetterFile" accept=".pdf,.jpg,.png" />
+            </div>
+            <div></div>
+          </div>
+          <div class="requirement-note">
+            <strong>Requirement:</strong> Official letter confirming no aviation incidents, accidents, or violations on record. Must be issued by relevant aviation authority or previous employer within the last 6 months.
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="section-h">🆔 Emirates ID (if applicable)</h2>
+          <div class="grid">
+            <div>
+              <label>Emirates ID Number</label>
+              <input type="text" id="emiratesIdNumber" placeholder="784-YYYY-XXXXXXX-X" />
+            </div>
+            <div>
+              <label>Issue Date</label>
+              <input type="date" id="emiratesIdIssue" />
+            </div>
+            <div>
+              <label>Expiry Date</label>
+              <input type="date" id="emiratesIdExpiry" onchange="checkValidity('emiratesId')" />
+            </div>
+            <div>
+              <label>Upload Emirates ID Copy</label>
+              <input type="file" id="emiratesIdFile" accept=".pdf,.jpg,.png" />
+            </div>
+          </div>
+          <div id="emiratesIdStatus"></div>
+          <div class="requirement-note">
+            <strong>Note:</strong> Only required if you currently hold UAE residence. If you don't have Emirates ID, leave this section blank. New Emirates ID will be processed after employment confirmation.
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="section-h">📜 Educational Certificates</h2>
+          <div class="grid">
+            <div>
+              <label>Highest Aviation Qualification</label>
+              <select id="aviationEducation">
+                <option value="">Select Qualification</option>
+                <option value="Commercial Pilot Training">Commercial Pilot Training</option>
+                <option value="Aviation Degree">Aviation Degree (Bachelor/Master)</option>
+                <option value="Flight Instructor Rating">Flight Instructor Rating</option>
+                <option value="Type Rating Course">Type Rating Course</option>
+                <option value="Multi-Engine Rating">Multi-Engine Rating</option>
+                <option value="Instrument Rating">Instrument Rating</option>
+                <option value="ATPL Theory">ATPL Theory Course</option>
+                <option value="Other">Other Aviation Training</option>
+              </select>
+            </div>
+            <div>
+              <label>Institution/School</label>
+              <input type="text" id="aviationInstitution" placeholder="Flight school or university name" />
+            </div>
+            <div>
+              <label>Completion Date</label>
+              <input type="date" id="aviationEducationDate" />
+            </div>
+            <div>
+              <label>Upload Certificate</label>
+              <input type="file" id="aviationEducationFile" accept=".pdf,.jpg,.png" />
+            </div>
+          </div>
+          <div class="requirement-note">
+            <strong>Requirement:</strong> Copies of relevant aviation training certificates, type rating certificates, and educational qualifications. Academic transcripts may be required for degree verification.
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="section-h">✈️ Type Rating Certificates</h2>
+          <div class="grid">
+            <div>
+              <label>Aircraft Type</label>
+              <select id="typeRatingAircraft">
+                <option value="">Select Aircraft Type</option>
+                <option value="Boeing 737">Boeing 737 (All Variants)</option>
+                <option value="Boeing 757">Boeing 757</option>
+                <option value="Boeing 767">Boeing 767</option>
+                <option value="Boeing 777">Boeing 777</option>
+                <option value="Boeing 787">Boeing 787 Dreamliner</option>
+                <option value="Airbus A319/A320/A321">Airbus A319/A320/A321</option>
+                <option value="Airbus A330">Airbus A330</option>
+                <option value="Airbus A340">Airbus A340</option>
+                <option value="Airbus A350">Airbus A350</option>
+                <option value="Airbus A380">Airbus A380</option>
+                <option value="Other">Other Aircraft Type</option>
+              </select>
+            </div>
+            <div>
+              <label>Training Organization</label>
+              <input type="text" id="typeRatingOrganization" placeholder="Training center or airline" />
+            </div>
+            <div>
+              <label>Issue/Completion Date</label>
+              <input type="date" id="typeRatingDate" />
+            </div>
+            <div>
+              <label>Upload Certificate</label>
+              <input type="file" id="typeRatingFile" accept=".pdf,.jpg,.png" />
+            </div>
+          </div>
+          <div class="requirement-note">
+            <strong>Requirement:</strong> Type rating certificates for all aircraft types you are qualified to fly. Include initial and recurrent training certificates. Multiple type ratings should be uploaded as separate documents.
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="section-h">🌐 English Proficiency Certificate</h2>
+          <div class="grid">
+            <div>
+              <label>Proficiency Level</label>
+              <select id="englishLevel">
+                <option value="">Select ICAO Level</option>
+                <option value="Level 4">Level 4 (Operational)</option>
+                <option value="Level 5">Level 5 (Extended)</option>
+                <option value="Level 6">Level 6 (Expert)</option>
+              </select>
+            </div>
+            <div>
+              <label>Test Type</label>
+              <select id="englishTestType">
+                <option value="">Select Test Type</option>
+                <option value="ICAO English Test">ICAO English Test</option>
+                <option value="Aviation English Test">Aviation English Test</option>
+                <option value="TEA (Test of English for Aviation)">TEA (Test of English for Aviation)</option>
+                <option value="IELTS">IELTS (Academic)</option>
+                <option value="Native Speaker">Native English Speaker</option>
+                <option value="Other">Other Approved Test</option>
+              </select>
+            </div>
+            <div>
+              <label>Test Date</label>
+              <input type="date" id="englishTestDate" />
+            </div>
+            <div>
+              <label>Upload Certificate</label>
+              <input type="file" id="englishFile" accept=".pdf,.jpg,.png" />
+            </div>
+          </div>
+          <div class="requirement-note">
+            <strong>Requirement:</strong> ICAO Level 4 or higher English proficiency certificate. Native English speakers may provide alternative documentation. Certificate must be current and valid for commercial aviation operations.
+          </div>
+        </div>
       </div>
 
       <!-- Step 4: Review & Submit -->
@@ -2027,12 +2281,81 @@
       
       // Step 3: Documentation
       if (currentStep >= 3) {
+        console.log('📄 Collecting Step 3: Documentation');
         formData.documentation = {
+          // Pilot License
+          licenseType: document.getElementById('licenseType')?.value || '',
+          licenseNumber: document.getElementById('licenseNumber')?.value || '',
+          licenseIssue: document.getElementById('licenseIssue')?.value || '',
+          licenseExpiry: document.getElementById('licenseExpiry')?.value || '',
           licenseFile: document.getElementById('licenseFile')?.files[0]?.name || '',
+          
+          // Medical Certificate
+          medicalClass: document.getElementById('medicalClass')?.value || '',
+          medicalAuthority: document.getElementById('medicalAuthority')?.value || '',
+          medicalIssue: document.getElementById('medicalIssue')?.value || '',
+          medicalExpiry: document.getElementById('medicalExpiry')?.value || '',
           medicalFile: document.getElementById('medicalFile')?.files[0]?.name || '',
-          logbookFile: document.getElementById('logbookFile')?.files[0]?.name || '',
-          resumeFile: document.getElementById('resumeFile')?.files[0]?.name || ''
+          
+          // Radio Operator License
+          rolNumber: document.getElementById('rolNumber')?.value || '',
+          rolAuthority: document.getElementById('rolAuthority')?.value || '',
+          rolIssue: document.getElementById('rolIssue')?.value || '',
+          rolExpiry: document.getElementById('rolExpiry')?.value || '',
+          rolFile: document.getElementById('rolFile')?.files[0]?.name || '',
+          
+          // Passport
+          passportNumber: document.getElementById('passportNumber')?.value || '',
+          passportNationality: document.getElementById('passportNationality')?.value || '',
+          passportIssue: document.getElementById('passportIssue')?.value || '',
+          passportExpiry: document.getElementById('passportExpiry')?.value || '',
+          passportFile: document.getElementById('passportFile')?.files[0]?.name || '',
+          
+          // UAE Visa & Work Permit
+          visaStatus: document.getElementById('visaStatus')?.value || '',
+          visaExpiry: document.getElementById('visaExpiry')?.value || '',
+          visaFile: document.getElementById('visaFile')?.files[0]?.name || '',
+          
+          // Flight Hours Verification Letter
+          flightHoursAuthority: document.getElementById('flightHoursAuthority')?.value || '',
+          flightHoursIssue: document.getElementById('flightHoursIssue')?.value || '',
+          flightHoursFile: document.getElementById('flightHoursFile')?.files[0]?.name || '',
+          
+          // License Verification Letter
+          licenseVerificationAuthority: document.getElementById('licenseVerificationAuthority')?.value || '',
+          licenseVerificationDate: document.getElementById('licenseVerificationDate')?.value || '',
+          licenseVerificationFile: document.getElementById('licenseVerificationFile')?.files[0]?.name || '',
+          
+          // No Incident/Accident Letter
+          incidentLetterAuthority: document.getElementById('incidentLetterAuthority')?.value || '',
+          incidentLetterDate: document.getElementById('incidentLetterDate')?.value || '',
+          incidentLetterFile: document.getElementById('incidentLetterFile')?.files[0]?.name || '',
+          
+          // Emirates ID
+          emiratesIdNumber: document.getElementById('emiratesIdNumber')?.value || '',
+          emiratesIdIssue: document.getElementById('emiratesIdIssue')?.value || '',
+          emiratesIdExpiry: document.getElementById('emiratesIdExpiry')?.value || '',
+          emiratesIdFile: document.getElementById('emiratesIdFile')?.files[0]?.name || '',
+          
+          // Educational Certificates
+          aviationEducation: document.getElementById('aviationEducation')?.value || '',
+          aviationInstitution: document.getElementById('aviationInstitution')?.value || '',
+          aviationEducationDate: document.getElementById('aviationEducationDate')?.value || '',
+          aviationEducationFile: document.getElementById('aviationEducationFile')?.files[0]?.name || '',
+          
+          // Type Rating Certificates
+          typeRatingAircraft: document.getElementById('typeRatingAircraft')?.value || '',
+          typeRatingOrganization: document.getElementById('typeRatingOrganization')?.value || '',
+          typeRatingDate: document.getElementById('typeRatingDate')?.value || '',
+          typeRatingFile: document.getElementById('typeRatingFile')?.files[0]?.name || '',
+          
+          // English Proficiency Certificate
+          englishLevel: document.getElementById('englishLevel')?.value || '',
+          englishTestType: document.getElementById('englishTestType')?.value || '',
+          englishTestDate: document.getElementById('englishTestDate')?.value || '',
+          englishFile: document.getElementById('englishFile')?.files[0]?.name || ''
         };
+        console.log('📄 Documentation data collected:', Object.keys(formData.documentation).length, 'fields');
       }
       
       // Step 4: Review & Submit
@@ -2244,18 +2567,72 @@
         }, 100);
       }
       
-      // Step 3: Documentation - populate key document fields
+      // Step 3: Documentation - populate all document fields
       if (formData.documentation) {
         console.log('📄 Populating documentation fields...');
         const docs = formData.documentation;
         
-        // Populate document fields that exist in the form
+        // Populate all document fields that exist in the form
         const docFields = [
-          { id: 'pilotLicense', value: docs.pilotLicense },
+          // Pilot License
+          { id: 'licenseType', value: docs.licenseType },
           { id: 'licenseNumber', value: docs.licenseNumber },
-          { id: 'licenseAuthority', value: docs.licenseAuthority },
+          { id: 'licenseIssue', value: docs.licenseIssue },
+          { id: 'licenseExpiry', value: docs.licenseExpiry },
+          
+          // Medical Certificate
           { id: 'medicalClass', value: docs.medicalClass },
-          { id: 'medicalAuthority', value: docs.medicalAuthority }
+          { id: 'medicalAuthority', value: docs.medicalAuthority },
+          { id: 'medicalIssue', value: docs.medicalIssue },
+          { id: 'medicalExpiry', value: docs.medicalExpiry },
+          
+          // Radio Operator License
+          { id: 'rolNumber', value: docs.rolNumber },
+          { id: 'rolAuthority', value: docs.rolAuthority },
+          { id: 'rolIssue', value: docs.rolIssue },
+          { id: 'rolExpiry', value: docs.rolExpiry },
+          
+          // Passport
+          { id: 'passportNumber', value: docs.passportNumber },
+          { id: 'passportNationality', value: docs.passportNationality },
+          { id: 'passportIssue', value: docs.passportIssue },
+          { id: 'passportExpiry', value: docs.passportExpiry },
+          
+          // UAE Visa & Work Permit
+          { id: 'visaStatus', value: docs.visaStatus },
+          { id: 'visaExpiry', value: docs.visaExpiry },
+          
+          // Flight Hours Verification Letter
+          { id: 'flightHoursAuthority', value: docs.flightHoursAuthority },
+          { id: 'flightHoursIssue', value: docs.flightHoursIssue },
+          
+          // License Verification Letter
+          { id: 'licenseVerificationAuthority', value: docs.licenseVerificationAuthority },
+          { id: 'licenseVerificationDate', value: docs.licenseVerificationDate },
+          
+          // No Incident/Accident Letter
+          { id: 'incidentLetterAuthority', value: docs.incidentLetterAuthority },
+          { id: 'incidentLetterDate', value: docs.incidentLetterDate },
+          
+          // Emirates ID
+          { id: 'emiratesIdNumber', value: docs.emiratesIdNumber },
+          { id: 'emiratesIdIssue', value: docs.emiratesIdIssue },
+          { id: 'emiratesIdExpiry', value: docs.emiratesIdExpiry },
+          
+          // Educational Certificates
+          { id: 'aviationEducation', value: docs.aviationEducation },
+          { id: 'aviationInstitution', value: docs.aviationInstitution },
+          { id: 'aviationEducationDate', value: docs.aviationEducationDate },
+          
+          // Type Rating Certificates
+          { id: 'typeRatingAircraft', value: docs.typeRatingAircraft },
+          { id: 'typeRatingOrganization', value: docs.typeRatingOrganization },
+          { id: 'typeRatingDate', value: docs.typeRatingDate },
+          
+          // English Proficiency Certificate
+          { id: 'englishLevel', value: docs.englishLevel },
+          { id: 'englishTestType', value: docs.englishTestType },
+          { id: 'englishTestDate', value: docs.englishTestDate }
         ];
         
         docFields.forEach(field => {
@@ -2263,8 +2640,12 @@
           if (element && field.value) {
             element.value = field.value;
             console.log(`✅ ${field.id}: ${field.value}`);
+          } else if (!element && field.value) {
+            console.log(`⚠️ Element not found: ${field.id}`);
           }
         });
+        
+        console.log('📄 Documentation fields populated:', docFields.filter(f => f.value).length, 'of', docFields.length);
       }
       
       // Step 4: Declaration
