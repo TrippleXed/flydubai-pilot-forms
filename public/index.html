@@ -5148,9 +5148,13 @@
       if (step === 2) {
         setTimeout(() => {
           // Check if we have saved flight experience data
-          const savedData = localStorage.getItem(`flydubai_form_${sessionId}`);
-          console.log('🔍 Checking for saved data with key:', `flydubai_form_${sessionId}`);
+          const saveKey = `flydubai_form_${sessionId}`;
+          const savedData = localStorage.getItem(saveKey);
+          console.log('🔍 Checking for saved data with key:', saveKey);
+          console.log('🔍 SessionId variable:', sessionId);
           console.log('🔍 Raw saved data exists:', !!savedData);
+          console.log('🔍 All localStorage keys:', Object.keys(localStorage));
+          console.log('🔍 localStorage keys matching our pattern:', Object.keys(localStorage).filter(key => key.includes('flydubai_form')));
           
           if (savedData) {
             try {
