@@ -1,0 +1,20 @@
+{
+  "name": "flydubai-pilot-forms",
+  "version": "1.0.0",
+  "description": "Pilot documentation forms for flydubai",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build step required'"
+  },
+  "dependencies": {
+    "jspdf": "^2.5.1",
+    "html2canvas": "^1.4.1",
+    "nodemailer": "^6.9.7",
+    "@vercel/node": "^3.0.12"
+  },
+  "devDependencies": {},
+  "keywords": ["forms", "pilot", "flydubai"],
+  "author": "flydubai",
+  "license": "ISC"
+}

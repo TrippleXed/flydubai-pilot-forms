@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FZ_pilot_flying_hours_form</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    :root{ 
+      /* flydubai Official Brand Colors */
+      --bg: linear-gradient(135deg, #6d28d9 0%, #7c3aed 12%, #8b5cf6 25%, #a855f7 37%, #c084fc 50%, #6366f1 62%, #8b5cf6 75%, #9333ea 87%, #7c3aed 100%);
+      --card: #ffffff; 
+      --ink: #0f172a; 
+      --muted: #64748b; 
+      --accent: #3b82f6; 
+      --accent-light: #60a5fa;
+      --line: #e2e8f0; 
+      --flydubai-blue: #3b82f6;
+      --flydubai-orange: #f97316;
+      --flydubai-navy: #1e3a8a;
+      --flydubai-light-blue: #dbeafe;
+      --aviation-silver: #94a3b8;
+      --success: #059669;
+      --warning: #d97706;
+      --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4), 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+    
+    html,body{height:100%; scroll-behavior: smooth;}
+    body{
+      margin:0;
+      background: var(--bg);
+      background-attachment: fixed;
+      background-size: 100% 100vh;
+      color:var(--ink);
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      font-weight: 400;
+      min-height: 100vh;
+    }
+    
+    .container{
+      max-width:1200px;
+      margin:40px auto;
+      padding:32px;
+    }
+    
+    .card{
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+    
+    /* flydubai brand accent stripe */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, var(--flydubai-blue) 0%, var(--flydubai-orange) 50%, var(--flydubai-blue) 100%);
+    }
+    header{
+      padding: 16px 40px;
+      border-bottom: 2px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 30%, #f8fafc 70%, #f1f5f9 100%);
+      position: relative;
+      min-height: 100px;
+    }
+    
+    header h1{
+      margin: 0;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: var(--flydubai-navy);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      line-height: 28px;
+    }
+    
+    header .logo {
+      width: 500px;
+      height: 100px;
+      background: url('data:image/png;base64,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YADBgADBgADBgAwYAAwYAAwYADBgADBgAMGAAMGAAwIABwIABwIANGAAMGAAMGAAwYAAwYADAgAHAgAEAAwaAvtlXVAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAODYgwMBAAAAACD/10ZQVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVWkPDgQAAAAABPlbbzBBBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC/nQScV8wy6NQAAAABJRU5ErkJggg==') no-repeat left center;
+      background-size: contain;
+    }
+    
+    header .controls {
+      flex-shrink: 0;
+      transform: translateY(-10px);
+    }
+    
+    header .controls .btn {
+      padding: 0px 20px;
+      font-size: 16px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+      border-color: #dc2626;
+      color: #ffffff;
+      box-shadow: 0 4px 8px rgba(220, 38, 38, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      line-height: 28px;
+      display: flex;
+      align-items: center;
+    }
+    
+    header .controls .btn:hover {
+      background: linear-gradient(135deg, #b91c1c 0%, #dc2626 100%);
+      box-shadow: 0 6px 16px rgba(220, 38, 38, 0.5);
+      transform: translateY(-2px);
+    }
+
+    header .controls .btn-submit {
+      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      border-color: #059669;
+      box-shadow: 0 4px 8px rgba(5, 150, 105, 0.3);
+      margin-left: 10px;
+    }
+
+    header .controls .btn-submit:hover {
+      background: linear-gradient(135deg, #047857 0%, #059669 100%);
+      box-shadow: 0 6px 16px rgba(5, 150, 105, 0.5);
+    }
+    
+    .content{
+      padding: 40px;
+    }
+
+    /* Form grid (top row) */
+    .grid{
+      display: grid;
+      gap: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+    
+    .content > .grid:first-of-type{ 
+      gap: 28px; 
+      grid-template-columns: minmax(320px, 1fr) minmax(240px, 1fr) minmax(220px, 1fr);
+      margin-bottom: 32px;
+    }
+    
+    .content > .grid:first-of-type input, 
+    .content > .grid:first-of-type select{ 
+      box-sizing: border-box;
+    }
+
+    label{
+      display: block;
+      font-weight: 600;
+      margin: 0 0 8px;
+      font-size: 14px;
+      color: var(--flydubai-navy);
+      letter-spacing: 0.025em;
+    }
+    
+    input, select, button{
+      font: inherit;
+      color: inherit;
+      transition: all 0.2s ease-in-out;
+    }
+    
+    input[type="text"], 
+    input[type="date"], 
+    select{
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 3px solid #cbd5e1;
+      background: #ffffff;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+    
+    input[type="text"]:focus, 
+    input[type="date"]:focus, 
+    select:focus{
+      outline: none;
+      border-color: var(--flydubai-blue);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2), 0 0 0 4px rgba(59, 130, 246, 0.15), inset 0 1px 3px rgba(0, 0, 0, 0.05);
+      transform: translateY(-2px);
+    }
+    
+    input[type="text"]::placeholder{
+      color: var(--aviation-silver);
+      font-weight: 400;
+    }
+    
+    /* Validation styles for required notes fields */
+    .ac-notes.required-empty {
+      border-color: #dc2626 !important;
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1) !important;
+    }
+
+    h2.section-h{
+      margin: 20px 0 16px;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: var(--flydubai-navy);
+      text-transform: uppercase;
+      position: relative;
+      padding-left: 24px;
+    }
+    
+    h2.section-h::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 24px;
+      background: var(--flydubai-orange);
+      border-radius: 2px;
+    }
+    
+    .section{
+      border: 2px solid var(--line);
+      border-radius: 20px;
+      padding: 32px;
+      margin-top: 24px;
+      background: linear-gradient(135deg, #ffffff 0%, #fafbff 100%);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--flydubai-blue) 0%, var(--flydubai-orange) 100%);
+    }
+    
+    .section-title{
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+    
+    .section-title h3{
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--flydubai-navy);
+      letter-spacing: -0.025em;
+    }
+
+    table{
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      table-layout: fixed;
+      background: #ffffff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    th, td{
+      border-bottom: 1px solid var(--line);
+      padding: 16px 12px;
+      vertical-align: middle;
+    }
+    
+    th{
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      text-align: center;
+      background: linear-gradient(135deg, var(--flydubai-blue) 0%, var(--flydubai-navy) 100%);
+      color: #ffffff;
+      position: relative;
+      padding: 20px 12px;
+      line-height: 1.3;
+      vertical-align: middle;
+    }
+
+    .flight-role {
+      font-size: 16px;
+      font-weight: 700;
+      text-align: center;
+      color: var(--flydubai-navy);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 18px 16px;
+      vertical-align: middle;
+    }
+    
+    th:first-child {
+      border-top-left-radius: 16px;
+    }
+    
+    th:last-child {
+      border-top-right-radius: 16px;
+    }
+    
+    th b{
+      font-weight: 700;
+      display: block;
+      margin-bottom: 2px;
+    }
+    
+    .flight-role{
+      font-weight: 700;
+      color: var(--flydubai-blue);
+      text-transform: uppercase;
+      letter-spacing: 0.025em;
+    }
+    
+    tbody tr:hover {
+      background-color: rgba(30, 58, 138, 0.02);
+    }
+    .hhmm{
+      width: 96px;
+      max-width: 100%;
+      display: block;
+      margin: 0 auto;
+      text-align: center;
+      font-weight: 600;
+      font-family: 'Courier New', monospace;
+    }
+    
+    td input[type="text"].hhmm{
+      width: 96px;
+      padding: 10px 8px;
+      font-family: 'Courier New', monospace;
+      font-weight: 600;
+      text-align: center;
+    }
+    
+    td input[type="date"]{
+      width: 150px;
+      display: block;
+      margin: 0 auto;
+      text-align: center;
+      padding: 10px 8px;
+    }
+
+    .controls{
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+      justify-content: center;
+    }
+
+    .section-title .controls {
+      margin-top: 0;
+      transform: translateY(-10px);
+    }
+    
+    .btn{
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border: 2px solid var(--line);
+      padding: 12px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.025em;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      transition: left 0.5s;
+    }
+    
+    .btn:hover{
+      border-color: var(--flydubai-blue);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .btn:hover::before {
+      left: 100%;
+    }
+    
+    .btn:active{
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn.primary{
+      background: linear-gradient(135deg, var(--flydubai-blue) 0%, var(--accent-light) 100%);
+      border-color: var(--flydubai-blue);
+      color: #ffffff;
+      font-weight: 700;
+    }
+    
+    .btn.primary:hover{
+      box-shadow: 0 6px 20px rgba(30, 64, 175, 0.4);
+    }
+    
+    .btn.warn{
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+      border-color: #fca5a5;
+      color: #dc2626;
+    }
+    
+    .btn.warn:hover{
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+    }
+    
+    #btnAddSection{ 
+      background: linear-gradient(135deg, var(--flydubai-orange) 0%, #fb923c 100%);
+      border-color: var(--flydubai-orange);
+      color: #ffffff;
+      font-weight: 700;
+    }
+    
+    #btnAddSection:hover{ 
+      box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4);
+    }
+
+    .kpi{
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border: 2px solid var(--line);
+      padding: 20px 24px;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .kpi::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--flydubai-orange);
+    }
+    
+    .kpi b{
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--flydubai-blue);
+      font-family: 'Courier New', monospace;
+      display: block;
+      margin-top: 4px;
+    }
+    
+    .footer-fields{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 24px;
+    }
+    
+    .footer-fields label{
+      font-weight: 700;
+      text-align: center;
+      color: var(--flydubai-navy);
+      margin-bottom: 12px;
+    }
+    .date-cell{
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+    }
+    
+    .date-print{
+      display: none;
+      padding: 10px 16px;
+      border: 2px dashed var(--line);
+      border-radius: 12px;
+      color: var(--flydubai-navy);
+      font-weight: 600;
+      background: #f8fafc;
+    }
+
+    .grand{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 32px;
+    }
+    
+    .summary{
+      margin-top: 48px;
+      border-top: 3px solid var(--flydubai-orange);
+      padding-top: 32px;
+      position: relative;
+    }
+    
+    .summary::before {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 6px;
+      background: var(--flydubai-blue);
+      border-radius: 0 0 3px 3px;
+    }
+
+    /* Signature section */
+    #signSection .sig-pad{ 
+      border: 2px dashed var(--flydubai-orange);
+      border-radius: 16px;
+      background: #fff;
+      padding: 16px;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    
+    #sigCanvas{ 
+      width: 100%;
+      height: 160px;
+      background: #fff;
+      border-radius: 8px;
+      cursor: crosshair;
+    }
+    
+    #sigControls{ 
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    @media print{ #sigControls{ display:none !important } }
+
+    /* PDF preview mode matches A4 before capture */
+    body.pdf .container{ max-width:calc(210mm - 12mm); padding:6mm; margin:0 auto }
+    body.pdf #formCard{ box-shadow:none; border-color:#d1d5db; border-radius:0 }
+    body.pdf table, body.pdf tr, body.pdf td, body.pdf th{ page-break-inside: avoid }
+    body.pdf *{ -webkit-print-color-adjust: exact; print-color-adjust: exact }
+
+    @page{ size:A4; margin:6mm }
+    @media print{ *{ -webkit-print-color-adjust: exact; print-color-adjust: exact }
+      body{background:#fff;color:#000}
+      .no-print{display:none !important}
+      .card, .section{box-shadow:none;border-color:#d1d5db}
+      header{border-color:#d1d5db}
+      th,td{border-color:#e5e7eb}
+      /* keep visual boxes for dates */
+      .date-print{display:inline-block} .date-inp, #sigDate{opacity:0;position:absolute;width:0;height:0;pointer-events:none}
+      .container{ max-width:calc(210mm - 12mm); margin:0 auto; padding:6mm }
+      table, tr, td, th{ page-break-inside: avoid }
+    }
+  /* Improve spacing/legibility in SUMMARY tables only */
+    .summary table th{ padding-top:12px; padding-bottom:12px; line-height:1.2 }
+    .summary table td{ padding-top:10px; padding-bottom:10px }
+    @media print{ .summary table th{ font-size:11px } .summary table td input.hhmm{ width:90px } }
+  /* tiny spacing for MP/Night inputs to avoid touching */
+    .footer-fields input.hhmm{ margin-top:4px }
+    @media print{ #doj{ -webkit-appearance:none; appearance:none; width:auto; max-width:200px; box-sizing:border-box; padding:10px 12px; border:1px solid #d1d5db; border-radius:10px; background:#fff } #doj::-webkit-calendar-picker-indicator{ display:none } }
+  /* spacing so MP/Night boxes never touch */
+    .footer-fields .mp{ margin-right:8px }
+    .footer-fields .night{ margin-left:8px }
+    /* prevent Date of Joining from exceeding its container in PDF */
+    @media print{
+      #doj{ display:block; width:auto; max-width:200px; box-sizing:border-box; padding:10px 12px; border:1px solid #d1d5db; border-radius:10px; background:#fff }
+      #doj::-webkit-calendar-picker-indicator{ display:none }
+    }
+  /* ensure inputs never touch borders */
+    .section input, .section select{ box-sizing:border-box }
+  /* limit signature date width so it doesn't reach signature pad */
+    #signSection #sigDate{ max-width:180px }
+  /* center-align MP & Night inputs exactly under their labels */
+    .footer-fields .mp, .footer-fields .night{ width:84px; margin:4px auto 0 !important; display:block }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card" id="formCard">
+      <header>
+        <div class="logo"></div>
+        <h1>FLIGHT TIME EXPERIENCE</h1>
+        <div class="controls no-print">
+          <button class="btn" id="btnReset" title="Clear all">Reset Form</button>
+          <button class="btn btn-submit" id="btnSubmit" title="Submit Form">Submit Form</button>
+        </div>
+      </header>
+
+      <div class="content">
+        <!-- Pilot Info -->
+        <div class="grid">
+          <div>
+            <label for="pilotName">Name</label>
+            <input id="pilotName" type="text" placeholder="e.g., Jane D. Pilot" />
+          </div>
+          <div>
+            <label for="designation">Designation</label>
+            <select id="designation">
+              <option value="">Select…</option>
+              <option>Captain</option>
+              <option>First Officer</option>
+              <option>Second Officer</option>
+              <option>Cadet</option>
+            </select>
+          </div>
+          <div>
+            <label for="doj">Date of Joining</label>
+            <input id="doj" type="date" />
+          </div>
+        </div>
+
+        <h2 class="section-h">Flight Experience by Aircraft Type</h2>
+        <div id="sections"></div>
+        <div class="controls no-print">
+          <button class="btn" id="btnAddSection">+ Add another aircraft type</button>
+        </div>
+
+        <!-- Grand totals for all aircraft types -->
+        <div class="section" id="grandTotals">
+          <div class="section-title">
+            <h3>GRAND TOTALS (All Aircraft Types)</h3>
+          </div>
+          <div class="grand">
+            <div class="kpi">Combined Block Hours: <b id="gtCombined">0:00</b></div>
+            <div class="kpi">Multi‑Pilot Block Hours: <b id="gtMP">0:00</b></div>
+            <div class="kpi">Night Hours: <b id="gtNight">0:00</b></div>
+          </div>
+        </div>
+
+        <!-- SUMMARY SECTION -->
+        <div class="summary">
+          <h2 class="section-h">FLYING EXPERIENCE SUMMARY</h2>
+          <h3 class="section-h" style="margin-top:6px">GENERAL</h3>
+          <div class="section">
+            <table>
+              <thead>
+                <tr>
+                  <th><b>PIC/P1</b></th>
+                  <th><b>SIC/P2</b></th>
+                  <th><b>SOLO</b></th>
+                  <th><b>INSTRUMENT</b></th>
+                  <th><b>SIM</b></th>
+                  <th><b>NIGHT</b></th>
+                  <th><b>INSTRUCTOR</b></th>
+                  <th><b>P1 U/S</b></th>
+                  <th><b>GRAND TOTAL</b></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
+                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
+                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
+                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
+                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
+                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
+                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
+                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
+                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Declaration & Signature -->
+        <div class="section" id="signSection">
+          <div class="section-title"><h3>✍️ Declaration & Digital Signature</h3></div>
+          <div style="background:linear-gradient(135deg,#fef7ed 0%,#fed7aa 100%);padding:20px;border-radius:12px;border:2px solid var(--flydubai-orange);margin-bottom:24px;">
+            <p style="font-size:14px;line-height:1.7;color:var(--flydubai-navy);margin:0;font-weight:500;text-align:justify;">
+              <strong>DECLARATION:</strong> I solemnly declare and affirm that all flight time, experience records, and operational details contained herein are true, accurate, and complete in accordance with ICAO Annex 1 standards and applicable civil aviation regulations. I acknowledge that this declaration is made under penalty of regulatory sanctions and understand that any material misrepresentation, omission, or falsification may result in suspension or revocation of aviation privileges, disciplinary proceedings pursuant to applicable aviation law, and may constitute grounds for disqualification from aviation employment. I further acknowledge my continuing obligation to maintain the accuracy and currency of this record in compliance with regulatory requirements.
+            </p>
+          </div>
+          <div class="grid">
+            <div>
+              <label>Date</label>
+              <input type="date" id="sigDate" />
+              <span class="date-print" id="sigDatePrint"></span>
+            </div>
+            <div>
+              <label>Digital Signature</label>
+              <div class="sig-pad">
+                <canvas id="sigCanvas"></canvas>
+                <div id="sigControls" class="controls no-print">
+                  <input type="text" id="typedSig" placeholder="Type name to render as signature" style="flex:1;min-width:220px;padding:10px 12px;border:1px solid var(--line);border-radius:10px" />
+                  <button class="btn" id="sigApply">Apply Typed</button>
+                  <label class="btn" for="sigUpload">Upload Image</label>
+                  <input id="sigUpload" type="file" accept="image/*" style="display:none" />
+                  <button class="btn warn" id="sigClear">Clear</button>
+                </div>
+              </div>
+              <div class="muted" style="font-size:12px;margin-top:6px">You can draw, apply a typed name, or upload a signature image.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom note & centered Download button -->
+        <div id="submitNote" style="text-align:center;margin:40px 0 0;padding:32px;background:linear-gradient(135deg,#fafbff 0%,#f8fafc 100%);border-radius:20px;border:2px solid var(--line);">
+          <p style="margin:0 0 20px;font-size:15px;color:var(--flydubai-navy);font-weight:500;">Kindly download the completed form and send the PDF file to <strong style="color:var(--flydubai-blue);font-weight:700;">FOF.Admin@flydubai.com</strong></p>
+          <div class="no-print" style="text-align:center;">
+            <button class="btn primary" id="btnDownload" style="font-size:16px;padding:16px 32px;">📄 Download PDF</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== Utilities =====
+    function parseHHMM(str){ if(!str) return 0; const m = String(str).trim().match(/^\s*(\d+)\s*:\s*(\d{1,2})\s*$/); if(!m) return 0; let h = parseInt(m[1],10)||0; let mm = parseInt(m[2],10)||0; h += Math.floor(mm/60); mm = mm % 60; return h*60 + mm; }
+    function toHHMM(totalMinutes){ totalMinutes = Math.max(0, Math.floor(totalMinutes||0)); const h = Math.floor(totalMinutes/60); const m = totalMinutes % 60; return h+":"+(m<10?"0"+m:m); }
+    function padHHMM(el){ const v = el.value.trim(); const mins = parseHHMM(v); el.value = mins ? toHHMM(mins) : ""; }
+    const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]; function toDDMMMYYYY(iso){ if(!iso) return ""; const d = new Date(iso); if(Number.isNaN(d.getTime())) return ""; const dd = String(d.getDate()).padStart(2,'0'); const mmm = MONTHS[d.getMonth()]; const yyyy = d.getFullYear(); return `${dd}-${mmm}-${yyyy}`; }
+
+    // ===== Sections builder =====
+    let sectionCounter = 0;
+    function makeAircraftSection({label, typeText, locked=false, b737Type=null}){
+      const id = ++sectionCounter;
+      const sec = document.createElement('section');
+      sec.className = 'section'; sec.dataset.sectionId = id; sec.dataset.locked = locked ? '1' : '0';
+      
+      let aircraftDropdown = '';
+      if(b737Type) {
+        // Special dropdown for Boeing 737 variants
+        aircraftDropdown = `
+        <div style="display: grid; grid-template-columns: 400px auto 1fr; gap: 16px; align-items: end;">
+          <div>
+            <select class="ac-type" ${locked ? 'disabled' : ''} style="${locked ? 'background-color: #f3f4f6; cursor: not-allowed;' : ''}">
+              ${b737Type === 'ng-max' ? `
+                <option value="Boeing 737 NG/MAX">Boeing 737 NG/MAX</option>
+              ` : `
+                <option value="Boeing 737 Classic (300-500)">Boeing 737 Classic (300-500)</option>
+              `}
+            </select>
+          </div>
+          <div class="heavy-jet-indicator" style="display: flex; align-items: center; background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: white; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; box-shadow: 0 2px 4px rgba(5, 150, 105, 0.3);">
+            ✈ >50T MTOW
+          </div>
+          <div class="notes-field" style="display: none;">
+            <label>Notes/Comments (Required if "Other" selected above)</label>
+            <input type="text" class="ac-notes" placeholder="Please specify aircraft type, model, or any additional details..." style="width: 100%; padding: 14px 16px; border-radius: 12px; border: 2px solid var(--line); background: #ffffff; color: var(--ink); font-family: inherit; font-size: 14px;" />
+          </div>
+        </div>`;
+      } else {
+        // Regular dropdown for other aircraft
+        aircraftDropdown = `
+        <div style="display: grid; grid-template-columns: 400px auto 1fr; gap: 16px; align-items: end;">
+          <div>
+            <select class="ac-type">
+              <option value="">Select Aircraft Type...</option>
+              <optgroup label="Boeing Commercial Aircraft">
+                <option value="Boeing 757-200">Boeing 757-200</option>
+                <option value="Boeing 757-300">Boeing 757-300</option>
+                <option value="Boeing 767-200">Boeing 767-200</option>
+                <option value="Boeing 767-300">Boeing 767-300</option>
+                <option value="Boeing 777-200">Boeing 777-200</option>
+                <option value="Boeing 777-300">Boeing 777-300</option>
+                <option value="Boeing 787-8">Boeing 787-8 Dreamliner</option>
+                <option value="Boeing 787-9">Boeing 787-9 Dreamliner</option>
+                <option value="Boeing 787-10">Boeing 787-10 Dreamliner</option>
+              </optgroup>
+              <optgroup label="Airbus Commercial Aircraft">
+                <option value="Airbus A319">Airbus A319</option>
+                <option value="Airbus A320">Airbus A320</option>
+                <option value="Airbus A321">Airbus A321</option>
+                <option value="Airbus A330-200">Airbus A330-200</option>
+                <option value="Airbus A330-300">Airbus A330-300</option>
+                <option value="Airbus A340-200">Airbus A340-200</option>
+                <option value="Airbus A340-300">Airbus A340-300</option>
+                <option value="Airbus A350-900">Airbus A350-900</option>
+                <option value="Airbus A350-1000">Airbus A350-1000</option>
+                <option value="Airbus A380">Airbus A380</option>
+              </optgroup>
+              <optgroup label="Regional Jets & Commercial Aircraft">
+                <option value="McDonnell Douglas MD-80">McDonnell Douglas MD-80</option>
+                <option value="McDonnell Douglas MD-90">McDonnell Douglas MD-90</option>
+                <option value="Embraer E-Jet E170">Embraer E-Jet E170</option>
+                <option value="Embraer E-Jet E175">Embraer E-Jet E175</option>
+                <option value="Embraer E-Jet E190">Embraer E-Jet E190</option>
+                <option value="Embraer E-Jet E195">Embraer E-Jet E195</option>
+                <option value="Bombardier CRJ-100">Bombardier CRJ-100</option>
+                <option value="Bombardier CRJ-200">Bombardier CRJ-200</option>
+                <option value="Bombardier CRJ-700">Bombardier CRJ-700</option>
+                <option value="Bombardier CRJ-900">Bombardier CRJ-900</option>
+                <option value="Bombardier CRJ-1000">Bombardier CRJ-1000</option>
+                <option value="British Aerospace 146">British Aerospace BAe 146</option>
+                <option value="Avro RJ70">Avro RJ70</option>
+                <option value="Avro RJ85">Avro RJ85</option>
+                <option value="Avro RJ100">Avro RJ100</option>
+                <option value="Dornier 328JET">Dornier 328JET</option>
+                <option value="Fairchild Metro III">Fairchild Metro III</option>
+                <option value="Jetstream 41">BAe Jetstream 41</option>
+                <option value="Embraer EMB-120">Embraer EMB-120 Brasilia</option>
+              </optgroup>
+              <optgroup label="Cargo Aircraft">
+                <option value="Boeing 747-400F">Boeing 747-400F Freighter</option>
+                <option value="Boeing 767-300F">Boeing 767-300F Freighter</option>
+                <option value="Boeing 777F">Boeing 777F Freighter</option>
+                <option value="Airbus A330-200F">Airbus A330-200F Freighter</option>
+                <option value="McDonnell Douglas MD-11F">McDonnell Douglas MD-11F</option>
+              </optgroup>
+              <optgroup label="Business Jets & Private Aircraft">
+                <option value="Gulfstream G150">Gulfstream G150</option>
+                <option value="Gulfstream G280">Gulfstream G280</option>
+                <option value="Gulfstream G450">Gulfstream G450</option>
+                <option value="Gulfstream G500">Gulfstream G500</option>
+                <option value="Gulfstream G550">Gulfstream G550</option>
+                <option value="Gulfstream G600">Gulfstream G600</option>
+                <option value="Gulfstream G650">Gulfstream G650</option>
+                <option value="Gulfstream G700">Gulfstream G700</option>
+                <option value="Bombardier Global 5000">Bombardier Global 5000</option>
+                <option value="Bombardier Global 5500">Bombardier Global 5500</option>
+                <option value="Bombardier Global 6000">Bombardier Global 6000</option>
+                <option value="Bombardier Global 6500">Bombardier Global 6500</option>
+                <option value="Bombardier Global 7500">Bombardier Global 7500</option>
+                <option value="Bombardier Challenger 300">Bombardier Challenger 300</option>
+                <option value="Bombardier Challenger 350">Bombardier Challenger 350</option>
+                <option value="Bombardier Challenger 605">Bombardier Challenger 605</option>
+                <option value="Bombardier Challenger 650">Bombardier Challenger 650</option>
+                <option value="Dassault Falcon 2000">Dassault Falcon 2000</option>
+                <option value="Dassault Falcon 2000EX">Dassault Falcon 2000EX</option>
+                <option value="Dassault Falcon 2000LX">Dassault Falcon 2000LX</option>
+                <option value="Dassault Falcon 6X">Dassault Falcon 6X</option>
+                <option value="Dassault Falcon 7X">Dassault Falcon 7X</option>
+                <option value="Dassault Falcon 8X">Dassault Falcon 8X</option>
+                <option value="Dassault Falcon 900">Dassault Falcon 900</option>
+                <option value="Cessna Citation X">Cessna Citation X</option>
+                <option value="Cessna Citation X+">Cessna Citation X+</option>
+                <option value="Cessna Citation Columbus">Cessna Citation Columbus</option>
+                <option value="Cessna Citation Hemisphere">Cessna Citation Hemisphere</option>
+                <option value="Cessna Citation Sovereign">Cessna Citation Sovereign</option>
+                <option value="Cessna Citation Sovereign+">Cessna Citation Sovereign+</option>
+                <option value="Cessna Citation Latitude">Cessna Citation Latitude</option>
+                <option value="Cessna Citation Longitude">Cessna Citation Longitude</option>
+                <option value="Hawker 4000">Hawker 4000</option>
+                <option value="Hawker 800XP">Hawker 800XP</option>
+                <option value="Hawker 850XP">Hawker 850XP</option>
+                <option value="Hawker 900XP">Hawker 900XP</option>
+                <option value="Embraer Legacy 450">Embraer Legacy 450</option>
+                <option value="Embraer Legacy 500">Embraer Legacy 500</option>
+                <option value="Embraer Legacy 600">Embraer Legacy 600</option>
+                <option value="Embraer Legacy 650">Embraer Legacy 650</option>
+                <option value="Embraer Lineage 1000">Embraer Lineage 1000</option>
+                <option value="Embraer Praetor 500">Embraer Praetor 500</option>
+                <option value="Embraer Praetor 600">Embraer Praetor 600</option>
+              </optgroup>
+              <optgroup label="Light Jets & Mid-Size Jets">
+                <option value="Cessna Citation CJ3+">Cessna Citation CJ3+</option>
+                <option value="Cessna Citation CJ4">Cessna Citation CJ4</option>
+                <option value="Cessna Citation M2">Cessna Citation M2</option>
+                <option value="Cessna Citation XLS+">Cessna Citation XLS+</option>
+                <option value="Embraer Phenom 100">Embraer Phenom 100</option>
+                <option value="Embraer Phenom 300">Embraer Phenom 300</option>
+                <option value="HondaJet">HondaJet</option>
+                <option value="Pilatus PC-24">Pilatus PC-24</option>
+                <option value="Beechcraft Premier 1A">Beechcraft Premier 1A</option>
+                <option value="Learjet 45">Learjet 45</option>
+                <option value="Learjet 60">Learjet 60</option>
+                <option value="Learjet 70">Learjet 70</option>
+                <option value="Learjet 75">Learjet 75</option>
+              </optgroup>
+              <optgroup label="Turboprop Aircraft">
+                <option value="ATR 42">ATR 42</option>
+                <option value="ATR 72">ATR 72</option>
+                <option value="Bombardier Q400">Bombardier Q400 (Dash 8)</option>
+                <option value="Bombardier Dash 8-100">Bombardier Dash 8-100</option>
+                <option value="Bombardier Dash 8-200">Bombardier Dash 8-200</option>
+                <option value="Bombardier Dash 8-300">Bombardier Dash 8-300</option>
+                <option value="Saab 340">Saab 340</option>
+                <option value="Saab 2000">Saab 2000</option>
+                <option value="Dornier 328">Dornier Do 328</option>
+                <option value="Let L-410">Let L-410 Turbolet</option>
+                <option value="Jetstream 32">BAe Jetstream 32</option>
+                <option value="Jetstream 31">BAe Jetstream 31</option>
+                <option value="Beechcraft 1900">Beechcraft 1900</option>
+                <option value="Beechcraft King Air 90">Beechcraft King Air 90</option>
+                <option value="Beechcraft King Air 200">Beechcraft King Air 200</option>
+                <option value="Beechcraft King Air 250">Beechcraft King Air 250</option>
+                <option value="Beechcraft King Air 300">Beechcraft King Air 300</option>
+                <option value="Beechcraft King Air 350">Beechcraft King Air 350</option>
+                <option value="Pilatus PC-12">Pilatus PC-12</option>
+                <option value="Pilatus PC-6 Porter">Pilatus PC-6 Porter</option>
+                <option value="TBM 700">TBM 700</option>
+                <option value="TBM 850">TBM 850</option>
+                <option value="TBM 900">TBM 900</option>
+                <option value="TBM 930">TBM 930</option>
+                <option value="TBM 960">TBM 960</option>
+                <option value="Piper Meridian">Piper Meridian</option>
+                <option value="Piper Cheyenne">Piper Cheyenne</option>
+                <option value="Cessna Caravan 208">Cessna Caravan 208</option>
+                <option value="Cessna 208 Amphibian">Cessna 208 Caravan Amphibian</option>
+                <option value="Cessna Conquest">Cessna Conquest</option>
+                <option value="Cessna 441">Cessna 441 Conquest</option>
+                <option value="Piper Aztec">Piper PA-23 Aztec</option>
+                <option value="Britten-Norman Islander">Britten-Norman BN-2 Islander</option>
+                <option value="Britten-Norman Trislander">Britten-Norman BN-2A Trislander</option>
+                <option value="DHC-6 Twin Otter">de Havilland Canada DHC-6 Twin Otter</option>
+                <option value="DHC-7 Dash 7">de Havilland Canada DHC-7 Dash 7</option>
+                <option value="Shorts 330">Shorts 330</option>
+                <option value="Shorts 360">Shorts 360</option>
+              </optgroup>
+              <optgroup label="Single Engine Piston">
+                <option value="Cessna 150">Cessna 150</option>
+                <option value="Cessna 152">Cessna 152</option>
+                <option value="Cessna 162 SkyCatcher">Cessna 162 SkyCatcher</option>
+                <option value="Cessna 172">Cessna 172 Skyhawk</option>
+                <option value="Cessna 177">Cessna 177 Cardinal</option>
+                <option value="Cessna 180">Cessna 180 Skywagon</option>
+                <option value="Cessna 182">Cessna 182 Skylane</option>
+                <option value="Cessna 185">Cessna 185 Skywagon</option>
+                <option value="Cessna 206">Cessna 206 Stationair</option>
+                <option value="Cessna 210">Cessna 210 Centurion</option>
+                <option value="Piper Cherokee">Piper Cherokee (PA-28)</option>
+                <option value="Piper Warrior">Piper Warrior (PA-28)</option>
+                <option value="Piper Archer">Piper Archer (PA-28)</option>
+                <option value="Piper Arrow">Piper Arrow (PA-28R)</option>
+                <option value="Piper Saratoga">Piper Saratoga (PA-32)</option>
+                <option value="Piper Lance">Piper Lance (PA-32R)</option>
+                <option value="Piper Cub">Piper J-3 Cub</option>
+                <option value="Piper Super Cub">Piper PA-18 Super Cub</option>
+                <option value="Beechcraft Bonanza">Beechcraft Bonanza (A36)</option>
+                <option value="Beechcraft Musketeer">Beechcraft Musketeer</option>
+                <option value="Beechcraft Sundowner">Beechcraft Sundowner</option>
+                <option value="Cirrus SR20">Cirrus SR20</option>
+                <option value="Cirrus SR22">Cirrus SR22</option>
+                <option value="Diamond DA20">Diamond DA20 Katana</option>
+                <option value="Diamond DA40">Diamond DA40 Diamond Star</option>
+                <option value="Diamond DA50">Diamond DA50 RG</option>
+                <option value="Diamond DA62">Diamond DA62</option>
+                <option value="Mooney M20">Mooney M20</option>
+                <option value="American Champion Scout">American Champion 8KCAB Scout</option>
+                <option value="Grumman AA-5">Grumman American AA-5</option>
+                <option value="Grumman Tiger">Grumman AA-5B Tiger</option>
+                <option value="Robin DR400">Robin DR400</option>
+                <option value="Socata TB10">Socata TB10 Tobago</option>
+                <option value="Socata TB20">Socata TB20 Trinidad</option>
+                <option value="Extra EA-300">Extra EA-300</option>
+                <option value="Slingsby T67 Firefly">Slingsby T67 Firefly</option>
+                <option value="Tecnam P2008">Tecnam P2008</option>
+                <option value="Flight Design CTLS">Flight Design CTLS</option>
+                <option value="Van's RV-6">Van's Aircraft RV-6</option>
+                <option value="Van's RV-7">Van's Aircraft RV-7</option>
+                <option value="Van's RV-8">Van's Aircraft RV-8</option>
+                <option value="Van's RV-9">Van's Aircraft RV-9</option>
+                <option value="Van's RV-10">Van's Aircraft RV-10</option>
+              </optgroup>
+              <optgroup label="Twin Engine Piston">
+                <option value="Beechcraft Baron">Beechcraft Baron</option>
+                <option value="Beechcraft Twin Bonanza">Beechcraft Twin Bonanza</option>
+                <option value="Cessna 310">Cessna 310</option>
+                <option value="Cessna 340">Cessna 340</option>
+                <option value="Cessna 414">Cessna 414</option>
+                <option value="Cessna 421">Cessna 421</option>
+                <option value="Piper Seneca">Piper Seneca</option>
+                <option value="Piper Navajo">Piper Navajo</option>
+                <option value="Piper Aztec">Piper Aztec</option>
+                <option value="Diamond DA42">Diamond DA42 Twin Star</option>
+              </optgroup>
+              <optgroup label="Helicopters">
+                <option value="Bell 206">Bell 206 JetRanger</option>
+                <option value="Bell 407">Bell 407</option>
+                <option value="Bell 412">Bell 412</option>
+                <option value="Bell 429">Bell 429</option>
+                <option value="Airbus H120">Airbus H120 (EC120)</option>
+                <option value="Airbus H125">Airbus H125 (AS350)</option>
+                <option value="Airbus H130">Airbus H130 (EC130)</option>
+                <option value="Airbus H135">Airbus H135 (EC135)</option>
+                <option value="Airbus H145">Airbus H145 (EC145)</option>
+                <option value="Robinson R22">Robinson R22</option>
+                <option value="Robinson R44">Robinson R44</option>
+                <option value="Robinson R66">Robinson R66</option>
+                <option value="Sikorsky S-76">Sikorsky S-76</option>
+                <option value="AgustaWestland AW139">AgustaWestland AW139</option>
+              </optgroup>
+              <optgroup label="Military & Special Aircraft">
+                <option value="Lockheed C-130 Hercules">Lockheed C-130 Hercules</option>
+                <option value="Boeing KC-135">Boeing KC-135 Stratotanker</option>
+                <option value="Airbus A400M">Airbus A400M Atlas</option>
+                <option value="Boeing E-3 AWACS">Boeing E-3 AWACS</option>
+                <option value="Lockheed P-3 Orion">Lockheed P-3 Orion</option>
+                <option value="Boeing P-8 Poseidon">Boeing P-8 Poseidon</option>
+                <option value="General Atomics MQ-9">General Atomics MQ-9 Reaper (UAV)</option>
+              </optgroup>
+              <optgroup label="Vintage & Classic Aircraft">
+                <option value="Douglas DC-3">Douglas DC-3</option>
+                <option value="Boeing 727">Boeing 727</option>
+                <option value="McDonnell Douglas DC-9">McDonnell Douglas DC-9</option>
+                <option value="Lockheed L-1011">Lockheed L-1011 TriStar</option>
+                <option value="Sud Aviation Caravelle">Sud Aviation Caravelle</option>
+                <option value="BAC One-Eleven">BAC One-Eleven</option>
+                <option value="Fokker F28">Fokker F28</option>
+                <option value="Fokker 100">Fokker 100</option>
+              </optgroup>
+              <optgroup label="Other Aircraft Types">
+                <option value="Glider">Glider/Sailplane</option>
+                <option value="Ultralight">Ultralight Aircraft</option>
+                <option value="Experimental">Experimental Aircraft</option>
+                <option value="Other - Specify in Notes">Other - Specify in Notes</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="heavy-jet-indicator" style="display: none; align-items: center; background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: white; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; box-shadow: 0 2px 4px rgba(5, 150, 105, 0.3);">
+            ✈ >50T MTOW
+          </div>
+          <div class="notes-field" style="display: none;">
+            <label>Notes/Comments (Required if "Other" selected above)</label>
+            <input type="text" class="ac-notes" placeholder="Please specify aircraft type, model, or any additional details..." style="width: 100%; padding: 14px 16px; border-radius: 12px; border: 2px solid var(--line); background: #ffffff; color: var(--ink); font-family: inherit; font-size: 14px;" />
+          </div>
+        </div>`;
+      }
+      
+      sec.innerHTML = `
+        <div class="section-title">
+          <h3>${label}${typeText?': '+typeText:''}</h3>
+          <div class="controls no-print">${locked?'' : '<button class="btn warn" data-remove-section>Remove</button>'}</div>
+        </div>
+        ${locked && !b737Type ? '' : aircraftDropdown}
+        <table>
+          <thead>
+            <tr>
+              <th><b>Flight Role</b></th>
+              <th><b>Total Hours</b><span class="sub"><b>(HH:MM)</b></span></th>
+              <th><b>Total Block Hours in the Last 12 Months</b><span class="sub"><b>(HH:MM)</b></span></th>
+              <th><b>Date of First Flight</b><span class="sub"><b>(Last 12 Months)</b></span></th>
+              <th><b>Date of Last Flight</b><span class="sub"><b>(Last 12 Months)</b></span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="flight-role"><strong>PIC</strong></td>
+              <td><input type="text" class="hhmm totHours" placeholder="0:00" /></td>
+              <td><input type="text" class="hhmm blk12" placeholder="0:00" /></td>
+              <td>
+                <div class="date-cell">
+                  <input type="date" class="date-inp" />
+                  <span class="date-print"></span>
+                </div>
+              </td>
+              <td>
+                <div class="date-cell">
+                  <input type="date" class="date-inp" />
+                  <span class="date-print"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="flight-role">SIC</td>
+              <td><input type="text" class="hhmm totHours" placeholder="0:00" /></td>
+              <td><input type="text" class="hhmm blk12" placeholder="0:00" /></td>
+              <td>
+                <div class="date-cell">
+                  <input type="date" class="date-inp" />
+                  <span class="date-print"></span>
+                </div>
+              </td>
+              <td>
+                <div class="date-cell">
+                  <input type="date" class="date-inp" />
+                  <span class="date-print"></span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="footer-fields">
+          <div>
+            <label>Total Combined Block Hours (HH:MM)</label>
+            <div class="kpi"><b class="combined">0:00</b></div>
+          </div>
+          <div>
+            <label>Total Multi‑Pilot Block Hours (HH:MM)</label>
+            <input type="text" class="hhmm mp" placeholder="0:00" />
+          </div>
+          <div>
+            <label>Total Night Hours (HH:MM)</label>
+            <input type="text" class="hhmm night" placeholder="0:00" />
+          </div>
+        </div>
+      `;
+      return sec;
+    }
+
+    const sectionsWrap = document.getElementById('sections');
+    // Locked sections 1 & 2 with Boeing 737 variants
+    sectionsWrap.appendChild(makeAircraftSection({label:'Aircraft Type 1', typeText:'', locked:true, b737Type:'ng-max'}));
+    sectionsWrap.appendChild(makeAircraftSection({label:'Aircraft Type 2', typeText:'', locked:true, b737Type:'classic'}));
+    // Start with one blank; add more via + button
+    sectionsWrap.appendChild(makeAircraftSection({label:'Aircraft Type 3', typeText:'', locked:false}));
+
+    // ===== Events =====
+    // Function to check if aircraft is above 50 tons MTOW
+    function isHeavyJet(aircraftType) {
+      const heavyJets = [
+        // Boeing 737 variants (all above 50T MTOW)
+        'Boeing 737 NG/MAX',
+        'Boeing 737 Classic (300-500)',
+        // Boeing Commercial Aircraft
+        'Boeing 757-200', 'Boeing 757-300',
+        'Boeing 767-200', 'Boeing 767-300', 
+        'Boeing 777-200', 'Boeing 777-300',
+        'Boeing 787-8 Dreamliner', 'Boeing 787-9 Dreamliner', 'Boeing 787-10 Dreamliner',
+        // Airbus Commercial Aircraft  
+        'Airbus A319', 'Airbus A320', 'Airbus A321',
+        'Airbus A330-200', 'Airbus A330-300',
+        'Airbus A340-200', 'Airbus A340-300',
+        'Airbus A350-900', 'Airbus A350-1000',
+        'Airbus A380',
+        // Regional Jets above 50T
+        'McDonnell Douglas MD-80', 'McDonnell Douglas MD-90',
+        'Embraer E-Jet E190', 'Embraer E-Jet E195',
+        'British Aerospace BAe 146', 'Avro RJ70', 'Avro RJ85', 'Avro RJ100',
+        // Business Jets above 50T
+        'Gulfstream G550', 'Gulfstream G600', 'Gulfstream G650', 'Gulfstream G700',
+        'Bombardier Global 5000', 'Bombardier Global 5500', 'Bombardier Global 6000', 
+        'Bombardier Global 6500', 'Bombardier Global 7500',
+        'Dassault Falcon 2000', 'Dassault Falcon 2000EX', 'Dassault Falcon 2000LX',
+        'Dassault Falcon 7X', 'Dassault Falcon 8X', 'Dassault Falcon 900',
+        'Cessna Citation Longitude', 'Embraer Lineage 1000',
+        // Cargo Aircraft
+        'Boeing 747-400F Freighter', 'Boeing 767-300F Freighter',
+        'Boeing 777F Freighter', 'Airbus A330-200F Freighter',
+        'McDonnell Douglas MD-11F',
+        // Military & Special Aircraft above 50T
+        'Lockheed C-130 Hercules', 'Boeing KC-135 Stratotanker', 'Airbus A400M Atlas',
+        'Boeing E-3 AWACS', 'Lockheed P-3 Orion', 'Boeing P-8 Poseidon',
+        // Vintage & Classic Aircraft above 50T
+        'Douglas DC-3', 'Boeing 727', 'McDonnell Douglas DC-9',
+        'Lockheed L-1011 TriStar', 'Sud Aviation Caravelle', 'BAC One-Eleven',
+        'Fokker F28', 'Fokker 100'
+      ];
+      return heavyJets.includes(aircraftType);
+    }
+    
+    // Validation function to check if all "Other" fields are properly filled
+    function validateOtherFields(){
+      const sections = sectionsWrap.querySelectorAll('.section');
+      let isValid = true;
+      
+      // Clear previous validation styling
+      sections.forEach(section => {
+        const notesField = section.querySelector('.ac-notes');
+        if(notesField) notesField.classList.remove('required-empty');
+      });
+      
+      for(let section of sections){
+        const aircraftSelect = section.querySelector('.ac-type');
+        const notesField = section.querySelector('.ac-notes');
+        if(aircraftSelect && aircraftSelect.value === 'Other - Specify in Notes'){
+          if(!notesField || !notesField.value.trim()){
+            const sectionTitle = section.querySelector('.section-title h3').textContent;
+            if(notesField) {
+              notesField.classList.add('required-empty');
+              if(isValid) notesField.focus(); // Focus on first invalid field
+            }
+            if(isValid) alert(`Please specify the aircraft type in the notes field for ${sectionTitle}`);
+            isValid = false;
+          }
+        }
+      }
+      return isValid;
+    }
+
+    document.addEventListener('click', (e)=>{
+      const t = e.target;
+      if(t.matches('#btnAddSection')){
+        // Validate before adding new section
+        if(!validateOtherFields()) return;
+        const count = sectionsWrap.querySelectorAll('.section').length + 1;
+        sectionsWrap.appendChild(makeAircraftSection({label:`Aircraft Type ${count}`, typeText:'', locked:false}));
+        computeAll();
+      }
+      if(t.closest('[data-remove-section]')){
+        const sec = t.closest('.section');
+        if(sec && sec.dataset.locked !== '1'){ sec.remove(); computeAll(); }
+      }
+      if(t.matches('#btnReset')){
+        if(confirm('Clear all fields?')) location.reload();
+      }
+      if(t.matches('#btnDownload')){
+        // Validate before downloading
+        if(!validateOtherFields()) return;
+        document.querySelectorAll('.date-inp').forEach(inp=>{ const span = inp.closest('.date-cell').querySelector('.date-print'); span.textContent = toDDMMMYYYY(inp.value); });
+        const sd = document.getElementById('sigDate');
+        if(sd){ document.getElementById('sigDatePrint').textContent = toDDMMMYYYY(sd.value); }
+        document.body.classList.add('pdf');
+        window.print();
+        setTimeout(()=>document.body.classList.remove('pdf'), 500);
+      }
+    });
+
+    document.addEventListener('input', (e)=>{
+      const t = e.target;
+      if(t.classList.contains('hhmm')){ computeAll(); }
+      if(t.classList.contains('date-inp')){ const span = t.closest('.date-cell').querySelector('.date-print'); span.textContent = toDDMMMYYYY(t.value); }
+      if(t.id === 'pilotName'){ const typed = document.getElementById('typedSig'); if(typed && !typed.value) typed.value = t.value; }
+      // Show/hide notes field and heavy jet indicator based on aircraft type selection
+      if(t.classList.contains('ac-type')){
+        const section = t.closest('.section');
+        const notesField = section.querySelector('.notes-field');
+        const heavyJetIndicator = section.querySelector('.heavy-jet-indicator');
+        
+        // Handle notes field
+        if(notesField){
+          if(t.value === 'Other - Specify in Notes'){
+            notesField.style.display = 'block';
+          } else {
+            notesField.style.display = 'none';
+            // Clear the notes field when hiding
+            const textarea = notesField.querySelector('.ac-notes');
+            if(textarea) {
+              textarea.value = '';
+              textarea.classList.remove('required-empty');
+            }
+          }
+        }
+        
+        // Handle heavy jet indicator
+        if(heavyJetIndicator){
+          if(isHeavyJet(t.value)){
+            heavyJetIndicator.style.display = 'flex';
+          } else {
+            heavyJetIndicator.style.display = 'none';
+          }
+        }
+      }
+      // Clear validation styling when user types in notes field
+      if(t.classList.contains('ac-notes')){
+        t.classList.remove('required-empty');
+      }
+    });
+
+    document.addEventListener('blur', (e)=>{
+      const t = e.target;
+      if(t.classList && t.classList.contains('hhmm')){ padHHMM(t); computeAll(); }
+      if(t.classList && t.classList.contains('date-inp')){ const span = t.closest('.date-cell').querySelector('.date-print'); span.textContent = toDDMMMYYYY(t.value); }
+    }, true);
+
+    function computeAll(){
+      let gtCombined = 0, gtMP = 0, gtNight = 0;
+      sectionsWrap.querySelectorAll('.section').forEach(sec=>{
+        let combined = 0;
+        sec.querySelectorAll('input.totHours').forEach(inp=> combined += parseHHMM(inp.value));
+        const combinedEl = sec.querySelector('.combined');
+        if(combinedEl) combinedEl.textContent = toHHMM(combined);
+        gtCombined += combined;
+        sec.querySelectorAll('input.mp').forEach(inp=> gtMP += parseHHMM(inp.value));
+        sec.querySelectorAll('input.night').forEach(inp=> gtNight += parseHHMM(inp.value));
+      });
+      document.getElementById('gtCombined').textContent = toHHMM(gtCombined);
+      document.getElementById('gtMP').textContent = toHHMM(gtMP);
+      document.getElementById('gtNight').textContent = toHHMM(gtNight);
+    }
+
+    // ===== Signature pad logic (draw / typed / upload) =====
+    (function initSignature(){
+      const canvas = document.getElementById('sigCanvas');
+      if(!canvas) return; const ctx = canvas.getContext('2d');
+      function setupCanvas(){
+        const ratio = Math.max(window.devicePixelRatio || 1, 1);
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width * ratio; canvas.height = 160 * ratio;
+        ctx.setTransform(ratio,0,0,ratio,0,0); ctx.lineWidth = 2; ctx.lineJoin='round'; ctx.lineCap='round'; ctx.strokeStyle = '#111827';
+      }
+      function clearCanvas(){ ctx.clearRect(0,0,canvas.width,canvas.height); }
+      function pos(e){ const r=canvas.getBoundingClientRect(); const p=e.touches? e.touches[0]: e; return {x:p.clientX - r.left, y:p.clientY - r.top}; }
+      let drawing=false, lastX=0, lastY=0;
+      function start(e){ drawing=true; const p=pos(e); lastX=p.x; lastY=p.y; e.preventDefault(); }
+      function move(e){ if(!drawing) return; const p=pos(e); ctx.beginPath(); ctx.moveTo(lastX,lastY); ctx.lineTo(p.x,p.y); ctx.stroke(); lastX=p.x; lastY=p.y; e.preventDefault(); }
+      function end(){ drawing=false; }
+      setupCanvas(); window.addEventListener('resize', setupCanvas);
+      canvas.addEventListener('mousedown', start); canvas.addEventListener('mousemove', move); window.addEventListener('mouseup', end);
+      canvas.addEventListener('touchstart', start, {passive:false}); canvas.addEventListener('touchmove', move, {passive:false}); window.addEventListener('touchend', end);
+
+      document.getElementById('sigClear').addEventListener('click', clearCanvas);
+      document.getElementById('sigApply').addEventListener('click', ()=>{
+        const txt = (document.getElementById('typedSig').value || '').trim(); if(!txt) return;
+        clearCanvas();
+        ctx.font = '36px cursive'; ctx.fillStyle = '#111827';
+        const metrics = ctx.measureText(txt); const cssW = canvas.getBoundingClientRect().width; const x = Math.max(10, (cssW - metrics.width)/2 );
+        ctx.fillText(txt, x, 110);
+      });
+      document.getElementById('sigUpload').addEventListener('change', (ev)=>{
+        const file = ev.target.files && ev.target.files[0]; if(!file) return;
+        const img = new Image(); img.onload = ()=>{
+          clearCanvas();
+          const cssW = canvas.getBoundingClientRect().width, cssH = 160; 
+          const scale = Math.min(cssW*0.9 / img.width, cssH*0.9 / img.height);
+          const w = img.width * scale, h = img.height * scale; const x = (cssW - w)/2, y = (cssH - h)/2;
+          ctx.drawImage(img, x, y, w, h);
+        }; img.src = URL.createObjectURL(file);
+      });
+    })();
+
+    // Form submission
+    document.getElementById('btnSubmit').addEventListener('click', async function() {
+      const submitBtn = this;
+      
+      // Disable button and show loading
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+      
+      try {
+        // Collect all form data
+        const formData = collectFormData();
+        
+        // Validate required fields
+        if (!formData.pilotName || !formData.email) {
+          alert('Please fill in at least your name and email address.');
+          return;
+        }
+        
+        // Submit to API
+        const response = await fetch('/api/submit-form', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData)
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok && result.success) {
+          alert('Form submitted successfully! Thank you for your submission.');
+          
+          // Optional: Reset form or redirect
+          if (confirm('Would you like to clear the form for a new submission?')) {
+            document.getElementById('btnReset').click();
+          }
+        } else {
+          throw new Error(result.message || 'Submission failed');
+        }
+        
+      } catch (error) {
+        console.error('Submission error:', error);
+        alert('Failed to submit form. Please check your connection and try again.');
+      } finally {
+        // Re-enable button
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Form';
+      }
+    });
+
+    function collectFormData() {
+      const formData = {
+        // Personal Information
+        pilotName: document.getElementById('pilotName')?.value || '',
+        designation: document.getElementById('designation')?.value || '',
+        employeeId: document.getElementById('employeeId')?.value || '',
+        email: document.getElementById('email')?.value || '',
+        phone: document.getElementById('phone')?.value || '',
+        
+        // Flight Hours - collect all the calculated totals
+        flightHours: {},
+        
+        // Additional fields
+        previousAirlines: '',
+        certifications: '',
+        remarks: '',
+        
+        // Submission timestamp
+        submittedAt: new Date().toISOString()
+      };
+      
+      // Collect flight hours from all aircraft types
+      const aircraftTypes = ['A320', 'A321', 'A330', 'A350', 'B737', 'B777', 'B787', 'Other'];
+      aircraftTypes.forEach(aircraft => {
+        const totalElement = document.querySelector(`[data-aircraft="${aircraft}"][data-field="total"]`);
+        const picElement = document.querySelector(`[data-aircraft="${aircraft}"][data-field="pic"]`);
+        const sicElement = document.querySelector(`[data-aircraft="${aircraft}"][data-field="sic"]`);
+        
+        if (totalElement || picElement || sicElement) {
+          formData.flightHours[aircraft] = {
+            total: totalElement?.textContent || '0',
+            pic: picElement?.textContent || '0',
+            sic: sicElement?.textContent || '0'
+          };
+        }
+      });
+      
+      // Collect any additional text fields
+      const textInputs = document.querySelectorAll('input[type="text"], textarea, select');
+      textInputs.forEach(input => {
+        if (input.id && input.value) {
+          formData[input.id] = input.value;
+        }
+      });
+      
+      return formData;
+    }
+
+    // Init
+    (function(){ computeAll(); })();
+  </script>
+</body>
+</html>
