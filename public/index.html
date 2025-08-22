@@ -4935,6 +4935,10 @@
               if (nextSectionTimeFields.length > 0) {
                 nextSectionTimeFields[0].focus();
                 nextSectionTimeFields[0].select();
+              } else {
+                // Next section has no time fields, blur current field to process it
+                console.log('🔚 Last field in section and next section has no time fields, triggering blur');
+                e.target.blur();
               }
             } else {
               // If no next section, try to find any time field after the current one in the whole document
@@ -4943,6 +4947,10 @@
               if (globalCurrentIndex !== -1 && globalCurrentIndex < allTimeFields.length - 1) {
                 allTimeFields[globalCurrentIndex + 1].focus();
                 allTimeFields[globalCurrentIndex + 1].select();
+              } else {
+                // This is the very last time field - blur it to trigger processing
+                console.log('🔚 Last time field in form, triggering blur to process value');
+                e.target.blur();
               }
             }
           }
