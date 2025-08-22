@@ -19,7 +19,44 @@ export default async function handler(req, res) {
   }
 
   try {
-    const formData = req.body;
+    // Parse multipart form data
+    let formData;
+    let files = {};
+    
+    if (req.headers['content-type']?.includes('multipart/form-data')) {
+      // Handle multipart form data with files
+      const multer = require('multer');
+      const upload = multer({ storage: multer.memoryStorage() });
+      
+      // Use multer to parse the multipart data
+      await new Promise((resolve, reject) => {
+        upload.any()(req, res, (err) => {
+          if (err) return reject(err);
+          
+          // Parse form data from multipart
+          formData = JSON.parse(req.body.formData || '{}');
+          
+          // Process uploaded files
+          if (req.files) {
+            req.files.forEach(file => {
+              files[file.fieldname] = {
+                name: file.originalname,
+                data: file.buffer,
+                mimetype: file.mimetype
+              };
+            });
+          }
+          
+          // Add files to formData for compatibility with existing code
+          formData.uploads = files;
+          
+          resolve();
+        });
+      });
+    } else {
+      // Handle JSON form data (fallback)
+      formData = req.body;
+    }
     
     // Create transporter (you'll need to add these environment variables)
     const transporter = nodemailer.createTransport({
@@ -200,13 +237,26 @@ async function createZipAttachment(formData) {
     for (const [docId, folderName] of Object.entries(documentTypes)) {
       const fileData = formData.uploads[docId];
       
-      if (fileData && fileData.filePath) {
+      if (fileData) {
         try {
-          // Read the file from the file system
-          const fileBuffer = await fs.readFile(fileData.filePath);
+          let fileBuffer;
+          let fileName;
+          
+          if (fileData.filePath) {
+            // Old format: read from file system
+            fileBuffer = await fs.readFile(fileData.filePath);
+            fileName = fileData.fileName;
+          } else if (fileData.data) {
+            // New format: file data is already in buffer
+            fileBuffer = fileData.data;
+            fileName = fileData.name;
+          } else {
+            console.log(`No valid file data for ${docId}`);
+            continue;
+          }
           
           // Get file extension from original filename
-          const fileExtension = fileData.fileName.split('.').pop();
+          const fileExtension = fileName.split('.').pop();
           const zipFileName = `${folderName}.${fileExtension}`;
           
           // Add file to zip
@@ -215,7 +265,7 @@ async function createZipAttachment(formData) {
           
           console.log(`Added ${zipFileName} to zip`);
         } catch (fileError) {
-          console.error(`Error reading file ${fileData.fileName}:`, fileError);
+          console.error(`Error processing file ${fileName}:`, fileError);
         }
       }
     }

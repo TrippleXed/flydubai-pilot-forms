@@ -3330,7 +3330,8 @@
           currentStep++;
           showStep(currentStep);
         } else {
-          console.log('🏁 Already at final step:', currentStep);
+          console.log('🏁 Final step reached - submitting form...');
+          submitForm();
         }
       } else {
         console.log('❌ Validation failed, staying on step:', currentStep);
@@ -3476,6 +3477,135 @@
       console.log('🔍 Validation result:', isValid);
       console.log('✅ === STEP VALIDATION COMPLETE ===');
       return isValid;
+    }
+
+    // Submit form to server
+    async function submitForm() {
+      console.log('📨 === SUBMITTING FORM ===');
+      
+      // Show loading state
+      const nextBtn = document.getElementById('nextBtn');
+      const originalText = nextBtn.textContent;
+      nextBtn.textContent = 'Submitting...';
+      nextBtn.disabled = true;
+      
+      try {
+        // Prepare form data with files
+        const formDataToSubmit = new FormData();
+        
+        // Add all form fields
+        formDataToSubmit.append('formData', JSON.stringify(formData));
+        
+        // Add all uploaded files
+        const fileInputs = document.querySelectorAll('input[type="file"]');
+        fileInputs.forEach(input => {
+          if (input.files && input.files[0]) {
+            formDataToSubmit.append(input.id, input.files[0]);
+            console.log(`📎 Added file: ${input.id} - ${input.files[0].name}`);
+          }
+        });
+        
+        console.log('🚀 Sending form data to server...');
+        
+        // Submit to API
+        const response = await fetch('/api/submit-form', {
+          method: 'POST',
+          body: formDataToSubmit
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+          console.log('✅ Form submitted successfully:', result);
+          showSubmissionSuccess();
+        } else {
+          console.error('❌ Form submission failed:', result);
+          showSubmissionError(result.error || 'Unknown error occurred');
+        }
+        
+      } catch (error) {
+        console.error('❌ Network error during submission:', error);
+        showSubmissionError('Network error. Please check your connection and try again.');
+      } finally {
+        // Restore button state
+        nextBtn.textContent = originalText;
+        nextBtn.disabled = false;
+      }
+      
+      console.log('✅ === FORM SUBMISSION COMPLETE ===');
+    }
+    
+    // Show submission success message
+    function showSubmissionSuccess() {
+      const message = document.createElement('div');
+      message.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #10b981;
+        color: white;
+        padding: 20px 30px;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        z-index: 10000;
+        text-align: center;
+        min-width: 300px;
+      `;
+      message.innerHTML = `
+        <div style="margin-bottom: 10px; font-size: 24px;">✅</div>
+        <div>Application Submitted Successfully!</div>
+        <div style="font-size: 14px; font-weight: 400; margin-top: 8px; opacity: 0.9;">
+          Your application has been sent to flydubai. You will receive a confirmation email shortly.
+        </div>
+      `;
+      
+      document.body.appendChild(message);
+      
+      // Remove message after 5 seconds
+      setTimeout(() => {
+        if (message.parentNode) {
+          message.parentNode.removeChild(message);
+        }
+      }, 5000);
+    }
+    
+    // Show submission error message
+    function showSubmissionError(errorText) {
+      const message = document.createElement('div');
+      message.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #ef4444;
+        color: white;
+        padding: 20px 30px;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        z-index: 10000;
+        text-align: center;
+        min-width: 300px;
+      `;
+      message.innerHTML = `
+        <div style="margin-bottom: 10px; font-size: 24px;">❌</div>
+        <div>Submission Failed</div>
+        <div style="font-size: 14px; font-weight: 400; margin-top: 8px; opacity: 0.9;">
+          ${errorText}
+        </div>
+        <div style="font-size: 12px; margin-top: 12px;">
+          <button onclick="this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode)" 
+                  style="background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer;">
+            Close
+          </button>
+        </div>
+      `;
+      
+      document.body.appendChild(message);
     }
 
     // Validate personal information
