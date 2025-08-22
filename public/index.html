@@ -651,11 +651,28 @@
         <h2 class="step-title">👨‍✈️ Personal Information</h2>
         <p class="step-subtitle">Let's start with your basic information. All fields marked with <span class="required">*</span> are required.</p>
         
-        <div class="form-grid">
+        <div style="display: grid; gap: 28px; grid-template-columns: minmax(320px, 1fr) minmax(240px, 1fr) minmax(220px, 1fr); margin-bottom: 32px;">
           <div>
-            <label for="pilotName">Full Name <span class="required">*</span></label>
-            <input id="pilotName" type="text" placeholder="Enter your full legal name" required>
+            <label for="pilotName">Name <span class="required">*</span></label>
+            <input id="pilotName" type="text" placeholder="e.g., Jane D. Pilot" required>
           </div>
+          <div>
+            <label for="designation">Designation <span class="required">*</span></label>
+            <select id="designation" required>
+              <option value="">Select…</option>
+              <option>Captain</option>
+              <option>First Officer</option>
+              <option>Second Officer</option>
+              <option>Cadet</option>
+            </select>
+          </div>
+          <div>
+            <label for="doj">Date of Joining <span class="required">*</span></label>
+            <input id="doj" type="date" required>
+          </div>
+        </div>
+
+        <div class="form-grid">
           <div>
             <label for="nationality">Nationality <span class="required">*</span></label>
             <select id="nationality" required>
@@ -916,96 +933,70 @@
             <input id="phoneNumber" type="tel" placeholder="+971 50 123 4567" required>
           </div>
         </div>
-
-        <div class="form-section">
-          <div class="section-title">Pilot Information</div>
-          <div class="form-grid">
-            <div>
-              <label for="designation">Current Designation <span class="required">*</span></label>
-              <select id="designation" required>
-                <option value="">Select designation</option>
-                <option value="Captain">Captain</option>
-                <option value="First Officer">First Officer</option>
-                <option value="Second Officer">Second Officer</option>
-                <option value="Cadet">Cadet</option>
-                <option value="Flight Instructor">Flight Instructor</option>
-                <option value="Check Airman">Check Airman</option>
-              </select>
-            </div>
-            <div>
-              <label for="expectedDateOfJoining">Expected Date of Joining</label>
-              <input id="expectedDateOfJoining" type="date">
-            </div>
-            <div>
-              <label for="previousEmployer">Previous Employer</label>
-              <input id="previousEmployer" type="text" placeholder="Previous airline or company">
-            </div>
-          </div>
-        </div>
       </div>
 
       <!-- Step 2: Flight Experience -->
       <div class="form-step" data-step="2">
-        <h2 class="step-title">✈️ Flight Experience</h2>
-        <p class="step-subtitle">Tell us about your aviation background and flight experience.</p>
+        <h2 class="step-title">✈️ Flight Experience by Aircraft Type</h2>
+        <p class="step-subtitle">Add your flight experience for each aircraft type you've flown. Click "Add Aircraft Type" to add multiple aircraft.</p>
         
-        <div class="form-section">
-          <div class="section-title">Licenses & Ratings</div>
-          <div class="form-grid">
-            <div>
-              <label for="pilotLicense">Pilot License Type <span class="required">*</span></label>
-              <select id="pilotLicense" required>
-                <option value="">Select license type</option>
-                <option value="ATPL">ATPL (Airline Transport Pilot License)</option>
-                <option value="CPL">CPL (Commercial Pilot License)</option>
-                <option value="PPL">PPL (Private Pilot License)</option>
-                <option value="MPL">MPL (Multi-crew Pilot License)</option>
-              </select>
+        <div id="sections"></div>
+        
+        <div class="controls" style="margin-bottom: 32px;">
+          <button type="button" class="btn" id="btnAddSection">+ Add Aircraft Type</button>
+        </div>
+
+        <!-- Grand totals for all aircraft types -->
+        <div class="form-section" id="grandTotals">
+          <div class="section-title">GRAND TOTALS (All Aircraft Types)</div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
+            <div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); padding: 16px; border-radius: 12px; text-align: center;">
+              <div style="font-size: 12px; color: var(--muted); margin-bottom: 4px;">COMBINED BLOCK HOURS</div>
+              <div style="font-size: 20px; font-weight: 700; color: var(--flydubai-navy);" id="gtCombined">0:00</div>
             </div>
-            <div>
-              <label for="licenseNumber">License Number <span class="required">*</span></label>
-              <input id="licenseNumber" type="text" placeholder="Enter license number" required>
+            <div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); padding: 16px; border-radius: 12px; text-align: center;">
+              <div style="font-size: 12px; color: var(--muted); margin-bottom: 4px;">MULTI-PILOT BLOCK HOURS</div>
+              <div style="font-size: 20px; font-weight: 700; color: var(--flydubai-navy);" id="gtMP">0:00</div>
             </div>
-            <div>
-              <label for="licenseAuthority">License Authority <span class="required">*</span></label>
-              <input id="licenseAuthority" type="text" placeholder="e.g., GCAA, FAA, EASA" required>
+            <div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); padding: 16px; border-radius: 12px; text-align: center;">
+              <div style="font-size: 12px; color: var(--muted); margin-bottom: 4px;">NIGHT HOURS</div>
+              <div style="font-size: 20px; font-weight: 700; color: var(--flydubai-navy);" id="gtNight">0:00</div>
             </div>
           </div>
         </div>
 
+        <!-- SUMMARY SECTION -->
         <div class="form-section">
-          <div class="section-title">Flight Hours</div>
-          <div class="form-grid">
-            <div>
-              <label for="totalFlightHours">Total Flight Hours <span class="required">*</span></label>
-              <input id="totalFlightHours" type="number" placeholder="0" min="0" required>
-            </div>
-            <div>
-              <label for="picHours">PIC (Pilot in Command) Hours</label>
-              <input id="picHours" type="number" placeholder="0" min="0">
-            </div>
-            <div>
-              <label for="instrumentHours">Instrument Flight Hours</label>
-              <input id="instrumentHours" type="number" placeholder="0" min="0">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-section">
-          <div class="section-title">Aircraft Experience</div>
-          <div class="form-grid">
-            <div>
-              <label for="aircraftTypes">Aircraft Types Flown</label>
-              <textarea id="aircraftTypes" rows="3" placeholder="List aircraft types you have experience with (e.g., B737, A320, etc.)"></textarea>
-            </div>
-            <div>
-              <label for="turbineHours">Turbine Hours</label>
-              <input id="turbineHours" type="number" placeholder="0" min="0">
-            </div>
-            <div>
-              <label for="jetHours">Jet Hours</label>
-              <input id="jetHours" type="number" placeholder="0" min="0">
-            </div>
+          <div class="section-title">FLYING EXPERIENCE SUMMARY - GENERAL</div>
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+              <thead>
+                <tr style="background: var(--flydubai-light-blue);">
+                  <th style="padding: 12px 8px; border: 1px solid var(--line); font-weight: 700;">PIC/P1</th>
+                  <th style="padding: 12px 8px; border: 1px solid var(--line); font-weight: 700;">SIC/P2</th>
+                  <th style="padding: 12px 8px; border: 1px solid var(--line); font-weight: 700;">SOLO</th>
+                  <th style="padding: 12px 8px; border: 1px solid var(--line); font-weight: 700;">INSTRUMENT</th>
+                  <th style="padding: 12px 8px; border: 1px solid var(--line); font-weight: 700;">SIM</th>
+                  <th style="padding: 12px 8px; border: 1px solid var(--line); font-weight: 700;">NIGHT</th>
+                  <th style="padding: 12px 8px; border: 1px solid var(--line); font-weight: 700;">INSTRUCTOR</th>
+                  <th style="padding: 12px 8px; border: 1px solid var(--line); font-weight: 700;">P1 U/S</th>
+                  <th style="padding: 12px 8px; border: 1px solid var(--line); font-weight: 700; background: linear-gradient(135deg, var(--flydubai-orange) 0%, #fb923c 100%); color: white;">GRAND TOTAL</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="padding: 8px; border: 1px solid var(--line);"><input type="text" class="hhmm" placeholder="0:00" style="width: 80px; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center;"></td>
+                  <td style="padding: 8px; border: 1px solid var(--line);"><input type="text" class="hhmm" placeholder="0:00" style="width: 80px; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center;"></td>
+                  <td style="padding: 8px; border: 1px solid var(--line);"><input type="text" class="hhmm" placeholder="0:00" style="width: 80px; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center;"></td>
+                  <td style="padding: 8px; border: 1px solid var(--line);"><input type="text" class="hhmm" placeholder="0:00" style="width: 80px; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center;"></td>
+                  <td style="padding: 8px; border: 1px solid var(--line);"><input type="text" class="hhmm" placeholder="0:00" style="width: 80px; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center;"></td>
+                  <td style="padding: 8px; border: 1px solid var(--line);"><input type="text" class="hhmm" placeholder="0:00" style="width: 80px; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center;"></td>
+                  <td style="padding: 8px; border: 1px solid var(--line);"><input type="text" class="hhmm" placeholder="0:00" style="width: 80px; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center;"></td>
+                  <td style="padding: 8px; border: 1px solid var(--line);"><input type="text" class="hhmm" placeholder="0:00" style="width: 80px; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center;"></td>
+                  <td style="padding: 8px; border: 1px solid var(--line); background: #fef3f2; font-weight: 700; text-align: center;" id="grandTotalHours">0:00</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -1194,28 +1185,62 @@
       if (currentStep >= 1) {
         formData.personalInfo = {
           pilotName: document.getElementById('pilotName')?.value || '',
+          designation: document.getElementById('designation')?.value || '',
+          doj: document.getElementById('doj')?.value || '',
           nationality: document.getElementById('nationality')?.value || '',
           contactEmail: document.getElementById('contactEmail')?.value || '',
           dateOfBirth: document.getElementById('dateOfBirth')?.value || '',
-          phoneNumber: document.getElementById('phoneNumber')?.value || '',
-          designation: document.getElementById('designation')?.value || '',
-          expectedDateOfJoining: document.getElementById('expectedDateOfJoining')?.value || '',
-          previousEmployer: document.getElementById('previousEmployer')?.value || ''
+          phoneNumber: document.getElementById('phoneNumber')?.value || ''
         };
       }
       
       // Step 2: Flight Experience
       if (currentStep >= 2) {
+        const aircraftSections = [];
+        document.querySelectorAll('#sections .form-section').forEach(section => {
+          const aircraftType = section.querySelector('.ac-type')?.value || '';
+          const notes = section.querySelector('.ac-notes')?.value || '';
+          const inputs = section.querySelectorAll('.hhmm');
+          
+          const flightHours = {
+            pic: inputs[0]?.value || '0:00',
+            sic: inputs[1]?.value || '0:00',
+            solo: inputs[2]?.value || '0:00',
+            instrument: inputs[3]?.value || '0:00',
+            sim: inputs[4]?.value || '0:00',
+            night: inputs[5]?.value || '0:00',
+            instructor: inputs[6]?.value || '0:00',
+            p1us: inputs[7]?.value || '0:00'
+          };
+          
+          aircraftSections.push({
+            aircraftType,
+            notes,
+            flightHours
+          });
+        });
+        
+        // Collect summary flight hours
+        const summaryInputs = document.querySelectorAll('#grandTotalHours').closest('tr').querySelectorAll('.hhmm');
+        const summaryHours = {
+          pic: summaryInputs[0]?.value || '0:00',
+          sic: summaryInputs[1]?.value || '0:00',
+          solo: summaryInputs[2]?.value || '0:00',
+          instrument: summaryInputs[3]?.value || '0:00',
+          sim: summaryInputs[4]?.value || '0:00',
+          night: summaryInputs[5]?.value || '0:00',
+          instructor: summaryInputs[6]?.value || '0:00',
+          p1us: summaryInputs[7]?.value || '0:00'
+        };
+        
         formData.flightExperience = {
-          pilotLicense: document.getElementById('pilotLicense')?.value || '',
-          licenseNumber: document.getElementById('licenseNumber')?.value || '',
-          licenseAuthority: document.getElementById('licenseAuthority')?.value || '',
-          totalFlightHours: document.getElementById('totalFlightHours')?.value || '',
-          picHours: document.getElementById('picHours')?.value || '',
-          instrumentHours: document.getElementById('instrumentHours')?.value || '',
-          aircraftTypes: document.getElementById('aircraftTypes')?.value || '',
-          turbineHours: document.getElementById('turbineHours')?.value || '',
-          jetHours: document.getElementById('jetHours')?.value || ''
+          aircraftSections,
+          summaryHours,
+          grandTotals: {
+            combined: document.getElementById('gtCombined')?.textContent || '0:00',
+            multiPilot: document.getElementById('gtMP')?.textContent || '0:00',
+            night: document.getElementById('gtNight')?.textContent || '0:00'
+          }
         };
       }
       
@@ -1423,7 +1448,7 @@
 
     // Validate personal information
     function validatePersonalInfo() {
-      const requiredFields = ['pilotName', 'nationality', 'contactEmail', 'dateOfBirth', 'phoneNumber', 'designation'];
+      const requiredFields = ['pilotName', 'designation', 'doj', 'nationality', 'contactEmail', 'dateOfBirth', 'phoneNumber'];
       let isValid = true;
       
       requiredFields.forEach(fieldId => {
@@ -1448,26 +1473,34 @@
 
     // Validate flight experience
     function validateFlightExperience() {
-      const requiredFields = ['pilotLicense', 'licenseNumber', 'licenseAuthority', 'totalFlightHours'];
-      let isValid = true;
+      // Check if at least one aircraft section has data
+      const sections = document.querySelectorAll('#sections .form-section');
+      let hasData = false;
       
-      requiredFields.forEach(fieldId => {
-        const field = document.getElementById(fieldId);
-        if (!field.value.trim()) {
-          field.style.borderColor = '#dc2626';
-          isValid = false;
-          
-          field.addEventListener('input', () => {
-            field.style.borderColor = '#e2e8f0';
-          }, { once: true });
+      sections.forEach(section => {
+        const aircraftType = section.querySelector('.ac-type')?.value;
+        const inputs = section.querySelectorAll('.hhmm');
+        
+        if (aircraftType) {
+          hasData = true;
+        }
+        
+        // Check if "Other" is selected but no notes provided
+        if (aircraftType === 'Other - Specify in Notes') {
+          const notes = section.querySelector('.ac-notes')?.value;
+          if (!notes || !notes.trim()) {
+            alert('Please specify the aircraft type in the notes field when "Other" is selected.');
+            return false;
+          }
         }
       });
       
-      if (!isValid) {
-        alert('Please fill in all required flight experience fields before continuing.');
+      if (!hasData) {
+        alert('Please add at least one aircraft type and select it from the dropdown before continuing.');
+        return false;
       }
       
-      return isValid;
+      return true;
     }
 
     // Validate documentation
@@ -1592,6 +1625,258 @@
       
       summaryEl.innerHTML = html;
     }
+
+    // Original form JavaScript for aircraft sections and calculations
+    let sectionCount = 0;
+
+    // Add aircraft section functionality
+    function addAircraftSection(b737Type = null, locked = false) {
+      sectionCount++;
+      const sec = document.createElement('div');
+      sec.className = 'form-section';
+      sec.setAttribute('data-section-id', sectionCount);
+      
+      const label = `Aircraft Type ${sectionCount}`;
+      const typeText = b737Type ? (b737Type === 'ng-max' ? 'Boeing 737 NG/MAX' : 'Boeing 737 Classic (300-500)') : '';
+      
+      let aircraftDropdown;
+      if(b737Type) {
+        aircraftDropdown = `
+        <div style="display: grid; grid-template-columns: 400px auto 1fr; gap: 16px; align-items: end;">
+          <div>
+            <select class="ac-type" ${locked ? 'disabled' : ''} style="${locked ? 'background-color: #f3f4f6; cursor: not-allowed;' : ''}">
+              ${b737Type === 'ng-max' ? `
+                <option value="Boeing 737 NG/MAX">Boeing 737 NG/MAX</option>
+              ` : `
+                <option value="Boeing 737 Classic (300-500)">Boeing 737 Classic (300-500)</option>
+              `}
+            </select>
+          </div>
+          <div style="display: flex; align-items: center; background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: white; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
+            ✈ >50T MTOW
+          </div>
+        </div>`;
+      } else {
+        aircraftDropdown = `
+        <div style="display: grid; grid-template-columns: 400px auto 1fr; gap: 16px; align-items: end;">
+          <div>
+            <select class="ac-type" style="width: 100%; padding: 14px 16px; border-radius: 12px; border: 2px solid var(--line); background: #ffffff; color: var(--ink); font-family: inherit; font-size: 14px;">
+              <option value="">Select Aircraft Type...</option>
+              <optgroup label="Boeing Commercial Aircraft">
+                <option value="Boeing 757-200">Boeing 757-200</option>
+                <option value="Boeing 757-300">Boeing 757-300</option>
+                <option value="Boeing 767-200">Boeing 767-200</option>
+                <option value="Boeing 767-300">Boeing 767-300</option>
+                <option value="Boeing 777-200">Boeing 777-200</option>
+                <option value="Boeing 777-300">Boeing 777-300</option>
+                <option value="Boeing 787-8">Boeing 787-8 Dreamliner</option>
+                <option value="Boeing 787-9">Boeing 787-9 Dreamliner</option>
+                <option value="Boeing 787-10">Boeing 787-10 Dreamliner</option>
+              </optgroup>
+              <optgroup label="Airbus Commercial Aircraft">
+                <option value="Airbus A319">Airbus A319</option>
+                <option value="Airbus A320">Airbus A320</option>
+                <option value="Airbus A321">Airbus A321</option>
+                <option value="Airbus A330-200">Airbus A330-200</option>
+                <option value="Airbus A330-300">Airbus A330-300</option>
+                <option value="Airbus A340-200">Airbus A340-200</option>
+                <option value="Airbus A340-300">Airbus A340-300</option>
+                <option value="Airbus A350-900">Airbus A350-900</option>
+                <option value="Airbus A350-1000">Airbus A350-1000</option>
+                <option value="Airbus A380">Airbus A380</option>
+              </optgroup>
+              <optgroup label="Regional Jets & Commercial Aircraft">
+                <option value="McDonnell Douglas MD-80">McDonnell Douglas MD-80</option>
+                <option value="McDonnell Douglas MD-90">McDonnell Douglas MD-90</option>
+                <option value="Embraer E-Jet E170">Embraer E-Jet E170</option>
+                <option value="Embraer E-Jet E175">Embraer E-Jet E175</option>
+                <option value="Embraer E-Jet E190">Embraer E-Jet E190</option>
+                <option value="Embraer E-Jet E195">Embraer E-Jet E195</option>
+                <option value="Bombardier CRJ-100">Bombardier CRJ-100</option>
+                <option value="Bombardier CRJ-200">Bombardier CRJ-200</option>
+                <option value="Bombardier CRJ-700">Bombardier CRJ-700</option>
+                <option value="Bombardier CRJ-900">Bombardier CRJ-900</option>
+                <option value="Bombardier CRJ-1000">Bombardier CRJ-1000</option>
+                <option value="British Aerospace 146">British Aerospace BAe 146</option>
+                <option value="Avro RJ70">Avro RJ70</option>
+                <option value="Avro RJ85">Avro RJ85</option>
+                <option value="Avro RJ100">Avro RJ100</option>
+              </optgroup>
+              <optgroup label="Business Jets & Private Aircraft">
+                <option value="Gulfstream G150">Gulfstream G150</option>
+                <option value="Gulfstream G280">Gulfstream G280</option>
+                <option value="Gulfstream G450">Gulfstream G450</option>
+                <option value="Gulfstream G500">Gulfstream G500</option>
+                <option value="Gulfstream G550">Gulfstream G550</option>
+                <option value="Bombardier Global 5000">Bombardier Global 5000</option>
+                <option value="Bombardier Global 6000">Bombardier Global 6000</option>
+                <option value="Dassault Falcon 2000">Dassault Falcon 2000</option>
+                <option value="Dassault Falcon 7X">Dassault Falcon 7X</option>
+                <option value="Cessna Citation X">Cessna Citation X</option>
+              </optgroup>
+              <optgroup label="Other Aircraft Types">
+                <option value="Other - Specify in Notes">Other - Specify in Notes</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="notes-field" style="display: none;">
+            <input type="text" class="ac-notes" placeholder="Please specify aircraft type..." style="width: 100%; padding: 14px 16px; border-radius: 12px; border: 2px solid var(--line); background: #ffffff; color: var(--ink); font-family: inherit; font-size: 14px;" />
+          </div>
+        </div>`;
+      }
+      
+      sec.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <h3 style="margin: 0; color: var(--flydubai-navy);">${label}${typeText?': '+typeText:''}</h3>
+          ${locked ? '' : '<button type="button" class="btn" onclick="removeAircraftSection(this)" style="background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 12px;">Remove</button>'}
+        </div>
+        ${aircraftDropdown}
+        <div style="overflow-x: auto; margin-top: 16px;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+            <thead>
+              <tr style="background: var(--flydubai-light-blue);">
+                <th style="padding: 8px; border: 1px solid var(--line); font-weight: 700;">PIC/P1</th>
+                <th style="padding: 8px; border: 1px solid var(--line); font-weight: 700;">SIC/P2</th>
+                <th style="padding: 8px; border: 1px solid var(--line); font-weight: 700;">SOLO</th>
+                <th style="padding: 8px; border: 1px solid var(--line); font-weight: 700;">INSTRUMENT</th>
+                <th style="padding: 8px; border: 1px solid var(--line); font-weight: 700;">SIM</th>
+                <th style="padding: 8px; border: 1px solid var(--line); font-weight: 700;">NIGHT</th>
+                <th style="padding: 8px; border: 1px solid var(--line); font-weight: 700;">INSTRUCTOR</th>
+                <th style="padding: 8px; border: 1px solid var(--line); font-weight: 700;">P1 U/S</th>
+                <th style="padding: 8px; border: 1px solid var(--line); font-weight: 700;">TOTAL</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="padding: 4px; border: 1px solid var(--line);"><input type="text" class="hhmm" placeholder="0:00" style="width: 70px; padding: 6px; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center; font-size: 12px;"></td>
+                <td style="padding: 4px; border: 1px solid var(--line);"><input type="text" class="hhmm" placeholder="0:00" style="width: 70px; padding: 6px; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center; font-size: 12px;"></td>
+                <td style="padding: 4px; border: 1px solid var(--line);"><input type="text" class="hhmm" placeholder="0:00" style="width: 70px; padding: 6px; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center; font-size: 12px;"></td>
+                <td style="padding: 4px; border: 1px solid var(--line);"><input type="text" class="hhmm" placeholder="0:00" style="width: 70px; padding: 6px; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center; font-size: 12px;"></td>
+                <td style="padding: 4px; border: 1px solid var(--line);"><input type="text" class="hhmm" placeholder="0:00" style="width: 70px; padding: 6px; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center; font-size: 12px;"></td>
+                <td style="padding: 4px; border: 1px solid var(--line);"><input type="text" class="hhmm" placeholder="0:00" style="width: 70px; padding: 6px; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center; font-size: 12px;"></td>
+                <td style="padding: 4px; border: 1px solid var(--line);"><input type="text" class="hhmm" placeholder="0:00" style="width: 70px; padding: 6px; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center; font-size: 12px;"></td>
+                <td style="padding: 4px; border: 1px solid var(--line);"><input type="text" class="hhmm" placeholder="0:00" style="width: 70px; padding: 6px; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center; font-size: 12px;"></td>
+                <td style="padding: 4px; border: 1px solid var(--line); background: #fef3f2; font-weight: 700; text-align: center;" class="row-total">0:00</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `;
+      
+      document.getElementById('sections').appendChild(sec);
+      
+      // Add event listeners for aircraft type selection
+      const select = sec.querySelector('.ac-type');
+      const notesField = sec.querySelector('.notes-field');
+      
+      if (select && notesField) {
+        select.addEventListener('change', function() {
+          if (this.value === 'Other - Specify in Notes') {
+            notesField.style.display = 'block';
+          } else {
+            notesField.style.display = 'none';
+          }
+        });
+      }
+      
+      computeAll();
+    }
+
+    // Remove aircraft section
+    function removeAircraftSection(btn) {
+      btn.closest('.form-section').remove();
+      computeAll();
+    }
+
+    // Time calculation functions
+    function timeToMinutes(timeStr) {
+      if (!timeStr || timeStr === '0:00') return 0;
+      const parts = timeStr.split(':');
+      if (parts.length !== 2) return 0;
+      const hours = parseInt(parts[0]) || 0;
+      const minutes = parseInt(parts[1]) || 0;
+      return hours * 60 + minutes;
+    }
+
+    function minutesToTime(totalMinutes) {
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+      return hours + ':' + (minutes < 10 ? '0' : '') + minutes;
+    }
+
+    function computeAll() {
+      // Calculate row totals for each aircraft section
+      document.querySelectorAll('#sections .form-section').forEach(section => {
+        const inputs = section.querySelectorAll('.hhmm');
+        const rowTotal = section.querySelector('.row-total');
+        let totalMinutes = 0;
+        
+        inputs.forEach(input => {
+          totalMinutes += timeToMinutes(input.value);
+        });
+        
+        if (rowTotal) {
+          rowTotal.textContent = minutesToTime(totalMinutes);
+        }
+      });
+      
+      // Calculate grand totals
+      let combinedTotal = 0;
+      let mpTotal = 0;
+      let nightTotal = 0;
+      
+      document.querySelectorAll('#sections .form-section').forEach(section => {
+        const inputs = section.querySelectorAll('.hhmm');
+        if (inputs.length >= 8) {
+          combinedTotal += timeToMinutes(inputs[0].value) + timeToMinutes(inputs[1].value); // PIC + SIC
+          mpTotal += timeToMinutes(inputs[1].value); // SIC only
+          nightTotal += timeToMinutes(inputs[5].value); // Night
+        }
+      });
+      
+      document.getElementById('gtCombined').textContent = minutesToTime(combinedTotal);
+      document.getElementById('gtMP').textContent = minutesToTime(mpTotal);
+      document.getElementById('gtNight').textContent = minutesToTime(nightTotal);
+      
+      // Calculate summary table total
+      const summaryInputs = document.querySelectorAll('#grandTotalHours').closest('tr').querySelectorAll('.hhmm');
+      let summaryTotal = 0;
+      summaryInputs.forEach(input => {
+        summaryTotal += timeToMinutes(input.value);
+      });
+      document.getElementById('grandTotalHours').textContent = minutesToTime(summaryTotal);
+    }
+
+    // Add event listeners
+    document.addEventListener('click', (e) => {
+      if (e.target.id === 'btnAddSection') {
+        addAircraftSection();
+      }
+    });
+
+    document.addEventListener('input', (e) => {
+      if (e.target.classList.contains('hhmm')) {
+        computeAll();
+      }
+    });
+
+    // Add default Boeing 737 sections on form load
+    function initializeAircraftSections() {
+      if (currentStep === 2 && document.getElementById('sections').children.length === 0) {
+        addAircraftSection('ng-max', true);
+        addAircraftSection('classic', true);
+        addAircraftSection();
+      }
+    }
+
+    // Update the showStep function to initialize aircraft sections
+    const originalShowStepFunction = showStep;
+    showStep = function(step) {
+      originalShowStepFunction(step);
+      if (step === 2) {
+        setTimeout(initializeAircraftSections, 100);
+      }
+    };
 
     // Initialize the form when page loads
     document.addEventListener('DOMContentLoaded', initializeForm);
