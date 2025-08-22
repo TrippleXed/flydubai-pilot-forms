@@ -5146,7 +5146,24 @@
     showStep = function(step) {
       originalShowStepFunction(step);
       if (step === 2) {
-        setTimeout(initializeAircraftSections, 100);
+        setTimeout(() => {
+          // Check if we have saved flight experience data
+          const savedData = localStorage.getItem(`flydubai_form_${sessionId}`);
+          if (savedData) {
+            try {
+              const parsedData = JSON.parse(savedData);
+              if (parsedData.formData?.flightExperience?.aircraftSections && parsedData.formData.flightExperience.aircraftSections.length > 0) {
+                console.log('📁 Found saved flight experience data, restoring sections instead of initializing fresh ones');
+                populateFormFields(); // Restore saved data
+                return;
+              }
+            } catch (e) {
+              console.log('⚠️ Error parsing saved data, falling back to fresh initialization');
+            }
+          }
+          console.log('🆕 No saved flight experience data found, initializing fresh sections');
+          initializeAircraftSections(); // Create fresh sections only if no saved data
+        }, 100);
       }
     };
 
