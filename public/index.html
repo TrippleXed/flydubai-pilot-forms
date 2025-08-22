@@ -3018,7 +3018,14 @@
     }, true);
 
     // Initialize the form when page loads
-    document.addEventListener('DOMContentLoaded', initializeForm);
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('🚀 Form initializing with original functions loaded!');
+      console.log('✅ parseHHMM function available:', typeof parseHHMM);
+      console.log('✅ computeAll function available:', typeof computeAll);
+      console.log('✅ sectionCounter initialized:', sectionCounter);
+      console.log('✅ sectionsWrap element found:', !!sectionsWrap);
+      initializeForm();
+    });
   </script>
 </body>
 </html>
