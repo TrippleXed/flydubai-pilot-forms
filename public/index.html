@@ -693,6 +693,505 @@
             <input id="currentLocation" type="text" placeholder="City, Country" required>
           </div>
         </div>
+
+        <div class="form-section">
+          <div class="section-title">Basic Pilot Information</div>
+          <div class="form-grid">
+            <div>
+              <label for="designation">Current Designation <span class="required">*</span></label>
+              <select id="designation" required>
+                <option value="">Select designation</option>
+                <option value="Captain">Captain</option>
+                <option value="First Officer">First Officer</option>
+                <option value="Second Officer">Second Officer</option>
+                <option value="Cadet">Cadet</option>
+                <option value="Flight Instructor">Flight Instructor</option>
+                <option value="Check Airman">Check Airman</option>
+              </select>
+            </div>
+            <div>
+              <label for="dateOfJoining">Date of Joining (Previous Employer)</label>
+              <input id="dateOfJoining" type="date">
+            </div>
+            <div>
+              <label for="currentEmployer">Current/Previous Employer</label>
+              <input id="currentEmployer" type="text" placeholder="Airline or Company name">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Flight Experience -->
+      <div class="form-step" data-step="2">
+        <h2 class="step-title">✈️ Flight Experience</h2>
+        <p class="step-subtitle">Please provide your detailed flight experience by aircraft type. Add multiple aircraft types as needed.</p>
+
+        <div id="aircraftSections">
+          <!-- Boeing 737 NG/MAX Section (Locked) -->
+          <div class="form-section aircraft-section" data-aircraft-id="1">
+            <div class="section-title" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding: 16px; border-radius: 12px; margin-bottom: 20px;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; color: var(--flydubai-navy);">Aircraft Type 1: Boeing 737 NG/MAX</h3>
+                <div style="display: flex; align-items: center; background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: white; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase;">
+                  ✈ >50T MTOW
+                </div>
+              </div>
+            </div>
+
+            <div style="overflow-x: auto;">
+              <table style="width: 100%; min-width: 800px; border-collapse: collapse; margin-bottom: 20px; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <thead>
+                  <tr style="background: linear-gradient(135deg, var(--flydubai-blue) 0%, var(--flydubai-navy) 100%);">
+                    <th style="padding: 16px; color: white; text-align: center; font-weight: 700; font-size: 13px;">Flight Role</th>
+                    <th style="padding: 16px; color: white; text-align: center; font-weight: 700; font-size: 13px;">Total Hours<br><span style="font-weight: 400; font-size: 11px;">(HH:MM)</span></th>
+                    <th style="padding: 16px; color: white; text-align: center; font-weight: 700; font-size: 13px;">Block Hours (Last 12 Months)<br><span style="font-weight: 400; font-size: 11px;">(HH:MM)</span></th>
+                    <th style="padding: 16px; color: white; text-align: center; font-weight: 700; font-size: 13px;">First Flight Date<br><span style="font-weight: 400; font-size: 11px;">(Last 12 Months)</span></th>
+                    <th style="padding: 16px; color: white; text-align: center; font-weight: 700; font-size: 13px;">Last Flight Date<br><span style="font-weight: 400; font-size: 11px;">(Last 12 Months)</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 16px; font-weight: 700; color: var(--flydubai-navy); text-align: center;">PIC</td>
+                    <td style="padding: 16px; text-align: center;"><input type="text" class="hhmm" placeholder="0:00" style="width: 80px; text-align: center; padding: 8px;"></td>
+                    <td style="padding: 16px; text-align: center;"><input type="text" class="hhmm" placeholder="0:00" style="width: 80px; text-align: center; padding: 8px;"></td>
+                    <td style="padding: 16px; text-align: center;"><input type="date" style="width: 140px; padding: 8px;"></td>
+                    <td style="padding: 16px; text-align: center;"><input type="date" style="width: 140px; padding: 8px;"></td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 16px; font-weight: 700; color: var(--flydubai-navy); text-align: center;">SIC</td>
+                    <td style="padding: 16px; text-align: center;"><input type="text" class="hhmm" placeholder="0:00" style="width: 80px; text-align: center; padding: 8px;"></td>
+                    <td style="padding: 16px; text-align: center;"><input type="text" class="hhmm" placeholder="0:00" style="width: 80px; text-align: center; padding: 8px;"></td>
+                    <td style="padding: 16px; text-align: center;"><input type="date" style="width: 140px; padding: 8px;"></td>
+                    <td style="padding: 16px; text-align: center;"><input type="date" style="width: 140px; padding: 8px;"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+              <div style="background: #f8fafc; padding: 20px; border-radius: 12px; text-align: center;">
+                <label style="font-weight: 600; color: var(--flydubai-navy); margin-bottom: 8px;">Total Combined Block Hours</label>
+                <div style="font-size: 24px; font-weight: 700; color: var(--flydubai-blue); font-family: 'Courier New', monospace;" class="combined-hours">0:00</div>
+              </div>
+              <div>
+                <label for="b737_mp">Multi-Pilot Block Hours (HH:MM)</label>
+                <input id="b737_mp" type="text" class="hhmm mp-hours" placeholder="0:00">
+              </div>
+              <div>
+                <label for="b737_night">Night Hours (HH:MM)</label>
+                <input id="b737_night" type="text" class="hhmm night-hours" placeholder="0:00">
+              </div>
+            </div>
+          </div>
+
+          <!-- Boeing 737 Classic Section (Locked) -->
+          <div class="form-section aircraft-section" data-aircraft-id="2">
+            <div class="section-title" style="background: linear-gradient(135deg, #fef7ed 0%, #fed7aa 100%); padding: 16px; border-radius: 12px; margin-bottom: 20px;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; color: var(--flydubai-navy);">Aircraft Type 2: Boeing 737 Classic (300-500)</h3>
+                <div style="display: flex; align-items: center; background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: white; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase;">
+                  ✈ >50T MTOW
+                </div>
+              </div>
+            </div>
+
+            <div style="overflow-x: auto;">
+              <table style="width: 100%; min-width: 800px; border-collapse: collapse; margin-bottom: 20px; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <thead>
+                  <tr style="background: linear-gradient(135deg, var(--flydubai-orange) 0%, #fb923c 100%);">
+                    <th style="padding: 16px; color: white; text-align: center; font-weight: 700; font-size: 13px;">Flight Role</th>
+                    <th style="padding: 16px; color: white; text-align: center; font-weight: 700; font-size: 13px;">Total Hours<br><span style="font-weight: 400; font-size: 11px;">(HH:MM)</span></th>
+                    <th style="padding: 16px; color: white; text-align: center; font-weight: 700; font-size: 13px;">Block Hours (Last 12 Months)<br><span style="font-weight: 400; font-size: 11px;">(HH:MM)</span></th>
+                    <th style="padding: 16px; color: white; text-align: center; font-weight: 700; font-size: 13px;">First Flight Date<br><span style="font-weight: 400; font-size: 11px;">(Last 12 Months)</span></th>
+                    <th style="padding: 16px; color: white; text-align: center; font-weight: 700; font-size: 13px;">Last Flight Date<br><span style="font-weight: 400; font-size: 11px;">(Last 12 Months)</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 16px; font-weight: 700; color: var(--flydubai-navy); text-align: center;">PIC</td>
+                    <td style="padding: 16px; text-align: center;"><input type="text" class="hhmm" placeholder="0:00" style="width: 80px; text-align: center; padding: 8px;"></td>
+                    <td style="padding: 16px; text-align: center;"><input type="text" class="hhmm" placeholder="0:00" style="width: 80px; text-align: center; padding: 8px;"></td>
+                    <td style="padding: 16px; text-align: center;"><input type="date" style="width: 140px; padding: 8px;"></td>
+                    <td style="padding: 16px; text-align: center;"><input type="date" style="width: 140px; padding: 8px;"></td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 16px; font-weight: 700; color: var(--flydubai-navy); text-align: center;">SIC</td>
+                    <td style="padding: 16px; text-align: center;"><input type="text" class="hhmm" placeholder="0:00" style="width: 80px; text-align: center; padding: 8px;"></td>
+                    <td style="padding: 16px; text-align: center;"><input type="text" class="hhmm" placeholder="0:00" style="width: 80px; text-align: center; padding: 8px;"></td>
+                    <td style="padding: 16px; text-align: center;"><input type="date" style="width: 140px; padding: 8px;"></td>
+                    <td style="padding: 16px; text-align: center;"><input type="date" style="width: 140px; padding: 8px;"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+              <div style="background: #f8fafc; padding: 20px; border-radius: 12px; text-align: center;">
+                <label style="font-weight: 600; color: var(--flydubai-navy); margin-bottom: 8px;">Total Combined Block Hours</label>
+                <div style="font-size: 24px; font-weight: 700; color: var(--flydubai-orange); font-family: 'Courier New', monospace;" class="combined-hours">0:00</div>
+              </div>
+              <div>
+                <label for="b737c_mp">Multi-Pilot Block Hours (HH:MM)</label>
+                <input id="b737c_mp" type="text" class="hhmm mp-hours" placeholder="0:00">
+              </div>
+              <div>
+                <label for="b737c_night">Night Hours (HH:MM)</label>
+                <input id="b737c_night" type="text" class="hhmm night-hours" placeholder="0:00">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin: 32px 0;">
+          <button class="btn secondary" id="addAircraftBtn" onclick="addAircraftSection()">+ Add Another Aircraft Type</button>
+        </div>
+
+        <!-- Grand Totals -->
+        <div class="form-section" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 2px solid #22c55e; padding: 24px; border-radius: 16px;">
+          <div class="section-title" style="border: none; margin-bottom: 20px; text-align: center;">
+            <h3 style="margin: 0; color: var(--success); font-size: 20px;">GRAND TOTALS (All Aircraft Types)</h3>
+          </div>
+          <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+            <div style="background: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <label style="font-weight: 600; color: var(--success); margin-bottom: 8px;">Combined Block Hours</label>
+              <div style="font-size: 28px; font-weight: 700; color: var(--success); font-family: 'Courier New', monospace;" id="grandTotalCombined">0:00</div>
+            </div>
+            <div style="background: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <label style="font-weight: 600; color: var(--success); margin-bottom: 8px;">Multi-Pilot Block Hours</label>
+              <div style="font-size: 28px; font-weight: 700; color: var(--success); font-family: 'Courier New', monospace;" id="grandTotalMP">0:00</div>
+            </div>
+            <div style="background: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <label style="font-weight: 600; color: var(--success); margin-bottom: 8px;">Night Hours</label>
+              <div style="font-size: 28px; font-weight: 700; color: var(--success); font-family: 'Courier New', monospace;" id="grandTotalNight">0:00</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Flying Experience Summary -->
+        <div class="form-section" style="margin-top: 32px;">
+          <div class="section-title">FLYING EXPERIENCE SUMMARY - GENERAL</div>
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; min-width: 900px; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <thead>
+                <tr style="background: linear-gradient(135deg, var(--flydubai-navy) 0%, var(--flydubai-blue) 100%);">
+                  <th style="padding: 12px; color: white; text-align: center; font-weight: 700; font-size: 12px;">PIC/P1</th>
+                  <th style="padding: 12px; color: white; text-align: center; font-weight: 700; font-size: 12px;">SIC/P2</th>
+                  <th style="padding: 12px; color: white; text-align: center; font-weight: 700; font-size: 12px;">SOLO</th>
+                  <th style="padding: 12px; color: white; text-align: center; font-weight: 700; font-size: 12px;">INSTRUMENT</th>
+                  <th style="padding: 12px; color: white; text-align: center; font-weight: 700; font-size: 12px;">SIM</th>
+                  <th style="padding: 12px; color: white; text-align: center; font-weight: 700; font-size: 12px;">NIGHT</th>
+                  <th style="padding: 12px; color: white; text-align: center; font-weight: 700; font-size: 12px;">INSTRUCTOR</th>
+                  <th style="padding: 12px; color: white; text-align: center; font-weight: 700; font-size: 12px;">P1 U/S</th>
+                  <th style="padding: 12px; color: white; text-align: center; font-weight: 700; font-size: 12px;">GRAND TOTAL</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="padding: 12px; text-align: center;"><input type="text" class="hhmm" placeholder="0:00" style="width: 70px; text-align: center; padding: 6px;"></td>
+                  <td style="padding: 12px; text-align: center;"><input type="text" class="hhmm" placeholder="0:00" style="width: 70px; text-align: center; padding: 6px;"></td>
+                  <td style="padding: 12px; text-align: center;"><input type="text" class="hhmm" placeholder="0:00" style="width: 70px; text-align: center; padding: 6px;"></td>
+                  <td style="padding: 12px; text-align: center;"><input type="text" class="hhmm" placeholder="0:00" style="width: 70px; text-align: center; padding: 6px;"></td>
+                  <td style="padding: 12px; text-align: center;"><input type="text" class="hhmm" placeholder="0:00" style="width: 70px; text-align: center; padding: 6px;"></td>
+                  <td style="padding: 12px; text-align: center;"><input type="text" class="hhmm" placeholder="0:00" style="width: 70px; text-align: center; padding: 6px;"></td>
+                  <td style="padding: 12px; text-align: center;"><input type="text" class="hhmm" placeholder="0:00" style="width: 70px; text-align: center; padding: 6px;"></td>
+                  <td style="padding: 12px; text-align: center;"><input type="text" class="hhmm" placeholder="0:00" style="width: 70px; text-align: center; padding: 6px;"></td>
+                  <td style="padding: 12px; text-align: center;"><input type="text" class="hhmm" placeholder="0:00" style="width: 70px; text-align: center; padding: 6px;"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Documentation -->
+      <div class="form-step" data-step="3">
+        <h2 class="step-title">📄 Required Documentation</h2>
+        <p class="step-subtitle">Please upload all required pilot documentation. Files must be in PDF, JPG, or PNG format and under 10MB each.</p>
+
+        <!-- Pilot License Section -->
+        <div class="form-section">
+          <div class="section-title">🛂 Pilot License (ATPL/CPL/PPL)</div>
+          <div class="form-grid">
+            <div>
+              <label for="licenseType">License Type <span class="required">*</span></label>
+              <select id="licenseType" required>
+                <option value="">Select License Type</option>
+                <option value="ATPL">ATPL (Airline Transport Pilot License)</option>
+                <option value="CPL">CPL (Commercial Pilot License)</option>
+                <option value="PPL">PPL (Private Pilot License)</option>
+                <option value="MPL">MPL (Multi-Crew Pilot License)</option>
+              </select>
+            </div>
+            <div>
+              <label for="licenseNumber">License Number <span class="required">*</span></label>
+              <input id="licenseNumber" type="text" placeholder="Enter license number" required>
+            </div>
+            <div>
+              <label for="licenseIssueDate">Issue Date <span class="required">*</span></label>
+              <input id="licenseIssueDate" type="date" required>
+            </div>
+            <div>
+              <label for="licenseExpiryDate">Expiry Date <span class="required">*</span></label>
+              <input id="licenseExpiryDate" type="date" required>
+            </div>
+          </div>
+          
+          <div style="margin-top: 20px;">
+            <label>Upload Pilot License Document <span class="required">*</span></label>
+            <div class="upload-area" onclick="triggerFileUpload('pilotLicense')" ondrop="dropHandler(event, 'pilotLicense')" ondragover="dragOverHandler(event)" ondragleave="dragLeaveHandler(event)">
+              <div class="upload-icon">📄</div>
+              <div style="margin-bottom: 8px; font-weight: 600;">Drop your pilot license here or click to browse</div>
+              <div style="font-size: 12px; color: var(--muted);">Supports PDF, JPG, PNG • Max 10MB</div>
+              <input type="file" id="pilotLicense" accept=".pdf,.jpg,.jpeg,.png" style="display: none;" onchange="handleFileUpload(event, 'pilotLicense')">
+            </div>
+            <div class="file-list" id="pilotLicenseFiles"></div>
+          </div>
+
+          <div style="background: #fef3f2; padding: 16px; border-radius: 8px; border: 1px solid #fecaca; margin-top: 16px; font-size: 13px; color: var(--expired);">
+            <strong>Requirement:</strong> Current valid pilot license (ATPL/CPL/PPL) with appropriate aircraft type ratings. License must be valid for the duration of employment and recognized by UAE GCAA.
+          </div>
+        </div>
+
+        <!-- Medical Certificate Section -->
+        <div class="form-section">
+          <div class="section-title">🏥 Medical Certificate</div>
+          <div class="form-grid">
+            <div>
+              <label for="medicalClass">Medical Class <span class="required">*</span></label>
+              <select id="medicalClass" required>
+                <option value="">Select Medical Class</option>
+                <option value="Class 1">Class 1</option>
+                <option value="Class 2">Class 2</option>
+                <option value="Class 3">Class 3</option>
+              </select>
+            </div>
+            <div>
+              <label for="medicalCertNumber">Certificate Number <span class="required">*</span></label>
+              <input id="medicalCertNumber" type="text" placeholder="Enter certificate number" required>
+            </div>
+            <div>
+              <label for="medicalIssueDate">Issue Date <span class="required">*</span></label>
+              <input id="medicalIssueDate" type="date" required>
+            </div>
+            <div>
+              <label for="medicalExpiryDate">Expiry Date <span class="required">*</span></label>
+              <input id="medicalExpiryDate" type="date" required>
+            </div>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <label>Upload Medical Certificate <span class="required">*</span></label>
+            <div class="upload-area" onclick="triggerFileUpload('medicalCert')" ondrop="dropHandler(event, 'medicalCert')" ondragover="dragOverHandler(event)" ondragleave="dragLeaveHandler(event)">
+              <div class="upload-icon">🏥</div>
+              <div style="margin-bottom: 8px; font-weight: 600;">Drop your medical certificate here or click to browse</div>
+              <div style="font-size: 12px; color: var(--muted);">Supports PDF, JPG, PNG • Max 10MB</div>
+              <input type="file" id="medicalCert" accept=".pdf,.jpg,.jpeg,.png" style="display: none;" onchange="handleFileUpload(event, 'medicalCert')">
+            </div>
+            <div class="file-list" id="medicalCertFiles"></div>
+          </div>
+
+          <div style="background: #fef3f2; padding: 16px; border-radius: 8px; border: 1px solid #fecaca; margin-top: 16px; font-size: 13px; color: var(--expired);">
+            <strong>Requirement:</strong> Valid Class 1 medical certificate issued within the last 12 months. Must meet ICAO medical standards and be valid for commercial aviation operations.
+          </div>
+        </div>
+
+        <!-- Radio Operator License Section -->
+        <div class="form-section">
+          <div class="section-title">📻 Radio Operator License</div>
+          <div class="form-grid">
+            <div>
+              <label for="rolNumber">ROL Certificate Number <span class="required">*</span></label>
+              <input id="rolNumber" type="text" placeholder="Enter ROL certificate number" required>
+            </div>
+            <div>
+              <label for="rolIssueDate">Issue Date <span class="required">*</span></label>
+              <input id="rolIssueDate" type="date" required>
+            </div>
+            <div>
+              <label for="rolExpiryDate">Expiry Date <span class="required">*</span></label>
+              <input id="rolExpiryDate" type="date" required>
+            </div>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <label>Upload Radio Operator License <span class="required">*</span></label>
+            <div class="upload-area" onclick="triggerFileUpload('radioLicense')" ondrop="dropHandler(event, 'radioLicense')" ondragover="dragOverHandler(event)" ondragleave="dragLeaveHandler(event)">
+              <div class="upload-icon">📻</div>
+              <div style="margin-bottom: 8px; font-weight: 600;">Drop your radio operator license here or click to browse</div>
+              <div style="font-size: 12px; color: var(--muted);">Supports PDF, JPG, PNG • Max 10MB</div>
+              <input type="file" id="radioLicense" accept=".pdf,.jpg,.jpeg,.png" style="display: none;" onchange="handleFileUpload(event, 'radioLicense')">
+            </div>
+            <div class="file-list" id="radioLicenseFiles"></div>
+          </div>
+
+          <div style="background: #fef3f2; padding: 16px; border-radius: 8px; border: 1px solid #fecaca; margin-top: 16px; font-size: 13px; color: var(--expired);">
+            <strong>Requirement:</strong> Valid Radio Operator License (ROL) certificate with appropriate endorsements for commercial aviation operations.
+          </div>
+        </div>
+
+        <!-- Flight Hours Verification Section -->
+        <div class="form-section">
+          <div class="section-title">⏱️ Flight Hours Verification Letter</div>
+          <div class="form-grid">
+            <div>
+              <label for="hoursAuthority">Issuing Authority/Previous Employer <span class="required">*</span></label>
+              <input id="hoursAuthority" type="text" placeholder="Previous airline or authority name" required>
+            </div>
+            <div>
+              <label for="hoursLetterDate">Letter Issue Date <span class="required">*</span></label>
+              <input id="hoursLetterDate" type="date" required>
+            </div>
+            <div>
+              <label for="totalFlightHours">Total Flight Hours Verified</label>
+              <input id="totalFlightHours" type="text" class="hhmm" placeholder="0:00">
+            </div>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <label>Upload Flight Hours Verification Letter <span class="required">*</span></label>
+            <div class="upload-area" onclick="triggerFileUpload('hoursLetter')" ondrop="dropHandler(event, 'hoursLetter')" ondragover="dragOverHandler(event)" ondragleave="dragLeaveHandler(event)">
+              <div class="upload-icon">⏱️</div>
+              <div style="margin-bottom: 8px; font-weight: 600;">Drop your flight hours verification letter here or click to browse</div>
+              <div style="font-size: 12px; color: var(--muted);">Supports PDF, JPG, PNG • Max 10MB</div>
+              <input type="file" id="hoursLetter" accept=".pdf,.jpg,.jpeg,.png" style="display: none;" onchange="handleFileUpload(event, 'hoursLetter')">
+            </div>
+            <div class="file-list" id="hoursLetterFiles"></div>
+          </div>
+
+          <div style="background: #fef3f2; padding: 16px; border-radius: 8px; border: 1px solid #fecaca; margin-top: 16px; font-size: 13px; color: var(--expired);">
+            <strong>Requirement:</strong> Official verification letter from previous airline/employer issued within 30 days. Must include total flight hours, aircraft types flown, and employment dates.
+          </div>
+        </div>
+
+        <!-- Passport Section -->
+        <div class="form-section">
+          <div class="section-title">📘 Passport</div>
+          <div class="form-grid">
+            <div>
+              <label for="passportNumber">Passport Number <span class="required">*</span></label>
+              <input id="passportNumber" type="text" placeholder="Enter passport number" required>
+            </div>
+            <div>
+              <label for="passportIssueDate">Issue Date <span class="required">*</span></label>
+              <input id="passportIssueDate" type="date" required>
+            </div>
+            <div>
+              <label for="passportExpiryDate">Expiry Date <span class="required">*</span></label>
+              <input id="passportExpiryDate" type="date" required>
+            </div>
+            <div>
+              <label for="passportCountry">Issuing Country <span class="required">*</span></label>
+              <select id="passportCountry" required>
+                <option value="">Select country</option>
+                <option value="AE">United Arab Emirates</option>
+                <option value="US">United States</option>
+                <option value="GB">United Kingdom</option>
+                <option value="CA">Canada</option>
+                <option value="AU">Australia</option>
+                <option value="DE">Germany</option>
+                <option value="FR">France</option>
+                <option value="IN">India</option>
+                <option value="PK">Pakistan</option>
+                <option value="ZA">South Africa</option>
+                <option value="OTHER">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <label>Upload Passport Pages <span class="required">*</span></label>
+            <div class="upload-area" onclick="triggerFileUpload('passport')" ondrop="dropHandler(event, 'passport')" ondragover="dragOverHandler(event)" ondragleave="dragLeaveHandler(event)">
+              <div class="upload-icon">📘</div>
+              <div style="margin-bottom: 8px; font-weight: 600;">Drop passport pages here or click to browse</div>
+              <div style="font-size: 12px; color: var(--muted);">Photo page + visa pages • Supports PDF, JPG, PNG • Max 10MB</div>
+              <input type="file" id="passport" accept=".pdf,.jpg,.jpeg,.png" multiple style="display: none;" onchange="handleFileUpload(event, 'passport')">
+            </div>
+            <div class="file-list" id="passportFiles"></div>
+          </div>
+
+          <div style="background: #fef3f2; padding: 16px; border-radius: 8px; border: 1px solid #fecaca; margin-top: 16px; font-size: 13px; color: var(--expired);">
+            <strong>Requirement:</strong> Clear scans of passport photo page and any UAE visa pages. Passport must be valid for at least 6 months from intended employment start date.
+          </div>
+        </div>
+
+        <!-- Document Upload Progress -->
+        <div class="form-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 2px solid var(--flydubai-blue);">
+          <div class="section-title" style="border: none; text-align: center;">📊 Document Upload Progress</div>
+          <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+            <div style="text-align: center; padding: 12px;">
+              <div style="font-size: 24px; margin-bottom: 8px;">📄</div>
+              <div style="font-weight: 600; color: var(--flydubai-navy); margin-bottom: 4px;">Pilot License</div>
+              <div class="upload-status" id="pilotLicenseStatus" style="font-size: 12px; color: var(--muted);">Not uploaded</div>
+            </div>
+            <div style="text-align: center; padding: 12px;">
+              <div style="font-size: 24px; margin-bottom: 8px;">🏥</div>
+              <div style="font-weight: 600; color: var(--flydubai-navy); margin-bottom: 4px;">Medical Certificate</div>
+              <div class="upload-status" id="medicalCertStatus" style="font-size: 12px; color: var(--muted);">Not uploaded</div>
+            </div>
+            <div style="text-align: center; padding: 12px;">
+              <div style="font-size: 24px; margin-bottom: 8px;">📻</div>
+              <div style="font-weight: 600; color: var(--flydubai-navy); margin-bottom: 4px;">Radio License</div>
+              <div class="upload-status" id="radioLicenseStatus" style="font-size: 12px; color: var(--muted);">Not uploaded</div>
+            </div>
+            <div style="text-align: center; padding: 12px;">
+              <div style="font-size: 24px; margin-bottom: 8px;">⏱️</div>
+              <div style="font-weight: 600; color: var(--flydubai-navy); margin-bottom: 4px;">Hours Letter</div>
+              <div class="upload-status" id="hoursLetterStatus" style="font-size: 12px; color: var(--muted);">Not uploaded</div>
+            </div>
+            <div style="text-align: center; padding: 12px;">
+              <div style="font-size: 24px; margin-bottom: 8px;">📘</div>
+              <div style="font-weight: 600; color: var(--flydubai-navy); margin-bottom: 4px;">Passport</div>
+              <div class="upload-status" id="passportStatus" style="font-size: 12px; color: var(--muted);">Not uploaded</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4: Review & Submit -->
+      <div class="form-step" data-step="4">
+        <h2 class="step-title">✅ Review & Submit</h2>
+        <p class="step-subtitle">Please review all your information before submitting your application. You can go back to previous steps to make changes.</p>
+
+        <div id="reviewContent">
+          <!-- Review content will be populated by JavaScript -->
+        </div>
+
+        <!-- Declaration & Signature -->
+        <div class="form-section">
+          <div class="section-title">✍️ Declaration & Digital Signature</div>
+          <div style="background:linear-gradient(135deg,#fef7ed 0%,#fed7aa 100%);padding:20px;border-radius:12px;border:2px solid var(--flydubai-orange);margin-bottom:24px;">
+            <p style="font-size:14px;line-height:1.7;color:var(--flydubai-navy);margin:0;font-weight:500;text-align:justify;">
+              <strong>DECLARATION:</strong> I solemnly declare and affirm that all flight time, experience records, documentation, and validity periods contained herein are true, accurate, and complete in accordance with ICAO Annex 1 standards, UAE GCAA regulations, and applicable civil aviation requirements. I acknowledge that this declaration is made under penalty of regulatory sanctions and understand that any material misrepresentation, omission, or falsification may result in suspension or revocation of aviation privileges, termination of employment, disciplinary proceedings pursuant to UAE aviation law, and may constitute grounds for disqualification from aviation employment. I further acknowledge my continuing obligation to maintain current and valid documentation and the accuracy of this record in compliance with regulatory requirements.
+            </p>
+          </div>
+          
+          <div class="form-grid">
+            <div>
+              <label for="signatureDate">Date <span class="required">*</span></label>
+              <input type="date" id="signatureDate" required>
+            </div>
+            <div>
+              <label>Digital Signature <span class="required">*</span></label>
+              <div style="border: 2px dashed var(--flydubai-orange); border-radius: 12px; background: #fff; padding: 16px;">
+                <canvas id="signatureCanvas" style="width: 100%; height: 120px; background: #fff; border-radius: 8px; cursor: crosshair;"></canvas>
+                <div style="display: flex; gap: 12px; margin-top: 12px; flex-wrap: wrap;">
+                  <input type="text" id="typedSignature" placeholder="Type name for signature" style="flex: 1; min-width: 200px; padding: 8px; border: 1px solid var(--line); border-radius: 6px;">
+                  <button type="button" class="btn" onclick="applyTypedSignature()">Apply Typed</button>
+                  <button type="button" class="btn warn" onclick="clearSignature()">Clear</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Final Submission -->
+        <div style="text-align: center; margin: 40px 0; padding: 32px; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 20px; border: 2px solid var(--success);">
+          <h3 style="color: var(--success); margin-bottom: 16px;">Ready to Submit Your Application</h3>
+          <p style="color: var(--muted); margin-bottom: 24px;">Please ensure all information is correct and all required documents are uploaded before submitting.</p>
+          <button class="btn primary" id="finalSubmitBtn" style="font-size: 16px; padding: 16px 32px;" onclick="submitApplication()">
+            📤 Submit Complete Application
+          </button>
+        </div>
       </div>
 
       <!-- Navigation -->
