@@ -2701,25 +2701,38 @@
           <h2 class="section-h">🆔 Emirates ID (if applicable)</h2>
           <div class="grid">
             <div>
+              <label>Emirates ID Status</label>
+              <select id="emiratesIdStatus" onchange="toggleEmiratesIdFields()">
+                <option value="">Select Emirates ID Status</option>
+                <option value="Have Emirates ID">I have Emirates ID</option>
+                <option value="Do not have Emirates ID">I do not have Emirates ID</option>
+              </select>
+            </div>
+            <div id="emiratesIdNumberDiv" style="display: none;">
               <label>Emirates ID Number</label>
               <input type="text" id="emiratesIdNumber" placeholder="784-YYYY-XXXXXXX-X" />
             </div>
-            <div>
+            <div id="emiratesIdIssueDateDiv" style="display: none;">
               <label>Issue Date</label>
               <input type="date" id="emiratesIdIssue" />
             </div>
-            <div>
+            <div id="emiratesIdExpiryDateDiv" style="display: none;">
               <label>Expiry Date</label>
               <input type="date" id="emiratesIdExpiry" onchange="checkValidity('emiratesId')" />
             </div>
+          </div>
+          <div id="emiratesIdUploadDiv" class="grid" style="margin-top: 16px; display: none;">
             <div>
               <label>Upload Emirates ID Copy</label>
               <input type="file" id="emiratesIdFile" accept=".pdf,.jpg,.png" />
             </div>
+            <div></div>
+            <div></div>
+            <div></div>
           </div>
-          <div id="emiratesIdStatus"></div>
+          <div id="emiratesIdStatusDiv"></div>
           <div class="requirement-note">
-            <strong>Note:</strong> Only required if you currently hold UAE residence. If you don't have Emirates ID, leave this section blank. New Emirates ID will be processed after employment confirmation.
+            <strong>Note:</strong> Only required if you currently hold UAE residence. If you don't have Emirates ID, new Emirates ID will be processed after employment confirmation.
           </div>
         </div>
 
@@ -2957,6 +2970,52 @@
         if (rolIssueDateDiv) rolIssueDateDiv.style.display = 'none';
         if (rolExpiryDateDiv) rolExpiryDateDiv.style.display = 'none';
         if (rolUploadDiv) rolUploadDiv.style.display = 'none';
+      }
+    }
+
+    // ===== Emirates ID Functions =====
+    function toggleEmiratesIdFields() {
+      const emiratesIdStatus = document.getElementById('emiratesIdStatus').value;
+      const emiratesIdNumberDiv = document.getElementById('emiratesIdNumberDiv');
+      const emiratesIdIssueDateDiv = document.getElementById('emiratesIdIssueDateDiv');
+      const emiratesIdExpiryDateDiv = document.getElementById('emiratesIdExpiryDateDiv');
+      const emiratesIdUploadDiv = document.getElementById('emiratesIdUploadDiv');
+      
+      if (emiratesIdStatus === 'Have Emirates ID') {
+        // Show all fields when user has Emirates ID
+        if (emiratesIdNumberDiv) emiratesIdNumberDiv.style.display = 'block';
+        if (emiratesIdIssueDateDiv) emiratesIdIssueDateDiv.style.display = 'block';
+        if (emiratesIdExpiryDateDiv) emiratesIdExpiryDateDiv.style.display = 'block';
+        if (emiratesIdUploadDiv) emiratesIdUploadDiv.style.display = 'block';
+      } else if (emiratesIdStatus === 'Do not have Emirates ID') {
+        // Hide all fields when user doesn't have Emirates ID
+        if (emiratesIdNumberDiv) emiratesIdNumberDiv.style.display = 'none';
+        if (emiratesIdIssueDateDiv) emiratesIdIssueDateDiv.style.display = 'none';
+        if (emiratesIdExpiryDateDiv) emiratesIdExpiryDateDiv.style.display = 'none';
+        if (emiratesIdUploadDiv) emiratesIdUploadDiv.style.display = 'none';
+        
+        // Clear the fields
+        document.getElementById('emiratesIdNumber').value = '';
+        document.getElementById('emiratesIdIssue').value = '';
+        document.getElementById('emiratesIdExpiry').value = '';
+        const fileInput = document.getElementById('emiratesIdFile');
+        if (fileInput) {
+          fileInput.value = '';
+          // Remove any validation errors
+          const formSection = fileInput.closest('.form-section');
+          if (formSection) {
+            formSection.style.borderColor = '';
+            formSection.style.backgroundColor = '';
+            const errorMsg = formSection.querySelector('.error-message');
+            if (errorMsg) errorMsg.remove();
+          }
+        }
+      } else {
+        // Hide fields when nothing is selected
+        if (emiratesIdNumberDiv) emiratesIdNumberDiv.style.display = 'none';
+        if (emiratesIdIssueDateDiv) emiratesIdIssueDateDiv.style.display = 'none';
+        if (emiratesIdExpiryDateDiv) emiratesIdExpiryDateDiv.style.display = 'none';
+        if (emiratesIdUploadDiv) emiratesIdUploadDiv.style.display = 'none';
       }
     }
 
@@ -3336,6 +3395,7 @@
           incidentLetterFile: document.getElementById('incidentLetterFile')?.files[0]?.name || '',
           
           // Emirates ID
+          emiratesIdStatus: document.getElementById('emiratesIdStatus')?.value || '',
           emiratesIdNumber: document.getElementById('emiratesIdNumber')?.value || '',
           emiratesIdIssue: document.getElementById('emiratesIdIssue')?.value || '',
           emiratesIdExpiry: document.getElementById('emiratesIdExpiry')?.value || '',
@@ -3778,6 +3838,7 @@
           { id: 'incidentLetterDate', value: docs.incidentLetterDate },
           
           // Emirates ID
+          { id: 'emiratesIdStatus', value: docs.emiratesIdStatus },
           { id: 'emiratesIdNumber', value: docs.emiratesIdNumber },
           { id: 'emiratesIdIssue', value: docs.emiratesIdIssue },
           { id: 'emiratesIdExpiry', value: docs.emiratesIdExpiry },
@@ -5199,6 +5260,14 @@
       
       // Validate optional documents (if user started filling them, they must complete them)
       optionalDocuments.forEach(({ fields, file, sectionName }) => {
+        // Skip Emirates ID validation if "Do not have Emirates ID" is selected
+        if (sectionName === 'Emirates ID') {
+          const emiratesIdStatus = document.getElementById('emiratesIdStatus')?.value;
+          if (emiratesIdStatus === 'Do not have Emirates ID') {
+            return; // Skip validation for Emirates ID section
+          }
+        }
+        
         const hasStartedSection = fields.some(({ id }) => {
           const field = document.getElementById(id);
           return field && field.value.trim();

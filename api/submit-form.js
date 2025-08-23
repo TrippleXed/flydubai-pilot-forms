@@ -530,6 +530,11 @@ function generateDocumentStatus(uploads, docId, docName, formData = null) {
     return `<p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>${docName}:</strong> ✅ Attached to License<br><span style="font-size: 12px; color: #6b7280;">ROL attached to pilot license</span></p>`;
   }
   
+  // Special handling for Emirates ID "Do not have Emirates ID"
+  if (docId === 'emiratesIdFile' && formData?.documentation?.emiratesIdStatus === 'Do not have Emirates ID') {
+    return `<p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>${docName}:</strong> ✅ Not Required<br><span style="font-size: 12px; color: #6b7280;">Applicant does not have Emirates ID</span></p>`;
+  }
+  
   const status = doc ? '✅ Uploaded' : '❌ Missing';
   const fileName = doc ? doc.name : 'Not uploaded';
   const size = doc && doc.data ? `(${(doc.data.length / 1024).toFixed(1)}KB)` : '';
