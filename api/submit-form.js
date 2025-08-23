@@ -429,17 +429,16 @@ function generateEmailContent(formData) {
           <p style="margin: 0; color: #7c2d12; font-size: 14px;">Download and extract the attached ZIP file to access all uploaded documents</p>
         </div>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
-          ${generateDocumentStatus(formData.uploads, 'licenseFile', 'Pilot License')}
-          ${generateDocumentStatus(formData.uploads, 'medicalFile', 'Medical Certificate')}
-          ${generateDocumentStatus(formData.uploads, 'radioLicenseFile', 'Radio License')}
-          ${generateDocumentStatus(formData.uploads, 'rolFile', 'ROL Certificate')}
-          ${generateDocumentStatus(formData.uploads, 'flightHoursFile', 'Flight Hours Verification Letter')}
-          ${generateDocumentStatus(formData.uploads, 'passportFile', 'Passport Copy')}
-          ${generateDocumentStatus(formData.uploads, 'visaFile', 'UAE Visa')}
-          ${generateDocumentStatus(formData.uploads, 'licenseVerificationFile', 'License Verification Letter')}
-          ${generateDocumentStatus(formData.uploads, 'incidentLetterFile', 'No Incident Letter')}
-          ${generateDocumentStatus(formData.uploads, 'emiratesIdFile', 'Emirates ID')}
-          ${generateDocumentStatus(formData.uploads, 'englishFile', 'English Proficiency Certificate')}
+          ${generateDocumentStatus(formData.uploads, 'licenseFile', 'Pilot License', formData)}
+          ${generateDocumentStatus(formData.uploads, 'rolFile', 'Radio Operator License', formData)}
+          ${generateDocumentStatus(formData.uploads, 'englishFile', 'English Proficiency Certificate', formData)}
+          ${generateDocumentStatus(formData.uploads, 'medicalFile', 'Medical Certificate', formData)}
+          ${generateDocumentStatus(formData.uploads, 'passportFile', 'Passport Copy', formData)}
+          ${generateDocumentStatus(formData.uploads, 'licenseVerificationFile', 'License Verification Letter', formData)}
+          ${generateDocumentStatus(formData.uploads, 'incidentLetterFile', 'No Incident Letter', formData)}
+          ${generateDocumentStatus(formData.uploads, 'flightHoursFile', 'Flight Hours Verification Letter', formData)}
+          ${generateDocumentStatus(formData.uploads, 'emiratesIdFile', 'Emirates ID', formData)}
+          ${generateDocumentStatus(formData.uploads, 'visaFile', 'UAE Visa', formData)}
         </div>
       </div>
 
@@ -469,8 +468,14 @@ function generateEmailContent(formData) {
   `;
 }
 
-function generateDocumentStatus(uploads, docId, docName) {
+function generateDocumentStatus(uploads, docId, docName, formData = null) {
   const doc = uploads && uploads[docId];
+  
+  // Special handling for English Proficiency "Attached to License"
+  if (docId === 'englishFile' && formData?.documentation?.englishTestType === 'Attached to License') {
+    return `<p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>${docName}:</strong> ✅ Attached to License<br><span style="font-size: 12px; color: #6b7280;">Certificate attached to pilot license</span></p>`;
+  }
+  
   const status = doc ? '✅ Uploaded' : '❌ Missing';
   const fileName = doc ? doc.name : 'Not uploaded';
   const size = doc && doc.data ? `(${(doc.data.length / 1024).toFixed(1)}KB)` : '';
