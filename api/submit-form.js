@@ -415,11 +415,14 @@ async function createZipAttachment(formData) {
     };
 
     // Generate comprehensive form data PDF
+    console.log('📄 Generating application summary PDF...');
     const formDataPdf = await generateFormDataPDF(formData);
     if (formDataPdf) {
       zip.file('00_Application_Summary.pdf', formDataPdf);
       hasFiles = true;
-      console.log('Added Application Summary PDF to zip');
+      console.log('✅ Added Application Summary PDF to zip');
+    } else {
+      console.warn('⚠️ Failed to generate PDF summary - continuing without it');
     }
 
     // Add each uploaded file to the zip
@@ -486,10 +489,32 @@ async function createZipAttachment(formData) {
 
 async function generateFormDataPDF(formData) {
   try {
+    console.log('🔍 PDF Generation - Input formData keys:', Object.keys(formData || {}));
+    console.log('🔍 PDF Generation - FormData structure:', {
+      hasPersonalInfo: !!formData?.personalInfo,
+      hasFlightExperience: !!formData?.flightExperience,
+      hasDocumentation: !!formData?.documentation,
+      hasDeclaration: !!formData?.declaration
+    });
+    
+    // Ensure formData exists and has basic structure
+    if (!formData || typeof formData !== 'object') {
+      console.error('❌ PDF Generation - Invalid formData:', formData);
+      return null;
+    }
+    
     const doc = new jsPDF();
     let yPos = 20;
     const pageHeight = doc.internal.pageSize.height;
     const margin = 20;
+    
+    // Helper function to safely get string values
+    const safeString = (value, defaultValue = 'N/A') => {
+      if (value === null || value === undefined || value === '') {
+        return defaultValue;
+      }
+      return String(value);
+    };
     
     // Helper function to add new page if needed
     const checkNewPage = (additionalHeight = 10) => {
@@ -536,7 +561,7 @@ async function generateFormDataPDF(formData) {
     checkNewPage(15);
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
-    doc.text(`Application ID: ${formData.applicationId || 'Not Generated'}`, 20, yPos);
+    doc.text(`Application ID: ${safeString(formData.applicationId, 'Not Generated')}`, 20, yPos);
     yPos += 8;
     doc.text(`Submitted: ${formData.submittedAt ? new Date(formData.submittedAt).toLocaleString() : new Date().toLocaleString()}`, 20, yPos);
     yPos += 15;
@@ -550,25 +575,32 @@ async function generateFormDataPDF(formData) {
     doc.text('👤 Personal Information', 20, yPos);
     yPos += 15;
 
+    // Safe access to personal info with proper defaults
+    const personalData = formData.personalInfo || {};
     const personalInfo = [
-      ['Full Name', formData.pilotName || 'N/A'],
-      ['Nationality', formData.nationality || 'N/A'], 
-      ['Date of Birth', formData.dateOfBirth || 'N/A'],
-      ['Email Address', formData.contactEmail || 'N/A'],
-      ['Country Code', formData.countryCode || 'N/A'],
-      ['Phone Number', formData.phoneNumber || 'N/A'],
-      ['flydubai Designation', formData.designation || 'N/A'],
-      ['Date of Joining', formData.doj || 'N/A']
+      ['Full Name', safeString(personalData.pilotName)],
+      ['Nationality', safeString(personalData.nationality)], 
+      ['Date of Birth', safeString(personalData.dateOfBirth)],
+      ['Email Address', safeString(personalData.contactEmail)],
+      ['Country Code', safeString(personalData.countryCode)],
+      ['Phone Number', safeString(personalData.phoneNumber)],
+      ['flydubai Designation', safeString(personalData.designation)],
+      ['Date of Joining', safeString(personalData.doj)]
     ];
 
     personalInfo.forEach(([label, value]) => {
       checkNewPage(8);
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(10);
-      doc.text(`${label}:`, 20, yPos);
-      doc.setFont('helvetica', 'normal');
-      doc.text(value, 80, yPos);
-      yPos += 6;
+      try {
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(10);
+        doc.text(safeString(label) + ':', 20, yPos);
+        doc.setFont('helvetica', 'normal');
+        doc.text(safeString(value), 80, yPos);
+        yPos += 6;
+      } catch (error) {
+        console.error('❌ PDF Error adding personal info:', { label, value, error: error.message });
+        yPos += 6; // Continue even if this item fails
+      }
     });
     
     yPos += 10;
@@ -588,27 +620,33 @@ async function generateFormDataPDF(formData) {
     doc.rect(15, yPos - 3, 180, 12, 'F');
     doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
-    doc.text(`Total Flight Hours: ${formData.grandTotalHours || 'Not Calculated'}`, 20, yPos + 5);
+    doc.text(`Total Flight Hours: ${safeString(formData.grandTotalHours, 'Not Calculated')}`, 20, yPos + 5);
     yPos += 20;
 
-    // Aircraft Type Details
+    // Aircraft Type Details - safe access to flight experience data
+    const flightExp = formData.flightExperience || {};
     const flightData = [
-      ['Boeing 737 NG/MAX Combined Hours', formData.b737_combined || 'N/A'],
-      ['Boeing 737 NG/MAX Multi-Pilot Hours', formData.b737_mp || 'N/A'],
-      ['Boeing 737 NG/MAX Night Hours', formData.b737_night || 'N/A'],
-      ['Boeing 737 Classic Combined Hours', formData.b737c_combined || 'N/A'],
-      ['Boeing 737 Classic Multi-Pilot Hours', formData.b737c_mp || 'N/A'],
-      ['Boeing 737 Classic Night Hours', formData.b737c_night || 'N/A']
+      ['Boeing 737 NG/MAX Combined Hours', safeString(flightExp.b737_combined)],
+      ['Boeing 737 NG/MAX Multi-Pilot Hours', safeString(flightExp.b737_mp)],
+      ['Boeing 737 NG/MAX Night Hours', safeString(flightExp.b737_night)],
+      ['Boeing 737 Classic Combined Hours', safeString(flightExp.b737c_combined)],
+      ['Boeing 737 Classic Multi-Pilot Hours', safeString(flightExp.b737c_mp)],
+      ['Boeing 737 Classic Night Hours', safeString(flightExp.b737c_night)]
     ];
 
     flightData.forEach(([label, value]) => {
       checkNewPage(8);
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(10);
-      doc.text(`${label}:`, 20, yPos);
-      doc.setFont('helvetica', 'normal');
-      doc.text(value, 120, yPos);
-      yPos += 6;
+      try {
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(10);
+        doc.text(safeString(label) + ':', 20, yPos);
+        doc.setFont('helvetica', 'normal');
+        doc.text(safeString(value), 120, yPos);
+        yPos += 6;
+      } catch (error) {
+        console.error('❌ PDF Error adding flight data:', { label, value, error: error.message });
+        yPos += 6; // Continue even if this item fails
+      }
     });
 
     yPos += 10;
@@ -701,7 +739,12 @@ async function generateFormDataPDF(formData) {
     return Buffer.from(doc.output('arraybuffer'));
     
   } catch (error) {
-    console.error('Error generating PDF:', error);
+    console.error('❌ PDF Generation Failed:', {
+      message: error.message,
+      stack: error.stack,
+      formDataKeys: Object.keys(formData || {}),
+      formDataType: typeof formData
+    });
     return null;
   }
 }
