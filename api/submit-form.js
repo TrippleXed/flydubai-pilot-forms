@@ -180,7 +180,7 @@ export default async function handler(req, res) {
     const mailOptions = {
       from: `"flydubai Pilot Forms" <${process.env.EMAIL_USER}>`,
       to: recipientEmail,
-      subject: `${isTestMode ? '[TEST] ' : ''}Pilot Document Submission - Flight Operations - Fleet - ${formData.personalInfo?.pilotName || 'Pilot Submission'} - ${formData.applicationId || 'No ID'}`,
+      subject: `${isTestMode ? '[TEST] ' : ''}Pilot Document Submission - Flight Operations - Fleet ${formData.personalInfo?.pilotName || 'Pilot Submission'} - ${formData.applicationId || 'No ID'}`,
       html: emailContent,
       attachments: zipAttachment ? [zipAttachment] : [],
       // Enhanced headers for better deliverability  
