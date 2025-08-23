@@ -408,17 +408,66 @@ function generateEmailContent(formData) {
       <!-- Flight Experience -->
       <div style="background: #f0f9ff; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #0ea5e9;">
         <h2 style="color: #1a365d; margin-top: 0; margin-bottom: 15px;">✈️ Flight Experience</h2>
-        <div style="background: white; padding: 15px; border-radius: 6px; margin-bottom: 15px; text-align: center;">
-          <h3 style="margin: 0; color: #16a34a; font-size: 20px;">Grand Total Flight Hours: ${formData.flightExperience?.grandTotals?.combined || 'Not Calculated'}</h3>
+        
+        <!-- Aircraft Experience Breakdown -->
+        ${formData.flightExperience?.aircraftSections?.length > 0 ? `
+          <div style="margin-bottom: 20px;">
+            <h3 style="color: #1a365d; margin-bottom: 12px;">Aircraft Experience by Type</h3>
+            ${formData.flightExperience.aircraftSections.map((aircraft, index) => `
+              <div style="margin-bottom: 16px; padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <h4 style="margin: 0 0 12px 0; color: #1a365d;">${aircraft.aircraftType || `Aircraft Type ${index + 1}`}</h4>
+                ${aircraft.notes ? `<p style="margin: 0 0 8px 0; color: #64748b; font-style: italic;">${aircraft.notes}</p>` : ''}
+                <div style="display: grid; gap: 6px; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); font-size: 14px;">
+                  <div><strong>PIC Total Hours:</strong> ${aircraft.flightHours?.picTotal || '0:00'}</div>
+                  <div><strong>PIC Block Hours:</strong> ${aircraft.flightHours?.picBlock || '0:00'}</div>
+                  <div><strong>SIC Total Hours:</strong> ${aircraft.flightHours?.sicTotal || '0:00'}</div>
+                  <div><strong>SIC Block Hours:</strong> ${aircraft.flightHours?.sicBlock || '0:00'}</div>
+                  <div><strong>Multi-Pilot Hours:</strong> ${aircraft.flightHours?.multiPilot || '0:00'}</div>
+                  <div><strong>Night Hours:</strong> ${aircraft.flightHours?.night || '0:00'}</div>
+                </div>
+                ${aircraft.dates?.picFrom || aircraft.dates?.picTo || aircraft.dates?.sicFrom || aircraft.dates?.sicTo ? `
+                  <div style="margin-top: 12px; padding: 8px 12px; background: #f8fafc; border-radius: 6px; font-size: 12px;">
+                    <strong>Flight Dates:</strong><br>
+                    ${aircraft.dates.picFrom || aircraft.dates.picTo ? `PIC: ${aircraft.dates.picFrom || 'N/A'} - ${aircraft.dates.picTo || 'N/A'}<br>` : ''}
+                    ${aircraft.dates.sicFrom || aircraft.dates.sicTo ? `SIC: ${aircraft.dates.sicFrom || 'N/A'} - ${aircraft.dates.sicTo || 'N/A'}` : ''}
+                  </div>
+                ` : ''}
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+        
+        <!-- Flying Experience Summary -->
+        <div style="margin-bottom: 20px;">
+          <h3 style="color: #1a365d; margin-bottom: 12px;">Flying Experience Summary</h3>
+          <div style="padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+            <div style="display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); font-size: 14px;">
+              <div><strong>PIC/P1:</strong> ${formData.flightExperience?.summaryHours?.pic || 'N/A'}</div>
+              <div><strong>SIC/P2:</strong> ${formData.flightExperience?.summaryHours?.sic || 'N/A'}</div>
+              <div><strong>SOLO:</strong> ${formData.flightExperience?.summaryHours?.solo || 'N/A'}</div>
+              <div><strong>INSTRUMENT:</strong> ${formData.flightExperience?.summaryHours?.instrument || 'N/A'}</div>
+              <div><strong>SIM:</strong> ${formData.flightExperience?.summaryHours?.sim || 'N/A'}</div>
+              <div><strong>NIGHT:</strong> ${formData.flightExperience?.summaryHours?.night || 'N/A'}</div>
+              <div><strong>INSTRUCTOR:</strong> ${formData.flightExperience?.summaryHours?.instructor || 'N/A'}</div>
+              <div><strong>P1 U/S:</strong> ${formData.flightExperience?.summaryHours?.p1us || 'N/A'}</div>
+              <div style="grid-column: span 2; font-weight: bold; color: #16a34a; font-size: 16px; text-align: center; padding-top: 8px; border-top: 2px solid #e2e8f0;"><strong>GRAND TOTAL:</strong> ${formData.flightExperience?.summaryHours?.grandTotal || formData.flightExperience?.grandTotals?.combined || 'N/A'}</div>
+            </div>
+          </div>
         </div>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
-          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>PIC/P1 Total:</strong> ${formData.flightExperience?.summaryHours?.pic || 'N/A'}</p>
-          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>SIC/P2 Total:</strong> ${formData.flightExperience?.summaryHours?.sic || 'N/A'}</p>
-          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Multi-Pilot Hours:</strong> ${formData.flightExperience?.grandTotals?.multiPilot || 'N/A'}</p>
-          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Night Hours:</strong> ${formData.flightExperience?.summaryHours?.night || 'N/A'}</p>
-          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Simulator Hours:</strong> ${formData.flightExperience?.summaryHours?.sim || 'N/A'}</p>
-          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Instructor Hours:</strong> ${formData.flightExperience?.summaryHours?.instructor || 'N/A'}</p>
-        </div>
+        
+        <!-- Grand Totals -->
+        ${formData.flightExperience?.grandTotals ? `
+          <div style="margin-bottom: 16px;">
+            <h3 style="color: #1a365d; margin-bottom: 12px;">Grand Totals</h3>
+            <div style="padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+              <div style="display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); font-size: 14px;">
+                <div><strong>Combined Block Hours:</strong> ${formData.flightExperience.grandTotals.combined || 'N/A'}</div>
+                <div><strong>Multi-Pilot Block Hours:</strong> ${formData.flightExperience.grandTotals.multiPilot || 'N/A'}</div>
+                <div><strong>Night Hours:</strong> ${formData.flightExperience.grandTotals.night || 'N/A'}</div>
+              </div>
+            </div>
+          </div>
+        ` : ''}
       </div>
 
       <!-- Documentation -->
