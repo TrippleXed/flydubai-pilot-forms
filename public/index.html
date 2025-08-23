@@ -1302,7 +1302,8 @@
     .password-protecting {
       display: block;
     }
-    /* Hide body content until authentication check is complete */
+    /* Temporarily disable content hiding for debugging */
+    /*
     body:not(.authenticated) {
       visibility: hidden !important;
     }
@@ -1310,10 +1311,14 @@
     body.authenticated {
       visibility: visible !important;
     }
+    */
   </style>
 </head>
 <body style="margin: 0; padding: 0;">
   <script>
+    // Immediate debug - show alert to confirm script is running
+    console.log('🚨 SCRIPT STARTED - Password protection initializing...');
+    
     // ===== Password Protection =====
     // Check if this is an authenticated reload (temporary session flag)
     const urlParams = new URLSearchParams(window.location.search);
@@ -1330,7 +1335,12 @@
     console.log('- Final authenticated status:', isAuthenticated);
     console.log('- localStorage keys:', Object.keys(localStorage));
     
+    // Debug: Show what's happening with content clearing
+    console.log('📍 About to check authentication...');
+    
     if (!isAuthenticated) {
+      console.log('❌ NOT AUTHENTICATED - Clearing content and showing password form');
+      
       // Check for session recovery data immediately
       const hasSessionData = localStorage.getItem('pilotFormData') || localStorage.getItem('aircraftSections');
       if (hasSessionData) {
@@ -1343,20 +1353,29 @@
       document.body.style.margin = '0';
       document.body.style.padding = '0';
       document.body.style.visibility = 'visible';
+      
+      console.log('✅ Content cleared, about to show password form');
     } else {
+      console.log('✅ AUTHENTICATED - Showing main content');
       // Clean URL after authentication and show content
       window.history.replaceState({}, document.title, window.location.pathname);
       document.body.classList.add('authenticated');
     }
     
     (function() {
-      if (isAuthenticated) return; // Skip password form if already authenticated
+      if (isAuthenticated) {
+        console.log('⏭️ SKIPPING password form - already authenticated');
+        return; // Skip password form if already authenticated
+      }
+      
+      console.log('🔑 STARTING password form setup...');
       
       const FORM_PASSWORD = "FlightTime2025";
       let attempts = 0; // Reset attempts on each visit
       const maxAttempts = 3;
       
       function showPasswordForm() {
+        console.log('🎨 RENDERING password form...');
         const errorMessage = attempts > 0 ? `<div style="color: #dc2626; margin-bottom: 16px; padding: 12px; background: #fef2f2; border-radius: 8px; border: 1px solid #fecaca;">
           <strong>Incorrect access code.</strong> ${maxAttempts - attempts} attempt(s) remaining.
         </div>` : '';
@@ -1409,8 +1428,11 @@
         // Focus on the password input
         setTimeout(() => {
           const passwordInput = document.getElementById('passwordInput');
+          console.log('🎯 Trying to focus password input:', passwordInput ? 'FOUND' : 'NOT FOUND');
           if (passwordInput) passwordInput.focus();
         }, 100);
+        
+        console.log('✅ Password form HTML set, form should be visible now');
         
         // Handle form submission
         const passwordForm = document.getElementById('passwordForm');
@@ -1445,7 +1467,9 @@
       }
       
       // Show password form immediately
+      console.log('📢 CALLING showPasswordForm()...');
       showPasswordForm();
+      console.log('📢 showPasswordForm() called - check if form appeared');
     })();
   </script>
 
