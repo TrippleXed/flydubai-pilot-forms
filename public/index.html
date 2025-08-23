@@ -2006,6 +2006,14 @@
           <h2 class="section-h">📻 Radio Operator License</h2>
           <div class="grid" style="grid-template-columns: 250px 300px 170px 170px;">
             <div>
+              <label>ROL Type</label>
+              <select id="rolType" onchange="toggleROLFields()">
+                <option value="">Select ROL Type</option>
+                <option value="Separate Certificate">Separate ROL Certificate</option>
+                <option value="Attached to License">Attached to Pilot License</option>
+              </select>
+            </div>
+            <div id="rolNumberDiv">
               <label>ROL Certificate Number</label>
               <input type="text" id="rolNumber" placeholder="Enter ROL certificate number" />
             </div>
@@ -2112,16 +2120,16 @@
                 <input type="text" id="rolAuthorityOther" placeholder="Please specify radio authority" />
               </div>
             </div>
-            <div>
+            <div id="rolIssueDateDiv">
               <label>Issue Date</label>
               <input type="date" id="rolIssue" />
             </div>
-            <div>
+            <div id="rolExpiryDateDiv">
               <label>Expiry Date</label>
               <input type="date" id="rolExpiry" onchange="checkValidity('rol')" />
             </div>
           </div>
-          <div class="grid" style="margin-top: 16px; grid-template-columns: 250px 300px 170px 170px;">
+          <div id="rolUploadDiv" class="grid" style="margin-top: 16px; grid-template-columns: 250px 300px 170px 170px;">
             <div>
               <label>Upload Document</label>
               <input type="file" id="rolFile" accept=".pdf,.jpg,.png" />
@@ -2906,6 +2914,52 @@
       }
     }
 
+    // ===== Radio Operator License Functions =====
+    function toggleROLFields() {
+      const rolType = document.getElementById('rolType').value;
+      const rolNumberDiv = document.getElementById('rolNumberDiv');
+      const rolIssueDateDiv = document.getElementById('rolIssueDateDiv');
+      const rolExpiryDateDiv = document.getElementById('rolExpiryDateDiv');
+      const rolUploadDiv = document.getElementById('rolUploadDiv');
+      
+      if (rolType === 'Attached to License') {
+        // Hide all fields except ROL Type when attached to license
+        if (rolNumberDiv) rolNumberDiv.style.display = 'none';
+        if (rolIssueDateDiv) rolIssueDateDiv.style.display = 'none';
+        if (rolExpiryDateDiv) rolExpiryDateDiv.style.display = 'none';
+        if (rolUploadDiv) rolUploadDiv.style.display = 'none';
+        
+        // Clear the fields
+        document.getElementById('rolNumber').value = '';
+        document.getElementById('rolIssue').value = '';
+        document.getElementById('rolExpiry').value = '';
+        const fileInput = document.getElementById('rolFile');
+        if (fileInput) {
+          fileInput.value = '';
+          // Remove any validation errors
+          const formSection = fileInput.closest('.form-section');
+          if (formSection) {
+            formSection.style.borderColor = '';
+            formSection.style.backgroundColor = '';
+            const errorMsg = formSection.querySelector('.error-message');
+            if (errorMsg) errorMsg.remove();
+          }
+        }
+      } else if (rolType === 'Separate Certificate') {
+        // Show all fields when separate certificate is selected
+        if (rolNumberDiv) rolNumberDiv.style.display = 'block';
+        if (rolIssueDateDiv) rolIssueDateDiv.style.display = 'block';
+        if (rolExpiryDateDiv) rolExpiryDateDiv.style.display = 'block';
+        if (rolUploadDiv) rolUploadDiv.style.display = 'block';
+      } else {
+        // Hide fields when nothing is selected
+        if (rolNumberDiv) rolNumberDiv.style.display = 'none';
+        if (rolIssueDateDiv) rolIssueDateDiv.style.display = 'none';
+        if (rolExpiryDateDiv) rolExpiryDateDiv.style.display = 'none';
+        if (rolUploadDiv) rolUploadDiv.style.display = 'none';
+      }
+    }
+
     // ===== Multi-Step Form System =====
     let currentStep = 1;
     const totalSteps = 4;
@@ -3247,6 +3301,7 @@
           medicalFile: document.getElementById('medicalFile')?.files[0]?.name || '',
           
           // Radio Operator License
+          rolType: document.getElementById('rolType')?.value || '',
           rolNumber: document.getElementById('rolNumber')?.value || '',
           rolAuthority: document.getElementById('rolAuthority')?.value || '',
           rolIssue: document.getElementById('rolIssue')?.value || '',
@@ -3694,6 +3749,7 @@
           { id: 'medicalExpiry', value: docs.medicalExpiry },
           
           // Radio Operator License
+          { id: 'rolType', value: docs.rolType },
           { id: 'rolNumber', value: docs.rolNumber },
           { id: 'rolAuthority', value: docs.rolAuthority },
           { id: 'rolIssue', value: docs.rolIssue },
@@ -5089,6 +5145,12 @@
         const visaStatus = document.getElementById('visaStatus')?.value;
         if (id === 'visaFile' && visaStatus === 'No Current UAE Visa') {
           return; // Skip validation for visa file
+        }
+        
+        // Skip ROL file if "Attached to License" is selected
+        const rolType = document.getElementById('rolType')?.value;
+        if (id === 'rolFile' && rolType === 'Attached to License') {
+          return; // Skip validation for ROL file
         }
         
         if (fileInput && (!fileInput.files || fileInput.files.length === 0)) {
