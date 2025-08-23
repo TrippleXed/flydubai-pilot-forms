@@ -3754,8 +3754,18 @@
           currentStep++;
           showStep(currentStep);
         } else {
-          console.log('🏁 Final step reached - submitting form...');
-          submitForm();
+          console.log('🏁 Final step reached - performing final validation before submission...');
+          
+          // Perform comprehensive final validation before submission
+          const finalValidation = performFinalValidation();
+          if (finalValidation.isValid) {
+            console.log('✅ Final validation passed - submitting form...');
+            submitForm();
+          } else {
+            console.log('❌ Final validation failed:', finalValidation.errors);
+            showValidationErrors(finalValidation.errors);
+            return;
+          }
         }
       } else {
         console.log('❌ Validation failed, staying on step:', currentStep);
@@ -3893,6 +3903,104 @@
       
       prevBtn.style.display = currentStep > 1 ? 'inline-flex' : 'none';
       nextBtn.textContent = currentStep === totalSteps ? 'Submit Application' : 'Next Step';
+    }
+
+    // Perform comprehensive final validation before submission
+    function performFinalValidation() {
+      console.log('🔍 === PERFORMING FINAL VALIDATION ===');
+      
+      let allErrors = [];
+      let isValid = true;
+      
+      // Validate all steps thoroughly
+      console.log('📋 Validating Personal Information...');
+      if (!validatePersonalInfo()) {
+        allErrors.push('Personal Information is incomplete');
+        isValid = false;
+      }
+      
+      console.log('✈️ Validating Flight Experience...');
+      if (!validateFlightExperience()) {
+        allErrors.push('Flight Experience is incomplete');
+        isValid = false;
+      }
+      
+      console.log('📄 Validating Documentation...');
+      if (!validateDocumentation()) {
+        allErrors.push('Required documents are missing');
+        isValid = false;
+      }
+      
+      console.log('✍️ Validating Declaration...');
+      if (!validateDeclaration()) {
+        allErrors.push('Declaration and signature are incomplete');
+        isValid = false;
+      }
+      
+      // Additional checks for critical data
+      collectFormData(); // Ensure latest data is collected
+      
+      console.log('🔍 Checking collected form data...');
+      console.log('Form data structure:', {
+        hasPersonalInfo: !!formData.personalInfo,
+        hasFlightExperience: !!formData.flightExperience,
+        hasDocumentation: !!formData.documentation,
+        hasDeclaration: !!formData.declaration
+      });
+      
+      // Check if personal info has actual values (not just empty strings)
+      if (!formData.personalInfo || !formData.personalInfo.pilotName || formData.personalInfo.pilotName.trim() === '') {
+        allErrors.push('Pilot name is required');
+        isValid = false;
+      }
+      
+      // Check for uploaded files
+      const fileInputs = document.querySelectorAll('input[type="file"]');
+      let hasFiles = false;
+      fileInputs.forEach(input => {
+        if (input.files && input.files.length > 0) {
+          hasFiles = true;
+        }
+      });
+      
+      if (!hasFiles) {
+        allErrors.push('At least one document must be uploaded');
+        isValid = false;
+      }
+      
+      // Check signature
+      const canvas = document.getElementById('sigCanvas');
+      let hasSignature = false;
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        hasSignature = imageData.data.some(channel => channel !== 0);
+      }
+      
+      if (!hasSignature) {
+        allErrors.push('Digital signature is required');
+        isValid = false;
+      }
+      
+      console.log('🔍 Final validation result:', {
+        isValid,
+        errorCount: allErrors.length,
+        errors: allErrors
+      });
+      
+      return { isValid, errors: allErrors };
+    }
+    
+    // Show validation errors to user
+    function showValidationErrors(errors) {
+      const errorList = errors.map(error => `<li style="margin: 8px 0;">${error}</li>`).join('');
+      
+      showErrorModal(
+        'Form Incomplete',
+        'Your application cannot be submitted because some required information is missing.',
+        errors.map(error => `Fix: ${error}`),
+        `Found ${errors.length} validation error(s)`
+      );
     }
 
     // Validate current step
