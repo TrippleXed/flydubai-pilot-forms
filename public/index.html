@@ -1302,6 +1302,14 @@
     .password-protecting {
       display: block;
     }
+    /* Hide body content until authentication check is complete */
+    body:not(.authenticated) {
+      visibility: hidden !important;
+    }
+    
+    body.authenticated {
+      visibility: visible !important;
+    }
   </style>
 </head>
 <body style="margin: 0; padding: 0;">
@@ -1315,21 +1323,21 @@
     
     if (!isAuthenticated) {
       // Check for session recovery data immediately
-      setTimeout(() => {
-        const hasSessionData = localStorage.getItem('formData') || localStorage.getItem('aircraftSections');
-        if (hasSessionData) {
-          console.log('📋 Previous session data detected');
-          window.hasSessionToRecover = true;
-        }
-        
-        // Clear content and show password form
-        document.body.innerHTML = '';
-        document.body.style.margin = '0';
-        document.body.style.padding = '0';
-      }, 10);
+      const hasSessionData = localStorage.getItem('pilotFormData') || localStorage.getItem('aircraftSections');
+      if (hasSessionData) {
+        console.log('📋 Previous session data detected');
+        window.hasSessionToRecover = true;
+      }
+      
+      // Immediately clear content and show password form (no timeout)
+      document.body.innerHTML = '';
+      document.body.style.margin = '0';
+      document.body.style.padding = '0';
+      document.body.style.visibility = 'visible';
     } else {
-      // Clean URL after authentication
+      // Clean URL after authentication and show content
       window.history.replaceState({}, document.title, window.location.pathname);
+      document.body.classList.add('authenticated');
     }
     
     (function() {
@@ -1427,10 +1435,8 @@
         }
       }
       
-      // Show password form after session check
-      setTimeout(() => {
-        showPasswordForm();
-      }, 50);
+      // Show password form immediately
+      showPasswordForm();
     })();
   </script>
 
@@ -2940,6 +2946,12 @@
           if (hasUploadedFiles) {
             showFileRestorationNotification();
           }
+          
+          // Force a complete form reload to restore aircraft sections and other data
+          setTimeout(() => {
+            loadFormData();
+            console.log('🔄 Complete form data reload triggered');
+          }, 100);
           
           console.log('✅ Session recovered successfully');
         } catch (error) {
