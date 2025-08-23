@@ -433,11 +433,10 @@ function generateEmailContent(formData) {
           ${generateDocumentStatus(formData.uploads, 'medicalFile', 'Medical Certificate')}
           ${generateDocumentStatus(formData.uploads, 'radioLicenseFile', 'Radio License')}
           ${generateDocumentStatus(formData.uploads, 'rolFile', 'ROL Certificate')}
-          ${generateDocumentStatus(formData.uploads, 'flightHoursFile', 'Flight Hours Verification')}
+          ${generateDocumentStatus(formData.uploads, 'flightHoursFile', 'Flight Hours Verification Letter')}
           ${generateDocumentStatus(formData.uploads, 'passportFile', 'Passport Copy')}
           ${generateDocumentStatus(formData.uploads, 'visaFile', 'UAE Visa')}
           ${generateDocumentStatus(formData.uploads, 'licenseVerificationFile', 'License Verification Letter')}
-          ${generateDocumentStatus(formData.uploads, 'hoursVerificationFile', 'Hours Verification Letter')}
           ${generateDocumentStatus(formData.uploads, 'incidentLetterFile', 'No Incident Letter')}
           ${generateDocumentStatus(formData.uploads, 'emiratesIdFile', 'Emirates ID')}
           ${generateDocumentStatus(formData.uploads, 'englishFile', 'English Proficiency Certificate')}
