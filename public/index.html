@@ -1852,6 +1852,179 @@
         </div>
 
         <div class="form-section">
+          <h2 class="section-h">📻 Radio Operator License</h2>
+          <div class="grid" style="grid-template-columns: 250px 300px 170px 170px;">
+            <div>
+              <label>ROL Certificate Number</label>
+              <input type="text" id="rolNumber" placeholder="Enter ROL certificate number" />
+            </div>
+            <div>
+              <label>Issuing Radio Authority</label>
+              <select id="rolAuthority">
+                <option value="">Select Radio Authority</option>
+                <!-- Major International Authorities -->
+                <option value="EASA">EASA (European Union Aviation Safety Agency)</option>
+                <option value="FAA USA">FAA (Federal Aviation Administration - USA)</option>
+                <option value="ICAO">ICAO (International Civil Aviation Organization)</option>
+                
+                <!-- Middle East & Gulf -->
+                <option value="GCAA UAE">GCAA UAE (General Civil Aviation Authority)</option>
+                <option value="GACA Saudi">GACA (General Authority of Civil Aviation - Saudi Arabia)</option>
+                <option value="CAA Qatar">CAA Qatar (Civil Aviation Authority)</option>
+                <option value="DGCA Kuwait">DGCA Kuwait (Directorate General of Civil Aviation)</option>
+                <option value="CAA Bahrain">CAA Bahrain (Civil Aviation Affairs)</option>
+                <option value="CAA Oman">CAA Oman (Civil Aviation Authority)</option>
+                <option value="DGCA Jordan">DGCA Jordan (Directorate General of Civil Aviation)</option>
+                <option value="DGCA Lebanon">DGCA Lebanon (Directorate General of Civil Aviation)</option>
+                <option value="CAA Egypt">CAA Egypt (Egyptian Civil Aviation Authority)</option>
+                <option value="DGCA Iraq">DGCA Iraq (Iraqi Civil Aviation Authority)</option>
+                <option value="CAA Iran">CAA Iran (Civil Aviation Organization)</option>
+                <option value="DGCA Syria">DGCA Syria (Syrian Civil Aviation Authority)</option>
+                <option value="CAA Turkey">CAA Turkey (Directorate General of Civil Aviation)</option>
+                <option value="CAA Israel">CAA Israel (Civil Aviation Authority)</option>
+                
+                <!-- Asia Pacific -->
+                <option value="DGCA India">DGCA India (Directorate General of Civil Aviation)</option>
+                <option value="CASA Australia">CASA (Civil Aviation Safety Authority - Australia)</option>
+                <option value="CAAC China">CAAC (Civil Aviation Administration of China)</option>
+                <option value="JCAB Japan">JCAB (Japan Civil Aviation Bureau)</option>
+                <option value="KCAB Korea">KCAB (Korea Civil Aviation Bureau)</option>
+                <option value="CAAS Singapore">CAAS (Civil Aviation Authority of Singapore)</option>
+                <option value="DCA Malaysia">DCA Malaysia (Department of Civil Aviation)</option>
+                <option value="CAAT Thailand">CAAT (Civil Aviation Authority of Thailand)</option>
+                <option value="DGCA Indonesia">DGCA Indonesia (Directorate General of Civil Aviation)</option>
+                <option value="CAAP Philippines">CAAP (Civil Aviation Authority of Philippines)</option>
+                <option value="CAA Vietnam">CAA Vietnam (Civil Aviation Authority)</option>
+                <option value="DGCA Pakistan">DGCA Pakistan (Civil Aviation Authority)</option>
+                <option value="DGCA Bangladesh">DGCA Bangladesh (Civil Aviation Authority)</option>
+                <option value="CAAN Nepal">CAAN (Civil Aviation Authority of Nepal)</option>
+                <option value="DGCA Sri Lanka">DGCA Sri Lanka (Civil Aviation Authority)</option>
+                <option value="DGCA Myanmar">DGCA Myanmar (Department of Civil Aviation)</option>
+                <option value="CAA New Zealand">CAA New Zealand (Civil Aviation Authority)</option>
+                
+                <!-- Europe -->
+                <option value="CAA UK">CAA UK (Civil Aviation Authority - United Kingdom)</option>
+                <option value="LBA Germany">LBA (Luftfahrt-Bundesamt - Germany)</option>
+                <option value="DGAC France">DGAC (Direction Générale de l'Aviation Civile - France)</option>
+                <option value="ENAC Italy">ENAC (Ente Nazionale per l'Aviazione Civile - Italy)</option>
+                <option value="AESA Spain">AESA (Agencia Estatal de Seguridad Aérea - Spain)</option>
+                <option value="ANAC Portugal">ANAC (Autoridade Nacional da Aviação Civil - Portugal)</option>
+                <option value="BCAA Netherlands">BCAA (Inspectie Leefomgeving en Transport - Netherlands)</option>
+                <option value="FOCA Switzerland">FOCA (Federal Office of Civil Aviation - Switzerland)</option>
+                <option value="AAC Austria">AAC (Austro Control - Austria)</option>
+                <option value="DGAC Belgium">DGAC (Direction Générale Transport Aérien - Belgium)</option>
+                <option value="CAA Ireland">CAA Ireland (Irish Aviation Authority)</option>
+                <option value="CAA Denmark">CAA Denmark (Danish Civil Aviation Authority)</option>
+                <option value="CAA Sweden">CAA Sweden (Swedish Transport Agency)</option>
+                <option value="CAA Norway">CAA Norway (Civil Aviation Authority Norway)</option>
+                <option value="CAA Finland">CAA Finland (Finnish Transport and Communications Agency)</option>
+                <option value="CAA Poland">CAA Poland (Civil Aviation Authority)</option>
+                <option value="CAA Czech">CAA Czech (Civil Aviation Authority)</option>
+                <option value="CAA Hungary">CAA Hungary (National Transport Authority)</option>
+                <option value="CAA Romania">CAA Romania (Romanian Civil Aeronautical Authority)</option>
+                <option value="CAA Bulgaria">CAA Bulgaria (Civil Aviation Administration)</option>
+                <option value="CAA Greece">CAA Greece (Hellenic Civil Aviation Authority)</option>
+                <option value="CAA Croatia">CAA Croatia (Croatian Civil Aviation Agency)</option>
+                <option value="CAA Slovenia">CAA Slovenia (Civil Aviation Agency)</option>
+                <option value="CAA Slovakia">CAA Slovakia (Transport Authority)</option>
+                <option value="CAA Russia">CAA Russia (Federal Air Transport Agency)</option>
+                <option value="CAA Ukraine">CAA Ukraine (State Aviation Administration)</option>
+                
+                <!-- Americas -->
+                <option value="TCCA Canada">TCCA (Transport Canada Civil Aviation)</option>
+                <option value="ANAC Brazil">ANAC (Agência Nacional de Aviação Civil - Brazil)</option>
+                <option value="ANAC Argentina">ANAC (Administración Nacional de Aviación Civil - Argentina)</option>
+                <option value="DGAC Chile">DGAC (Dirección General de Aeronáutica Civil - Chile)</option>
+                <option value="UAEAC Colombia">UAEAC (Unidad Administrativa Especial de Aeronáutica Civil - Colombia)</option>
+                <option value="DGAC Ecuador">DGAC (Dirección General de Aviación Civil - Ecuador)</option>
+                <option value="DGAC Peru">DGAC (Dirección General de Aeronáutica Civil - Peru)</option>
+                <option value="DINAC Venezuela">DINAC (Instituto Nacional de Aeronáutica Civil - Venezuela)</option>
+                <option value="DGAC Mexico">DGAC (Dirección General de Aeronáutica Civil - Mexico)</option>
+                <option value="JCAA Jamaica">JCAA (Jamaica Civil Aviation Authority)</option>
+                
+                <!-- Africa -->
+                <option value="SACAA South Africa">SACAA (South African Civil Aviation Authority)</option>
+                <option value="NCAA Nigeria">NCAA (Nigerian Civil Aviation Authority)</option>
+                <option value="KCAA Kenya">KCAA (Kenya Civil Aviation Authority)</option>
+                <option value="ECAA Egypt">ECAA (Egyptian Civil Aviation Authority)</option>
+                <option value="GACA Ghana">GACA (Ghana Civil Aviation Authority)</option>
+                <option value="CCAA Ethiopia">CCAA (Ethiopian Civil Aviation Authority)</option>
+                <option value="DGAC Morocco">DGAC (Direction Générale de l'Aviation Civile - Morocco)</option>
+                <option value="CAA Tanzania">CAA Tanzania (Tanzania Civil Aviation Authority)</option>
+                <option value="CAA Uganda">CAA Uganda (Civil Aviation Authority)</option>
+                <option value="CAA Zimbabwe">CAA Zimbabwe (Civil Aviation Authority)</option>
+                
+                <!-- Other/Manual Entry -->
+                <option value="Other">Other Radio Authority (Specify below)</option>
+              </select>
+              <div id="rolAuthorityOtherDiv" style="margin-top: 8px; display: none;">
+                <input type="text" id="rolAuthorityOther" placeholder="Please specify radio authority" />
+              </div>
+            </div>
+            <div>
+              <label>Issue Date</label>
+              <input type="date" id="rolIssue" />
+            </div>
+            <div>
+              <label>Expiry Date</label>
+              <input type="date" id="rolExpiry" onchange="checkValidity('rol')" />
+            </div>
+          </div>
+          <div class="grid" style="margin-top: 16px; grid-template-columns: 250px 300px 170px 170px;">
+            <div>
+              <label>Upload Document</label>
+              <input type="file" id="rolFile" accept=".pdf,.jpg,.png" />
+            </div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+          <div id="rolStatus"></div>
+          <div class="requirement-note">
+            <strong>Requirement:</strong> Valid Radio Operator License (ROL) certificate with appropriate endorsements for commercial aviation operations. Certificate must be current and recognized internationally.
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="section-h">🌐 English Proficiency Certificate (if applicable)</h2>
+          <div class="grid">
+            <div>
+              <label>Proficiency Level</label>
+              <select id="englishLevel">
+                <option value="">Select ICAO Level</option>
+                <option value="Level 4">Level 4 (Operational)</option>
+                <option value="Level 5">Level 5 (Extended)</option>
+                <option value="Level 6">Level 6 (Expert)</option>
+              </select>
+            </div>
+            <div>
+              <label>Test Type</label>
+              <select id="englishTestType" onchange="toggleEnglishTestDate()">
+                <option value="">Select Test Type</option>
+                <option value="ICAO English Test">ICAO English Test</option>
+                <option value="Aviation English Test">Aviation English Test</option>
+                <option value="TEA (Test of English for Aviation)">TEA (Test of English for Aviation)</option>
+                <option value="IELTS">IELTS (Academic)</option>
+                <option value="Native Speaker">Native English Speaker</option>
+                <option value="Attached to License">Attached to License (ELP Endorsement)</option>
+                <option value="Other">Other Approved Test</option>
+              </select>
+            </div>
+            <div id="englishTestDateDiv">
+              <label>Test Date</label>
+              <input type="date" id="englishTestDate" />
+            </div>
+            <div id="englishUploadDiv">
+              <label>Upload Certificate</label>
+              <input type="file" id="englishFile" accept=".pdf,.jpg,.png" />
+            </div>
+          </div>
+          <div class="requirement-note">
+            <strong>Requirement:</strong> ICAO Level 4 or higher English proficiency certificate. Native English speakers may provide alternative documentation. Certificate must be current and valid for commercial aviation operations.
+          </div>
+        </div>
+
+        <div class="form-section">
           <h2 class="section-h">🏥 Medical Certificate</h2>
           <div class="grid" style="grid-template-columns: 250px 300px 170px 170px;">
             <div>
@@ -1989,140 +2162,6 @@
         </div>
 
         <div class="form-section">
-          <h2 class="section-h">📻 Radio Operator License</h2>
-          <div class="grid" style="grid-template-columns: 250px 300px 170px 170px;">
-            <div>
-              <label>ROL Certificate Number</label>
-              <input type="text" id="rolNumber" placeholder="Enter ROL certificate number" />
-            </div>
-            <div>
-              <label>Issuing Radio Authority</label>
-              <select id="rolAuthority">
-                <option value="">Select Radio Authority</option>
-                <!-- Major International Authorities -->
-                <option value="EASA">EASA (European Union Aviation Safety Agency)</option>
-                <option value="FAA USA">FAA (Federal Aviation Administration - USA)</option>
-                <option value="ICAO">ICAO (International Civil Aviation Organization)</option>
-                
-                <!-- Middle East & Gulf -->
-                <option value="GCAA UAE">GCAA UAE (General Civil Aviation Authority)</option>
-                <option value="GACA Saudi">GACA (General Authority of Civil Aviation - Saudi Arabia)</option>
-                <option value="CAA Qatar">CAA Qatar (Civil Aviation Authority)</option>
-                <option value="DGCA Kuwait">DGCA Kuwait (Directorate General of Civil Aviation)</option>
-                <option value="CAA Bahrain">CAA Bahrain (Civil Aviation Affairs)</option>
-                <option value="CAA Oman">CAA Oman (Civil Aviation Authority)</option>
-                <option value="DGCA Jordan">DGCA Jordan (Directorate General of Civil Aviation)</option>
-                <option value="DGCA Lebanon">DGCA Lebanon (Directorate General of Civil Aviation)</option>
-                <option value="CAA Egypt">CAA Egypt (Egyptian Civil Aviation Authority)</option>
-                <option value="DGCA Iraq">DGCA Iraq (Iraqi Civil Aviation Authority)</option>
-                <option value="CAA Iran">CAA Iran (Civil Aviation Organization)</option>
-                <option value="DGCA Syria">DGCA Syria (Syrian Civil Aviation Authority)</option>
-                <option value="CAA Turkey">CAA Turkey (Directorate General of Civil Aviation)</option>
-                <option value="CAA Israel">CAA Israel (Civil Aviation Authority)</option>
-                
-                <!-- Asia Pacific -->
-                <option value="DGCA India">DGCA India (Directorate General of Civil Aviation)</option>
-                <option value="CASA Australia">CASA (Civil Aviation Safety Authority - Australia)</option>
-                <option value="CAAC China">CAAC (Civil Aviation Administration of China)</option>
-                <option value="JCAB Japan">JCAB (Japan Civil Aviation Bureau)</option>
-                <option value="KCAB Korea">KCAB (Korea Civil Aviation Bureau)</option>
-                <option value="CAAS Singapore">CAAS (Civil Aviation Authority of Singapore)</option>
-                <option value="DCA Malaysia">DCA Malaysia (Department of Civil Aviation)</option>
-                <option value="CAAT Thailand">CAAT (Civil Aviation Authority of Thailand)</option>
-                <option value="DGCA Indonesia">DGCA Indonesia (Directorate General of Civil Aviation)</option>
-                <option value="CAAP Philippines">CAAP (Civil Aviation Authority of Philippines)</option>
-                <option value="CAA Vietnam">CAA Vietnam (Civil Aviation Authority)</option>
-                <option value="DGCA Pakistan">DGCA Pakistan (Civil Aviation Authority)</option>
-                <option value="DGCA Bangladesh">DGCA Bangladesh (Civil Aviation Authority)</option>
-                <option value="CAAN Nepal">CAAN (Civil Aviation Authority of Nepal)</option>
-                <option value="DGCA Sri Lanka">DGCA Sri Lanka (Civil Aviation Authority)</option>
-                <option value="DGCA Myanmar">DGCA Myanmar (Department of Civil Aviation)</option>
-                <option value="CAA New Zealand">CAA New Zealand (Civil Aviation Authority)</option>
-                
-                <!-- Europe -->
-                <option value="CAA UK">CAA UK (Civil Aviation Authority - United Kingdom)</option>
-                <option value="LBA Germany">LBA (Luftfahrt-Bundesamt - Germany)</option>
-                <option value="DGAC France">DGAC (Direction Générale de l'Aviation Civile - France)</option>
-                <option value="ENAC Italy">ENAC (Ente Nazionale per l'Aviazione Civile - Italy)</option>
-                <option value="AESA Spain">AESA (Agencia Estatal de Seguridad Aérea - Spain)</option>
-                <option value="ANAC Portugal">ANAC (Autoridade Nacional da Aviação Civil - Portugal)</option>
-                <option value="BCAA Netherlands">BCAA (Inspectie Leefomgeving en Transport - Netherlands)</option>
-                <option value="FOCA Switzerland">FOCA (Federal Office of Civil Aviation - Switzerland)</option>
-                <option value="AAC Austria">AAC (Austro Control - Austria)</option>
-                <option value="DGAC Belgium">DGAC (Direction Générale Transport Aérien - Belgium)</option>
-                <option value="CAA Ireland">CAA Ireland (Irish Aviation Authority)</option>
-                <option value="CAA Denmark">CAA Denmark (Danish Civil Aviation Authority)</option>
-                <option value="CAA Sweden">CAA Sweden (Swedish Transport Agency)</option>
-                <option value="CAA Norway">CAA Norway (Civil Aviation Authority Norway)</option>
-                <option value="CAA Finland">CAA Finland (Finnish Transport and Communications Agency)</option>
-                <option value="CAA Poland">CAA Poland (Civil Aviation Authority)</option>
-                <option value="CAA Czech">CAA Czech (Civil Aviation Authority)</option>
-                <option value="CAA Hungary">CAA Hungary (National Transport Authority)</option>
-                <option value="CAA Romania">CAA Romania (Romanian Civil Aeronautical Authority)</option>
-                <option value="CAA Bulgaria">CAA Bulgaria (Civil Aviation Administration)</option>
-                <option value="CAA Greece">CAA Greece (Hellenic Civil Aviation Authority)</option>
-                <option value="CAA Croatia">CAA Croatia (Croatian Civil Aviation Agency)</option>
-                <option value="CAA Slovenia">CAA Slovenia (Civil Aviation Agency)</option>
-                <option value="CAA Slovakia">CAA Slovakia (Transport Authority)</option>
-                <option value="CAA Russia">CAA Russia (Federal Air Transport Agency)</option>
-                <option value="CAA Ukraine">CAA Ukraine (State Aviation Administration)</option>
-                
-                <!-- Americas -->
-                <option value="TCCA Canada">TCCA (Transport Canada Civil Aviation)</option>
-                <option value="ANAC Brazil">ANAC (Agência Nacional de Aviação Civil - Brazil)</option>
-                <option value="ANAC Argentina">ANAC (Administración Nacional de Aviación Civil - Argentina)</option>
-                <option value="DGAC Chile">DGAC (Dirección General de Aeronáutica Civil - Chile)</option>
-                <option value="UAEAC Colombia">UAEAC (Unidad Administrativa Especial de Aeronáutica Civil - Colombia)</option>
-                <option value="DGAC Ecuador">DGAC (Dirección General de Aviación Civil - Ecuador)</option>
-                <option value="DGAC Peru">DGAC (Dirección General de Aeronáutica Civil - Peru)</option>
-                <option value="DINAC Venezuela">DINAC (Instituto Nacional de Aeronáutica Civil - Venezuela)</option>
-                <option value="DGAC Mexico">DGAC (Dirección General de Aeronáutica Civil - Mexico)</option>
-                <option value="JCAA Jamaica">JCAA (Jamaica Civil Aviation Authority)</option>
-                
-                <!-- Africa -->
-                <option value="SACAA South Africa">SACAA (South African Civil Aviation Authority)</option>
-                <option value="NCAA Nigeria">NCAA (Nigerian Civil Aviation Authority)</option>
-                <option value="KCAA Kenya">KCAA (Kenya Civil Aviation Authority)</option>
-                <option value="ECAA Egypt">ECAA (Egyptian Civil Aviation Authority)</option>
-                <option value="GACA Ghana">GACA (Ghana Civil Aviation Authority)</option>
-                <option value="CCAA Ethiopia">CCAA (Ethiopian Civil Aviation Authority)</option>
-                <option value="DGAC Morocco">DGAC (Direction Générale de l'Aviation Civile - Morocco)</option>
-                <option value="CAA Tanzania">CAA Tanzania (Tanzania Civil Aviation Authority)</option>
-                <option value="CAA Uganda">CAA Uganda (Civil Aviation Authority)</option>
-                <option value="CAA Zimbabwe">CAA Zimbabwe (Civil Aviation Authority)</option>
-                
-                <!-- Other/Manual Entry -->
-                <option value="Other">Other Radio Authority (Specify below)</option>
-              </select>
-              <div id="rolAuthorityOtherDiv" style="margin-top: 8px; display: none;">
-                <input type="text" id="rolAuthorityOther" placeholder="Please specify radio authority" />
-              </div>
-            </div>
-            <div>
-              <label>Issue Date</label>
-              <input type="date" id="rolIssue" />
-            </div>
-            <div>
-              <label>Expiry Date</label>
-              <input type="date" id="rolExpiry" onchange="checkValidity('rol')" />
-            </div>
-          </div>
-          <div class="grid" style="margin-top: 16px; grid-template-columns: 250px 300px 170px 170px;">
-            <div>
-              <label>Upload Document</label>
-              <input type="file" id="rolFile" accept=".pdf,.jpg,.png" />
-            </div>
-            <div></div>
-            <div></div>
-            <div></div>
-          </div>
-          <div id="rolStatus"></div>
-          <div class="requirement-note">
-            <strong>Requirement:</strong> Valid Radio Operator License (ROL) certificate with appropriate endorsements for commercial aviation operations. Certificate must be current and recognized internationally.
-          </div>
-        </div>
-
-        <div class="form-section">
           <h2 class="section-h">📘 Passport</h2>
           <div class="grid">
             <div>
@@ -2233,28 +2272,6 @@
           </div>
         </div>
 
-
-        <div class="form-section">
-          <h2 class="section-h">⏱️ Flight Hours Verification Letter</h2>
-          <div class="grid">
-            <div>
-              <label>Issuing Authority/Company</label>
-              <input type="text" id="flightHoursAuthority" placeholder="Previous airline, flight school, or aviation authority" />
-            </div>
-            <div>
-              <label>Letter Issue Date</label>
-              <input type="date" id="flightHoursIssue" />
-            </div>
-            <div>
-              <label>Upload Verification Letter</label>
-              <input type="file" id="flightHoursFile" accept=".pdf,.jpg,.png" />
-            </div>
-            <div></div>
-          </div>
-          <div class="requirement-note">
-            <strong>Requirement:</strong> Official letter from previous employer or aviation authority verifying your total flight hours, aircraft types flown, and positions held. Must be on company letterhead with official signature and stamp.
-          </div>
-        </div>
 
         <div class="form-section">
           <h2 class="section-h">📋 License Verification Letter</h2>
@@ -2500,6 +2517,28 @@
         </div>
 
         <div class="form-section">
+          <h2 class="section-h">⏱️ Flight Hours Verification Letter</h2>
+          <div class="grid">
+            <div>
+              <label>Issuing Authority/Company</label>
+              <input type="text" id="flightHoursAuthority" placeholder="Previous airline, flight school, or aviation authority" />
+            </div>
+            <div>
+              <label>Letter Issue Date</label>
+              <input type="date" id="flightHoursIssue" />
+            </div>
+            <div>
+              <label>Upload Verification Letter</label>
+              <input type="file" id="flightHoursFile" accept=".pdf,.jpg,.png" />
+            </div>
+            <div></div>
+          </div>
+          <div class="requirement-note">
+            <strong>Requirement:</strong> Official letter from previous employer or aviation authority verifying your total flight hours, aircraft types flown, and positions held. Must be on company letterhead with official signature and stamp.
+          </div>
+        </div>
+
+        <div class="form-section">
           <h2 class="section-h">🆔 Emirates ID (if applicable)</h2>
           <div class="grid">
             <div>
@@ -2525,45 +2564,6 @@
           </div>
         </div>
 
-
-        <div class="form-section">
-          <h2 class="section-h">🌐 English Proficiency Certificate (if applicable)</h2>
-          <div class="grid">
-            <div>
-              <label>Proficiency Level</label>
-              <select id="englishLevel">
-                <option value="">Select ICAO Level</option>
-                <option value="Level 4">Level 4 (Operational)</option>
-                <option value="Level 5">Level 5 (Extended)</option>
-                <option value="Level 6">Level 6 (Expert)</option>
-              </select>
-            </div>
-            <div>
-              <label>Test Type</label>
-              <select id="englishTestType" onchange="toggleEnglishTestDate()">
-                <option value="">Select Test Type</option>
-                <option value="ICAO English Test">ICAO English Test</option>
-                <option value="Aviation English Test">Aviation English Test</option>
-                <option value="TEA (Test of English for Aviation)">TEA (Test of English for Aviation)</option>
-                <option value="IELTS">IELTS (Academic)</option>
-                <option value="Native Speaker">Native English Speaker</option>
-                <option value="Attached to License">Attached to License (ELP Endorsement)</option>
-                <option value="Other">Other Approved Test</option>
-              </select>
-            </div>
-            <div id="englishTestDateDiv">
-              <label>Test Date</label>
-              <input type="date" id="englishTestDate" />
-            </div>
-            <div id="englishUploadDiv">
-              <label>Upload Certificate</label>
-              <input type="file" id="englishFile" accept=".pdf,.jpg,.png" />
-            </div>
-          </div>
-          <div class="requirement-note">
-            <strong>Requirement:</strong> ICAO Level 4 or higher English proficiency certificate. Native English speakers may provide alternative documentation. Certificate must be current and valid for commercial aviation operations.
-          </div>
-        </div>
 
         <div class="form-section">
           <h2 class="section-h">🛂 UAE Visa & Work Permit</h2>
