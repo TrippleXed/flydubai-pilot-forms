@@ -5233,7 +5233,7 @@
             </h3>
         `;
         
-        // Pilot License
+        // 1. Pilot License
         if (docs.licenseType || docs.licenseNumber) {
           html += `
             <div style="margin-bottom: 20px;">
@@ -5251,25 +5251,7 @@
           `;
         }
         
-        // Medical Certificate
-        if (docs.medicalClass || docs.medicalAuthority) {
-          html += `
-            <div style="margin-bottom: 20px;">
-              <h4 style="color: var(--flydubai-navy); margin-bottom: 12px;">🏥 Medical Certificate</h4>
-              <div style="padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
-                <div style="display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
-                  ${docs.medicalClass ? `<div><strong>Medical Class:</strong> ${docs.medicalClass}</div>` : ''}
-                  ${docs.medicalAuthority ? `<div><strong>Authority:</strong> ${docs.medicalAuthority}</div>` : ''}
-                  ${docs.medicalIssue ? `<div><strong>Issue Date:</strong> ${toDDMMMYYYY(docs.medicalIssue)}</div>` : ''}
-                  ${docs.medicalExpiry ? `<div><strong>Expiry Date:</strong> ${toDDMMMYYYY(docs.medicalExpiry)}</div>` : ''}
-                  ${docs.medicalFile ? `<div><strong>Document:</strong> ${docs.medicalFile}</div>` : ''}
-                </div>
-              </div>
-            </div>
-          `;
-        }
-        
-        // Radio Operator License
+        // 2. Radio Operator License
         if (docs.rolNumber || docs.rolAuthority) {
           html += `
             <div style="margin-bottom: 20px;">
@@ -5287,7 +5269,42 @@
           `;
         }
         
-        // Passport
+        // 3. English Proficiency (only if not "Attached to License")
+        if (docs.englishLevel || (docs.englishTestType && docs.englishTestType !== 'Attached to License')) {
+          html += `
+            <div style="margin-bottom: 20px;">
+              <h4 style="color: var(--flydubai-navy); margin-bottom: 12px;">🗣️ English Proficiency</h4>
+              <div style="padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <div style="display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                  ${docs.englishLevel ? `<div><strong>Level:</strong> ${docs.englishLevel}</div>` : ''}
+                  ${docs.englishTestType ? `<div><strong>Test Type:</strong> ${docs.englishTestType}</div>` : ''}
+                  ${docs.englishTestDate && docs.englishTestType !== 'Attached to License' ? `<div><strong>Test Date:</strong> ${toDDMMMYYYY(docs.englishTestDate)}</div>` : ''}
+                  ${docs.englishFile ? `<div><strong>Document:</strong> ${docs.englishFile}</div>` : ''}
+                </div>
+              </div>
+            </div>
+          `;
+        }
+        
+        // 4. Medical Certificate
+        if (docs.medicalClass || docs.medicalAuthority) {
+          html += `
+            <div style="margin-bottom: 20px;">
+              <h4 style="color: var(--flydubai-navy); margin-bottom: 12px;">🏥 Medical Certificate</h4>
+              <div style="padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <div style="display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                  ${docs.medicalClass ? `<div><strong>Medical Class:</strong> ${docs.medicalClass}</div>` : ''}
+                  ${docs.medicalAuthority ? `<div><strong>Authority:</strong> ${docs.medicalAuthority}</div>` : ''}
+                  ${docs.medicalIssue ? `<div><strong>Issue Date:</strong> ${toDDMMMYYYY(docs.medicalIssue)}</div>` : ''}
+                  ${docs.medicalExpiry ? `<div><strong>Expiry Date:</strong> ${toDDMMMYYYY(docs.medicalExpiry)}</div>` : ''}
+                  ${docs.medicalFile ? `<div><strong>Document:</strong> ${docs.medicalFile}</div>` : ''}
+                </div>
+              </div>
+            </div>
+          `;
+        }
+        
+        // 5. Passport
         if (docs.passportNumber || docs.passportNationality) {
           html += `
             <div style="margin-bottom: 20px;">
@@ -5305,65 +5322,56 @@
           `;
         }
         
-        // UAE Visa (only if not "No Current UAE Visa")
-        if (docs.visaStatus && docs.visaStatus !== 'No Current UAE Visa') {
+        // 6. License Verification Letter
+        if (docs.licenseVerificationAuthority || docs.licenseVerificationDate || docs.licenseVerificationFile) {
           html += `
             <div style="margin-bottom: 20px;">
-              <h4 style="color: var(--flydubai-navy); margin-bottom: 12px;">🇦🇪 UAE Visa & Work Permit</h4>
+              <h4 style="color: var(--flydubai-navy); margin-bottom: 12px;">📄 License Verification Letter</h4>
               <div style="padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
                 <div style="display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
-                  <div><strong>Visa Status:</strong> ${docs.visaStatus}</div>
-                  ${docs.visaExpiry ? `<div><strong>Expiry Date:</strong> ${toDDMMMYYYY(docs.visaExpiry)}</div>` : ''}
-                  ${docs.visaFile ? `<div><strong>Document:</strong> ${docs.visaFile}</div>` : ''}
+                  ${docs.licenseVerificationAuthority ? `<div><strong>Authority:</strong> ${docs.licenseVerificationAuthority}</div>` : ''}
+                  ${docs.licenseVerificationDate ? `<div><strong>Date:</strong> ${toDDMMMYYYY(docs.licenseVerificationDate)}</div>` : ''}
+                  ${docs.licenseVerificationFile ? `<div><strong>Document:</strong> ${docs.licenseVerificationFile}</div>` : ''}
                 </div>
               </div>
             </div>
           `;
         }
         
-        // English Proficiency (only if not "Attached to License")
-        if (docs.englishLevel || (docs.englishTestType && docs.englishTestType !== 'Attached to License')) {
+        // 7. No Incident/Accident Letter
+        if (docs.incidentLetterAuthority || docs.incidentLetterDate || docs.incidentLetterFile) {
           html += `
             <div style="margin-bottom: 20px;">
-              <h4 style="color: var(--flydubai-navy); margin-bottom: 12px;">🗣️ English Proficiency</h4>
+              <h4 style="color: var(--flydubai-navy); margin-bottom: 12px;">🚫 No Incident/Accident Letter</h4>
               <div style="padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
                 <div style="display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
-                  ${docs.englishLevel ? `<div><strong>Level:</strong> ${docs.englishLevel}</div>` : ''}
-                  ${docs.englishTestType ? `<div><strong>Test Type:</strong> ${docs.englishTestType}</div>` : ''}
-                  ${docs.englishTestDate && docs.englishTestType !== 'Attached to License' ? `<div><strong>Test Date:</strong> ${toDDMMMYYYY(docs.englishTestDate)}</div>` : ''}
-                  ${docs.englishFile ? `<div><strong>Document:</strong> ${docs.englishFile}</div>` : ''}
+                  ${docs.incidentLetterAuthority ? `<div><strong>Authority:</strong> ${docs.incidentLetterAuthority}</div>` : ''}
+                  ${docs.incidentLetterDate ? `<div><strong>Date:</strong> ${toDDMMMYYYY(docs.incidentLetterDate)}</div>` : ''}
+                  ${docs.incidentLetterFile ? `<div><strong>Document:</strong> ${docs.incidentLetterFile}</div>` : ''}
                 </div>
               </div>
             </div>
           `;
         }
         
-        // Additional Documents
-        const additionalDocs = [
-          { title: '✅ Flight Hours Verification Letter', authority: docs.flightHoursAuthority, date: docs.flightHoursIssue, file: docs.flightHoursFile },
-          { title: '📄 License Verification Letter', authority: docs.licenseVerificationAuthority, date: docs.licenseVerificationDate, file: docs.licenseVerificationFile },
-          { title: '🚫 No Incident/Accident Letter', authority: docs.incidentLetterAuthority, date: docs.incidentLetterDate, file: docs.incidentLetterFile }
-        ];
-        
-        additionalDocs.forEach(doc => {
-          if (doc.authority || doc.date || doc.file) {
-            html += `
-              <div style="margin-bottom: 20px;">
-                <h4 style="color: var(--flydubai-navy); margin-bottom: 12px;">${doc.title}</h4>
-                <div style="padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
-                  <div style="display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
-                    ${doc.authority ? `<div><strong>Authority:</strong> ${doc.authority}</div>` : ''}
-                    ${doc.date ? `<div><strong>Date:</strong> ${toDDMMMYYYY(doc.date)}</div>` : ''}
-                    ${doc.file ? `<div><strong>Document:</strong> ${doc.file}</div>` : ''}
-                  </div>
+        // 8. Flight Hours Verification Letter
+        if (docs.flightHoursAuthority || docs.flightHoursIssue || docs.flightHoursFile) {
+          html += `
+            <div style="margin-bottom: 20px;">
+              <h4 style="color: var(--flydubai-navy); margin-bottom: 12px;">✅ Flight Hours Verification Letter</h4>
+              <div style="padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <div style="display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                  ${docs.flightHoursAuthority ? `<div><strong>Authority:</strong> ${docs.flightHoursAuthority}</div>` : ''}
+                  ${docs.flightHoursIssue ? `<div><strong>Date:</strong> ${toDDMMMYYYY(docs.flightHoursIssue)}</div>` : ''}
+                  ${docs.flightHoursFile ? `<div><strong>Document:</strong> ${docs.flightHoursFile}</div>` : ''}
                 </div>
               </div>
-            `;
-          }
-        });
+            </div>
+          `;
+        }
         
-        // Emirates ID
-        if (docs.emiratesIdNumber) {
+        // 9. Emirates ID (only if not "No Current UAE Visa")
+        if (docs.emiratesIdNumber && (!docs.visaStatus || docs.visaStatus !== 'No Current UAE Visa')) {
           html += `
             <div style="margin-bottom: 20px;">
               <h4 style="color: var(--flydubai-navy); margin-bottom: 12px;">🆔 Emirates ID</h4>
@@ -5373,6 +5381,22 @@
                   ${docs.emiratesIdIssue ? `<div><strong>Issue Date:</strong> ${toDDMMMYYYY(docs.emiratesIdIssue)}</div>` : ''}
                   ${docs.emiratesIdExpiry ? `<div><strong>Expiry Date:</strong> ${toDDMMMYYYY(docs.emiratesIdExpiry)}</div>` : ''}
                   ${docs.emiratesIdFile ? `<div><strong>Document:</strong> ${docs.emiratesIdFile}</div>` : ''}
+                </div>
+              </div>
+            </div>
+          `;
+        }
+        
+        // 10. UAE Visa & Work Permit
+        if (docs.visaStatus && docs.visaStatus !== 'No Current UAE Visa') {
+          html += `
+            <div style="margin-bottom: 20px;">
+              <h4 style="color: var(--flydubai-navy); margin-bottom: 12px;">🇦🇪 UAE Visa & Work Permit</h4>
+              <div style="padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <div style="display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                  <div><strong>Visa Status:</strong> ${docs.visaStatus}</div>
+                  ${docs.visaExpiry ? `<div><strong>Expiry Date:</strong> ${toDDMMMYYYY(docs.visaExpiry)}</div>` : ''}
+                  ${docs.visaFile ? `<div><strong>Document:</strong> ${docs.visaFile}</div>` : ''}
                 </div>
               </div>
             </div>
