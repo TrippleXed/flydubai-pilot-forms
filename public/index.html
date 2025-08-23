@@ -87,6 +87,11 @@
       min-height: 100px;
     }
     
+    .header-center {
+      flex: 1;
+      text-align: center;
+    }
+    
     .header .logo {
       width: 400px;
       height: 80px;
@@ -94,6 +99,16 @@
       background-size: contain;
       background-repeat: no-repeat;
       background-position: left center;
+    }
+    
+    .fof-logo {
+      width: 120px;
+      height: 80px;
+      background-image: url('fof-logo.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: right center;
+      flex-shrink: 0;
     }
     
     .header h1 {
@@ -587,6 +602,7 @@
         padding: 16px 20px;
         flex-direction: column;
         text-align: center;
+        gap: 12px;
       }
       
       .header h1 {
@@ -597,6 +613,11 @@
       
       .header .logo {
         width: 280px;
+        height: 56px;
+      }
+      
+      .fof-logo {
+        width: 80px;
         height: 56px;
       }
       
@@ -1502,7 +1523,10 @@
       <!-- Header -->
       <div class="header">
         <div class="logo"></div>
-        <h1>Pilot Onboarding System</h1>
+        <div class="header-center">
+          <h1>Pilot Onboarding System</h1>
+        </div>
+        <div class="fof-logo"></div>
       </div>
 
       <!-- Progress Bar -->
