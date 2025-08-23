@@ -1317,9 +1317,18 @@
     // ===== Password Protection =====
     // Check if this is an authenticated reload (temporary session flag)
     const urlParams = new URLSearchParams(window.location.search);
-    let isAuthenticated = urlParams.has('authenticated');
     
-    console.log('🔐 Password Protection Status:', isAuthenticated ? 'AUTHENTICATED' : 'REQUIRES PASSWORD');
+    // Force password protection for testing - remove this line for production
+    const forcePassword = true; // Set to false in production
+    
+    let isAuthenticated = !forcePassword && urlParams.has('authenticated');
+    
+    console.log('🔐 Password Protection Debug:');
+    console.log('- URL params:', urlParams.toString());
+    console.log('- Has authenticated param:', urlParams.has('authenticated'));
+    console.log('- Force password mode:', forcePassword);
+    console.log('- Final authenticated status:', isAuthenticated);
+    console.log('- localStorage keys:', Object.keys(localStorage));
     
     if (!isAuthenticated) {
       // Check for session recovery data immediately
