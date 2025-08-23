@@ -2608,8 +2608,8 @@
         </div>
 
         <!-- Declaration & Signature -->
-        <div class="form-section" id="signSection">
-          <div class="section-title">✍️ Declaration & Digital Signature</div>
+        <div class="section" id="signSection">
+          <div class="section-title"><h3>✍️ Declaration & Digital Signature</h3></div>
           <div style="background:linear-gradient(135deg,#fef7ed 0%,#fed7aa 100%);padding:20px;border-radius:12px;border:2px solid var(--flydubai-red);margin-bottom:24px;">
             <p style="font-size:14px;line-height:1.7;color:var(--flydubai-navy);margin:0;font-weight:500;text-align:justify;">
               <strong>DECLARATION:</strong> I solemnly declare and affirm that all documentation, certifications, and validity periods contained herein are true, accurate, and complete in accordance with UAE GCAA regulations, ICAO standards, and applicable civil aviation requirements. I acknowledge that this declaration is made under penalty of regulatory sanctions and understand that any material misrepresentation, omission, or falsification may result in suspension or revocation of aviation privileges, termination of employment, and disciplinary proceedings pursuant to UAE aviation law. I further acknowledge my continuing obligation to maintain current and valid documentation in compliance with UAE employment and aviation regulatory requirements.
@@ -3814,13 +3814,12 @@
           setTimeout(() => {
             const canvas = document.getElementById('sigCanvas');
             if (canvas) {
-              console.log('🖊️ Re-setting up signature canvas for step 4...');
               const ctx = canvas.getContext('2d');
               const ratio = Math.max(window.devicePixelRatio || 1, 1);
               const rect = canvas.getBoundingClientRect();
-              console.log('📐 Canvas dimensions:', rect.width, 'x', rect.height);
               
               if (rect.width > 0) {
+                // Canvas is now visible, set up with proper dimensions
                 canvas.width = rect.width * ratio; 
                 canvas.height = 160 * ratio;
                 ctx.setTransform(ratio,0,0,ratio,0,0); 
@@ -3828,7 +3827,6 @@
                 ctx.lineJoin='round'; 
                 ctx.lineCap='round'; 
                 ctx.strokeStyle = '#111827';
-                console.log('✅ Signature canvas re-setup complete');
               }
             }
           }, 100);
@@ -6268,14 +6266,16 @@
       }
 
       // ===== Signature pad logic (draw / typed / upload) ===== 
-      // EXACT COPY FROM WORKING ORIGINAL FILE
+      // EXACT COPY FROM WORKING ORIGINAL FILE WITH HIDDEN CANVAS FIX
       (function initSignature(){
         const canvas = document.getElementById('sigCanvas');
         if(!canvas) return; const ctx = canvas.getContext('2d');
         function setupCanvas(){
           const ratio = Math.max(window.devicePixelRatio || 1, 1);
           const rect = canvas.getBoundingClientRect();
-          canvas.width = rect.width * ratio; canvas.height = 160 * ratio;
+          // If canvas is hidden (zero width), use a default width
+          const canvasWidth = rect.width > 0 ? rect.width : 400;
+          canvas.width = canvasWidth * ratio; canvas.height = 160 * ratio;
           ctx.setTransform(ratio,0,0,ratio,0,0); ctx.lineWidth = 2; ctx.lineJoin='round'; ctx.lineCap='round'; ctx.strokeStyle = '#111827';
         }
         function clearCanvas(){ ctx.clearRect(0,0,canvas.width,canvas.height); }
