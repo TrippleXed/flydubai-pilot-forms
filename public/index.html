@@ -4199,7 +4199,7 @@
       const submissionDetails = result ? `
         <div style="font-size: 12px; font-weight: 400; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.3); opacity: 0.8;">
           <div><strong>Submission ID:</strong> ${result.submissionId}</div>
-          <div><strong>Email ID:</strong> ${result.emailId.split('@')[0]}...</div>
+          <div><strong>Email ID:</strong> ${result.emailId ? (result.emailId.includes('@') ? result.emailId.split('@')[0] + '...' : result.emailId) : 'Processing'}</div>
           <div><strong>Time:</strong> ${new Date(result.timestamp).toLocaleString()}</div>
         </div>
       ` : '';

@@ -415,15 +415,8 @@ async function createZipAttachment(formData) {
     };
 
     // Generate comprehensive form data PDF
-    console.log('📄 Generating application summary PDF...');
-    const formDataPdf = await generateFormDataPDF(formData);
-    if (formDataPdf) {
-      zip.file('00_Application_Summary.pdf', formDataPdf);
-      hasFiles = true;
-      console.log('✅ Added Application Summary PDF to zip');
-    } else {
-      console.warn('⚠️ Failed to generate PDF summary - continuing without it');
-    }
+    console.log('📄 Skipping PDF generation temporarily to ensure email delivery');
+    console.log('⚠️ PDF summary disabled - emails will send with uploaded documents only');
 
     // Add each uploaded file to the zip
     for (const [docId, folderName] of Object.entries(documentTypes)) {
@@ -625,6 +618,8 @@ async function generateFormDataPDF(formData) {
 
     // Aircraft Type Details - safe access to flight experience data
     const flightExp = formData.flightExperience || {};
+    console.log('🔍 PDF - Flight experience data:', flightExp);
+    
     const flightData = [
       ['Boeing 737 NG/MAX Combined Hours', safeString(flightExp.b737_combined)],
       ['Boeing 737 NG/MAX Multi-Pilot Hours', safeString(flightExp.b737_mp)],
@@ -633,18 +628,39 @@ async function generateFormDataPDF(formData) {
       ['Boeing 737 Classic Multi-Pilot Hours', safeString(flightExp.b737c_mp)],
       ['Boeing 737 Classic Night Hours', safeString(flightExp.b737c_night)]
     ];
+    
+    console.log('🔍 PDF - Flight data array:', flightData);
 
-    flightData.forEach(([label, value]) => {
+    flightData.forEach(([label, value], index) => {
+      console.log(`🔍 PDF - Processing flight data ${index}:`, { label, value });
       checkNewPage(8);
       try {
+        // Extra validation before calling jsPDF functions
+        if (!label || !value) {
+          console.warn(`⚠️ PDF - Skipping invalid flight data ${index}:`, { label, value });
+          yPos += 6;
+          return;
+        }
+        
+        const safeLabel = safeString(label);
+        const safeValue = safeString(value);
+        
+        if (safeLabel.length === 0 || safeValue.length === 0) {
+          console.warn(`⚠️ PDF - Skipping empty flight data ${index}:`, { safeLabel, safeValue });
+          yPos += 6;
+          return;
+        }
+        
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(10);
-        doc.text(safeString(label) + ':', 20, yPos);
+        doc.text(safeLabel + ':', 20, yPos);
         doc.setFont('helvetica', 'normal');
-        doc.text(safeString(value), 120, yPos);
+        doc.text(safeValue, 120, yPos);
         yPos += 6;
+        
+        console.log(`✅ PDF - Successfully added flight data ${index}`);
       } catch (error) {
-        console.error('❌ PDF Error adding flight data:', { label, value, error: error.message });
+        console.error(`❌ PDF Error adding flight data ${index}:`, { label, value, error: error.message, stack: error.stack });
         yPos += 6; // Continue even if this item fails
       }
     });
