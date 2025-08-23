@@ -6264,140 +6264,61 @@
       
       // ===== Signature pad logic (draw / typed / upload) =====
       (function initSignature(){
-        console.log('✍️ Initializing signature functionality...');
         const canvas = document.getElementById('sigCanvas');
-        if(!canvas) {
-          console.log('⚠️ Signature canvas not found, skipping signature initialization');
-          return;
-        }
-        
-        const ctx = canvas.getContext('2d');
-        
+        if(!canvas) return; const ctx = canvas.getContext('2d');
         function setupCanvas(){
           const ratio = Math.max(window.devicePixelRatio || 1, 1);
           const rect = canvas.getBoundingClientRect();
-          canvas.width = rect.width * ratio; 
-          canvas.height = 160 * ratio;
-          ctx.setTransform(ratio,0,0,ratio,0,0); 
-          ctx.lineWidth = 2; 
-          ctx.lineJoin='round'; 
-          ctx.lineCap='round'; 
-          ctx.strokeStyle = '#111827';
+          canvas.width = rect.width * ratio; canvas.height = 160 * ratio;
+          ctx.setTransform(ratio,0,0,ratio,0,0); ctx.lineWidth = 2; ctx.lineJoin='round'; ctx.lineCap='round'; ctx.strokeStyle = '#111827';
         }
-        
-        function clearCanvas(){ 
-          ctx.clearRect(0,0,canvas.width,canvas.height); 
-        }
-        
-        function pos(e){ 
-          const r=canvas.getBoundingClientRect(); 
-          const p=e.touches? e.touches[0]: e; 
-          return {x:p.clientX - r.left, y:p.clientY - r.top}; 
-        }
-        
+        function clearCanvas(){ ctx.clearRect(0,0,canvas.width,canvas.height); }
+        function pos(e){ const r=canvas.getBoundingClientRect(); const p=e.touches? e.touches[0]: e; return {x:p.clientX - r.left, y:p.clientY - r.top}; }
         let drawing=false, lastX=0, lastY=0;
-        
-        function start(e){ 
-          drawing=true; 
-          const p=pos(e); 
-          lastX=p.x; 
-          lastY=p.y; 
-          e.preventDefault(); 
-        }
-        
-        function move(e){ 
-          if(!drawing) return; 
-          const p=pos(e); 
-          ctx.beginPath(); 
-          ctx.moveTo(lastX,lastY); 
-          ctx.lineTo(p.x,p.y); 
-          ctx.stroke(); 
-          lastX=p.x; 
-          lastY=p.y; 
-          e.preventDefault(); 
-        }
-        
-        function end(){ 
-          drawing=false; 
-        }
-        
-        setupCanvas(); 
-        window.addEventListener('resize', setupCanvas);
-        
-        // Mouse events
-        canvas.addEventListener('mousedown', start); 
-        canvas.addEventListener('mousemove', move); 
-        window.addEventListener('mouseup', end);
-        
-        // Touch events  
-        canvas.addEventListener('touchstart', start, {passive:false}); 
-        canvas.addEventListener('touchmove', move, {passive:false}); 
-        window.addEventListener('touchend', end);
+        function start(e){ drawing=true; const p=pos(e); lastX=p.x; lastY=p.y; e.preventDefault(); }
+        function move(e){ if(!drawing) return; const p=pos(e); ctx.beginPath(); ctx.moveTo(lastX,lastY); ctx.lineTo(p.x,p.y); ctx.stroke(); lastX=p.x; lastY=p.y; e.preventDefault(); }
+        function end(){ drawing=false; }
+        setupCanvas(); window.addEventListener('resize', setupCanvas);
+        canvas.addEventListener('mousedown', start); canvas.addEventListener('mousemove', move); window.addEventListener('mouseup', end);
+        canvas.addEventListener('touchstart', start, {passive:false}); canvas.addEventListener('touchmove', move, {passive:false}); window.addEventListener('touchend', end);
 
-        // Clear button
-        const clearBtn = document.getElementById('sigClear');
-        if (clearBtn) {
-          clearBtn.addEventListener('click', clearCanvas);
-        }
-        
-        // Apply typed signature button
-        const applyBtn = document.getElementById('sigApply');
-        if (applyBtn) {
-          applyBtn.addEventListener('click', ()=>{
-            const txt = (document.getElementById('typedSig').value || '').trim(); 
-            if(!txt) return;
+        document.getElementById('sigClear').addEventListener('click', clearCanvas);
+        document.getElementById('sigApply').addEventListener('click', ()=>{
+          const txt = (document.getElementById('typedSig').value || '').trim(); if(!txt) return;
+          clearCanvas();
+          ctx.font = '36px cursive'; ctx.fillStyle = '#111827';
+          const metrics = ctx.measureText(txt); const cssW = canvas.getBoundingClientRect().width; const x = Math.max(10, (cssW - metrics.width)/2 );
+          ctx.fillText(txt, x, 110);
+        });
+        document.getElementById('sigUpload').addEventListener('change', (ev)=>{
+          const file = ev.target.files && ev.target.files[0]; if(!file) return;
+          const img = new Image(); img.onload = ()=>{
             clearCanvas();
-            ctx.font = '36px cursive'; 
-            ctx.fillStyle = '#111827';
-            const metrics = ctx.measureText(txt); 
-            const cssW = canvas.getBoundingClientRect().width; 
-            const x = Math.max(10, (cssW - metrics.width)/2 );
-            ctx.fillText(txt, x, 110);
-          });
+            const cssW = canvas.getBoundingClientRect().width, cssH = 160; 
+            const scale = Math.min(cssW*0.9 / img.width, cssH*0.9 / img.height);
+            const w = img.width * scale, h = img.height * scale; const x = (cssW - w)/2, y = (cssH - h)/2;
+            ctx.drawImage(img, x, y, w, h);
+          }; img.src = URL.createObjectURL(file);
+        });
+      })();
+
+      // Initialize signature date to today
+      const sigDateEl = document.getElementById('sigDate');
+      if (sigDateEl) {
+        sigDateEl.value = new Date().toISOString().split('T')[0];
+        // Update the display span
+        const sigDatePrint = document.getElementById('sigDatePrint');
+        if (sigDatePrint) {
+          sigDatePrint.textContent = toDDMMMYYYY(sigDateEl.value);
         }
-        
-        // Upload signature image
-        const uploadInput = document.getElementById('sigUpload');
-        if (uploadInput) {
-          uploadInput.addEventListener('change', (ev)=>{
-            const file = ev.target.files && ev.target.files[0]; 
-            if(!file) return;
-            const img = new Image(); 
-            img.onload = ()=>{
-              clearCanvas();
-              const cssW = canvas.getBoundingClientRect().width, cssH = 160; 
-              const scale = Math.min(cssW*0.9 / img.width, cssH*0.9 / img.height);
-              const w = img.width * scale, h = img.height * scale; 
-              const x = (cssW - w)/2, y = (cssH - h)/2;
-              ctx.drawImage(img, x, y, w, h);
-            }; 
-            img.src = URL.createObjectURL(file);
-          });
-        }
-        
-        // Initialize signature date to today
-        const sigDate = document.getElementById('sigDate');
-        if (sigDate && !sigDate.value) {
-          sigDate.value = new Date().toISOString().split('T')[0];
-          // Update the display span
+        // Add event listener to update date display when date changes
+        sigDateEl.addEventListener('change', function() {
           const sigDatePrint = document.getElementById('sigDatePrint');
           if (sigDatePrint) {
-            sigDatePrint.textContent = toDDMMMYYYY(sigDate.value);
+            sigDatePrint.textContent = toDDMMMYYYY(this.value);
           }
-        }
-        
-        // Add event listener to update date display when date changes
-        if (sigDate) {
-          sigDate.addEventListener('change', function() {
-            const sigDatePrint = document.getElementById('sigDatePrint');
-            if (sigDatePrint) {
-              sigDatePrint.textContent = toDDMMMYYYY(this.value);
-            }
-          });
-        }
-        
-        console.log('✅ Signature functionality initialized');
-      })();
+        });
+      }
       
       console.log('✅ === INITIALIZATION COMPLETE ===');
       console.log('🚀 Deployment trigger:', new Date().toISOString());
