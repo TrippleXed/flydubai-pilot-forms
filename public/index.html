@@ -2993,13 +2993,14 @@
           console.log('👤 Personal info in session:', data.formData?.personalInfo);
           
           formData = data.formData || {};
-          currentStep = data.currentStep || 1;
+          currentStep = 1; // Always start on Step 1 for session recovery
           sessionId = data.sessionId || generateSessionId();
           
           console.log('🔄 After restoration:');
           console.log('- formData:', formData);
-          console.log('- currentStep:', currentStep);
+          console.log('- currentStep:', currentStep, '(reset to 1 for manual navigation)');
           console.log('- sessionId:', sessionId);
+          console.log('- originalStep:', data.currentStep, '(preserved data but starting at Step 1)');
           
           populateFormFields();
           showStep(currentStep);
