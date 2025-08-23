@@ -3680,6 +3680,11 @@
             // Hide the indicator when a new file is selected
             fileInput.addEventListener('change', function() {
               if (this.files && this.files[0]) {
+                // Validate file size before proceeding
+                if (!validateFileSize(this)) {
+                  return; // Stop processing if file size validation fails
+                }
+                
                 indicator.style.display = 'none';
                 // Update saved files info
                 if (window.savedUploadedFiles) {
@@ -4931,6 +4936,11 @@
           errorMessages.push(`${label} document must be uploaded`);
           
           fileInput.addEventListener('change', () => {
+            // Validate file size first
+            if (fileInput.files && fileInput.files[0] && !validateFileSize(fileInput)) {
+              return; // Stop processing if file size validation fails
+            }
+            
             if (formSection) {
               formSection.style.borderColor = '';
               formSection.style.backgroundColor = '';
@@ -6361,6 +6371,72 @@
       });
     }
 
+    // File size validation constants
+    const MAX_TOTAL_SIZE_MB = 2; // Maximum total size across all files
+    const MAX_INDIVIDUAL_SIZE_KB = 250; // Maximum individual file size in KB
+    
+    // File size validation function
+    function validateFileSize(fileInput, maxSizeKB = MAX_INDIVIDUAL_SIZE_KB) {
+      const file = fileInput.files[0];
+      if (!file) return true;
+      
+      const fileSizeKB = file.size / 1024;
+      const fileSizeMB = fileSizeKB / 1024;
+      
+      // Check individual file size
+      if (fileSizeKB > maxSizeKB) {
+        showFileSizeError(fileInput, `File size (${fileSizeMB.toFixed(1)}MB) exceeds maximum allowed size of ${(maxSizeKB/1024).toFixed(1)}MB per file.`);
+        fileInput.value = ''; // Clear the file input
+        return false;
+      }
+      
+      // Check total size across all files
+      const totalSize = calculateTotalFileSize();
+      if (totalSize > MAX_TOTAL_SIZE_MB * 1024 * 1024) {
+        const totalSizeMB = totalSize / (1024 * 1024);
+        showFileSizeError(fileInput, `Total file size (${totalSizeMB.toFixed(1)}MB) exceeds maximum allowed total of ${MAX_TOTAL_SIZE_MB}MB across all uploads.`);
+        fileInput.value = ''; // Clear the file input
+        return false;
+      }
+      
+      return true;
+    }
+    
+    // Calculate total file size across all file inputs
+    function calculateTotalFileSize() {
+      const fileInputs = document.querySelectorAll('input[type="file"]:not(#sigUpload)');
+      let totalSize = 0;
+      fileInputs.forEach(input => {
+        if (input.files && input.files[0]) {
+          totalSize += input.files[0].size;
+        }
+      });
+      return totalSize;
+    }
+    
+    // Show file size error popup
+    function showFileSizeError(fileInput, message) {
+      const fieldName = getFieldDisplayName(fileInput.id);
+      alert(`${fieldName}: ${message}\n\nMaximum individual file size: ${(MAX_INDIVIDUAL_SIZE_KB/1024).toFixed(1)}MB\nMaximum total size across all uploads: ${MAX_TOTAL_SIZE_MB}MB`);
+    }
+    
+    // Get display name for field
+    function getFieldDisplayName(fieldId) {
+      const fieldNames = {
+        'licenseFile': 'Pilot License',
+        'rolFile': 'Radio Operator License', 
+        'englishFile': 'English Proficiency Certificate',
+        'medicalFile': 'Medical Certificate',
+        'passportFile': 'Passport Copy',
+        'licenseVerificationFile': 'License Verification Letter',
+        'incidentLetterFile': 'No Incident/Accident Letter', 
+        'flightHoursFile': 'Flight Hours Verification Letter',
+        'emiratesIdFile': 'Emirates ID',
+        'visaFile': 'UAE Visa & Work Permit'
+      };
+      return fieldNames[fieldId] || 'Document';
+    }
+
     // Initialize the form when page loads
     document.addEventListener('DOMContentLoaded', () => {
       console.log('🚀 === DOM CONTENT LOADED ===');
@@ -6557,6 +6633,20 @@
         }
       }
       
+      // Add file size validation to all file inputs (catch-all for any not already handled)
+      const allFileInputs = document.querySelectorAll('input[type="file"]:not(#sigUpload)');
+      allFileInputs.forEach(fileInput => {
+        // Check if this input already has our validation (avoid duplicate handlers)
+        if (!fileInput.hasAttribute('data-size-validated')) {
+          fileInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+              validateFileSize(this);
+            }
+          });
+          fileInput.setAttribute('data-size-validated', 'true');
+        }
+      });
+
       // Add event listeners for the three letter dates
       const licenseVerificationDate = document.getElementById('licenseVerificationDate');
       const flightHoursIssue = document.getElementById('flightHoursIssue');
