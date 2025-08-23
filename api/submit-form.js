@@ -400,8 +400,8 @@ function generateEmailContent(formData) {
           <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Phone:</strong> ${(formData.personalInfo?.countryCode || '') + ' ' + (formData.personalInfo?.phoneNumber || 'N/A')}</p>
           <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Date of Birth:</strong> ${formData.personalInfo?.dateOfBirth || 'N/A'}</p>
           <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Designation:</strong> ${formData.personalInfo?.designation || 'N/A'}</p>
-          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Expected Date of Joining:</strong> ${formData.personalInfo?.expectedDateOfJoining || 'N/A'}</p>
-          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Previous Employer:</strong> ${formData.personalInfo?.previousEmployer || 'N/A'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Expected Date of Joining:</strong> ${formData.personalInfo?.doj || 'N/A'}</p>
+          <!-- Previous Employer field not included in form -->
         </div>
       </div>
 
