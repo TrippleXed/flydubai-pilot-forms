@@ -3789,55 +3789,11 @@
           collectFormData();
           generateApplicationSummary();
           
-          // Reinitialize signature canvas to ensure proper sizing
+          // Initialize signature functionality when step 4 is shown
           setTimeout(() => {
-            const canvas = document.getElementById('sigCanvas');
-            if (canvas) {
-              console.log('✍️ Reinitializing signature canvas for proper sizing...');
-              
-              // Force canvas to be visible and get proper dimensions
-              const rect = canvas.getBoundingClientRect();
-              console.log('📐 Canvas rect before setup:', rect);
-              
-              if (rect.width === 0) {
-                console.log('⚠️ Canvas has zero width, trying to set fixed dimensions...');
-                // Set explicit canvas parent width if needed
-                const canvasParent = canvas.parentElement;
-                if (canvasParent) {
-                  const parentRect = canvasParent.getBoundingClientRect();
-                  console.log('📐 Parent rect:', parentRect);
-                }
-              }
-              
-              const ctx = canvas.getContext('2d');
-              const ratio = Math.max(window.devicePixelRatio || 1, 1);
-              const canvasWidth = Math.max(rect.width, 400); // Minimum width fallback
-              canvas.width = canvasWidth * ratio;
-              canvas.height = 160 * ratio;
-              ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-              ctx.lineWidth = 2;
-              ctx.lineJoin = 'round';
-              ctx.lineCap = 'round';
-              ctx.strokeStyle = '#111827';
-              
-              console.log('✅ Signature canvas reinitialized:', {
-                actualWidth: rect.width,
-                usedWidth: canvasWidth,
-                canvasWidth: canvas.width,
-                canvasHeight: canvas.height,
-                ratio: ratio
-              });
-              
-              // Test if drawing works by drawing a small test dot
-              ctx.fillStyle = '#111827';
-              ctx.beginPath();
-              ctx.arc(10, 10, 2, 0, Math.PI * 2);
-              ctx.fill();
-              console.log('🎨 Test dot drawn to verify canvas functionality');
-            } else {
-              console.error('❌ Signature canvas not found during step 4 initialization');
-            }
-          }, 200); // Increased timeout to ensure DOM is fully rendered
+            console.log('🖊️ Initializing signature pad for step 4...');
+            initializeSignaturePad();
+          }, 100);
         }
       } else {
         console.error('❌ Step element not found for step:', step);
@@ -6263,44 +6219,119 @@
       console.log('🎨 Layout debugging functions available. Use debugLayout(), debugSpacing(), or debugAircraftSections() in console');
       
       // ===== Signature pad logic (draw / typed / upload) =====
-      (function initSignature(){
+      function initializeSignaturePad() {
+        console.log('🖊️ Setting up signature pad...');
         const canvas = document.getElementById('sigCanvas');
-        if(!canvas) return; const ctx = canvas.getContext('2d');
+        if(!canvas) {
+          console.error('❌ Signature canvas not found!');
+          return; 
+        }
+        
+        console.log('✅ Canvas found, initializing...');
+        const ctx = canvas.getContext('2d');
+        
         function setupCanvas(){
           const ratio = Math.max(window.devicePixelRatio || 1, 1);
           const rect = canvas.getBoundingClientRect();
-          canvas.width = rect.width * ratio; canvas.height = 160 * ratio;
-          ctx.setTransform(ratio,0,0,ratio,0,0); ctx.lineWidth = 2; ctx.lineJoin='round'; ctx.lineCap='round'; ctx.strokeStyle = '#111827';
+          console.log('📐 Canvas dimensions on setup:', rect.width, 'x', rect.height);
+          
+          if (rect.width === 0) {
+            console.warn('⚠️ Canvas has zero width, this may cause issues');
+          }
+          
+          canvas.width = rect.width * ratio; 
+          canvas.height = 160 * ratio;
+          ctx.setTransform(ratio,0,0,ratio,0,0); 
+          ctx.lineWidth = 2; 
+          ctx.lineJoin='round'; 
+          ctx.lineCap='round'; 
+          ctx.strokeStyle = '#111827';
+          
+          console.log('✅ Canvas setup complete:', canvas.width, 'x', canvas.height);
         }
-        function clearCanvas(){ ctx.clearRect(0,0,canvas.width,canvas.height); }
-        function pos(e){ const r=canvas.getBoundingClientRect(); const p=e.touches? e.touches[0]: e; return {x:p.clientX - r.left, y:p.clientY - r.top}; }
+        
+        function clearCanvas(){ 
+          ctx.clearRect(0,0,canvas.width,canvas.height); 
+          console.log('🧹 Canvas cleared');
+        }
+        
+        function pos(e){ 
+          const r=canvas.getBoundingClientRect(); 
+          const p=e.touches? e.touches[0]: e; 
+          return {x:p.clientX - r.left, y:p.clientY - r.top}; 
+        }
+        
         let drawing=false, lastX=0, lastY=0;
-        function start(e){ drawing=true; const p=pos(e); lastX=p.x; lastY=p.y; e.preventDefault(); }
-        function move(e){ if(!drawing) return; const p=pos(e); ctx.beginPath(); ctx.moveTo(lastX,lastY); ctx.lineTo(p.x,p.y); ctx.stroke(); lastX=p.x; lastY=p.y; e.preventDefault(); }
-        function end(){ drawing=false; }
-        setupCanvas(); window.addEventListener('resize', setupCanvas);
-        canvas.addEventListener('mousedown', start); canvas.addEventListener('mousemove', move); window.addEventListener('mouseup', end);
-        canvas.addEventListener('touchstart', start, {passive:false}); canvas.addEventListener('touchmove', move, {passive:false}); window.addEventListener('touchend', end);
+        
+        function start(e){ 
+          console.log('✏️ Starting to draw');
+          drawing=true; 
+          const p=pos(e); 
+          lastX=p.x; 
+          lastY=p.y; 
+          e.preventDefault(); 
+        }
+        
+        function move(e){ 
+          if(!drawing) return; 
+          const p=pos(e); 
+          ctx.beginPath(); 
+          ctx.moveTo(lastX,lastY); 
+          ctx.lineTo(p.x,p.y); 
+          ctx.stroke(); 
+          lastX=p.x; 
+          lastY=p.y; 
+          e.preventDefault(); 
+        }
+        
+        function end(){ 
+          if (drawing) console.log('🎨 Finished drawing');
+          drawing=false; 
+        }
+        
+        setupCanvas(); 
+        window.addEventListener('resize', setupCanvas);
+        canvas.addEventListener('mousedown', start); 
+        canvas.addEventListener('mousemove', move); 
+        window.addEventListener('mouseup', end);
+        canvas.addEventListener('touchstart', start, {passive:false}); 
+        canvas.addEventListener('touchmove', move, {passive:false}); 
+        window.addEventListener('touchend', end);
 
         document.getElementById('sigClear').addEventListener('click', clearCanvas);
         document.getElementById('sigApply').addEventListener('click', ()=>{
-          const txt = (document.getElementById('typedSig').value || '').trim(); if(!txt) return;
+          const txt = (document.getElementById('typedSig').value || '').trim(); 
+          if(!txt) return;
+          console.log('✍️ Applying typed signature:', txt);
           clearCanvas();
           ctx.font = '36px cursive'; ctx.fillStyle = '#111827';
-          const metrics = ctx.measureText(txt); const cssW = canvas.getBoundingClientRect().width; const x = Math.max(10, (cssW - metrics.width)/2 );
+          const metrics = ctx.measureText(txt); 
+          const cssW = canvas.getBoundingClientRect().width; 
+          const x = Math.max(10, (cssW - metrics.width)/2 );
           ctx.fillText(txt, x, 110);
+          console.log('✅ Typed signature applied');
         });
+        
         document.getElementById('sigUpload').addEventListener('change', (ev)=>{
-          const file = ev.target.files && ev.target.files[0]; if(!file) return;
-          const img = new Image(); img.onload = ()=>{
+          const file = ev.target.files && ev.target.files[0]; 
+          if(!file) return;
+          console.log('📁 Uploading signature image');
+          const img = new Image(); 
+          img.onload = ()=>{
+            console.log('🖼️ Image loaded, drawing on canvas');
             clearCanvas();
             const cssW = canvas.getBoundingClientRect().width, cssH = 160; 
             const scale = Math.min(cssW*0.9 / img.width, cssH*0.9 / img.height);
-            const w = img.width * scale, h = img.height * scale; const x = (cssW - w)/2, y = (cssH - h)/2;
+            const w = img.width * scale, h = img.height * scale; 
+            const x = (cssW - w)/2, y = (cssH - h)/2;
             ctx.drawImage(img, x, y, w, h);
-          }; img.src = URL.createObjectURL(file);
+            console.log('✅ Image signature applied');
+          }; 
+          img.src = URL.createObjectURL(file);
         });
-      })();
+        
+        console.log('✅ Signature pad fully initialized');
+      }
 
       // Initialize signature date to today
       const sigDateEl = document.getElementById('sigDate');
