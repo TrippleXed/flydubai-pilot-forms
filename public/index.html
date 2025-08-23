@@ -4138,14 +4138,22 @@
         if (response.ok && result.success !== false) {
           console.log('✅ Form submitted successfully:', result);
           
-          // Additional validation of successful submission
-          if (result.emailId || result.message === 'Form submitted successfully') {
-            showSubmissionSuccess();
+          // Strict validation of successful email sending
+          if (result.success === true && result.emailId && result.submissionId) {
+            console.log('✅ Email confirmed sent - Message ID:', result.emailId);
+            console.log('✅ Submission ID:', result.submissionId);
+            showSubmissionSuccess(result);
           } else {
-            console.error('⚠️ Response OK but submission may have failed:', result);
+            console.error('⚠️ Response OK but email sending not confirmed:', result);
+            console.error('⚠️ Missing required success indicators:', {
+              hasSuccess: result.success === true,
+              hasEmailId: !!result.emailId,
+              hasSubmissionId: !!result.submissionId
+            });
+            
             showDetailedSubmissionError(500, { 
-              error: 'Server responded OK but email may not have been sent',
-              details: JSON.stringify(result) 
+              error: 'Server processing completed but email delivery not confirmed',
+              details: `Missing confirmation: ${!result.emailId ? 'emailId' : ''} ${!result.submissionId ? 'submissionId' : ''}`.trim()
             }, formDataJSON, totalFileSize);
           }
         } else {
@@ -4170,7 +4178,7 @@
     }
     
     // Show submission success message
-    function showSubmissionSuccess() {
+    function showSubmissionSuccess(result) {
       const message = document.createElement('div');
       message.style.cssText = `
         position: fixed;
@@ -4188,11 +4196,21 @@
         text-align: center;
         min-width: 300px;
       `;
+      const submissionDetails = result ? `
+        <div style="font-size: 12px; font-weight: 400; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.3); opacity: 0.8;">
+          <div><strong>Submission ID:</strong> ${result.submissionId}</div>
+          <div><strong>Email ID:</strong> ${result.emailId.split('@')[0]}...</div>
+          <div><strong>Time:</strong> ${new Date(result.timestamp).toLocaleString()}</div>
+        </div>
+      ` : '';
+      
       message.innerHTML = `
         <div style="margin-bottom: 10px; font-size: 24px;">✅</div>
         <div>Application Submitted Successfully!</div>
         <div style="font-size: 14px; font-weight: 400; margin-top: 8px; opacity: 0.9;">
           Your application has been sent to flydubai for review.
+        </div>
+        ${submissionDetails}
         </div>
       `;
       

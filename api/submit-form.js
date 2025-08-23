@@ -4,6 +4,9 @@ const fs = require('fs').promises;
 const { jsPDF } = require('jspdf');
 
 export default async function handler(req, res) {
+  const submissionId = Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+  console.log(`🆔 SUBMISSION ID: ${submissionId}`);
+  
   // Set CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -19,9 +22,12 @@ export default async function handler(req, res) {
   }
 
   try {
-    console.log('=== FORM SUBMISSION STARTED ===');
-    console.log('Request method:', req.method);
-    console.log('Content-Type:', req.headers['content-type']);
+    console.log(`=== [${submissionId}] FORM SUBMISSION STARTED ===`);
+    console.log(`[${submissionId}] Request method:`, req.method);
+    console.log(`[${submissionId}] Content-Type:`, req.headers['content-type']);
+    console.log(`[${submissionId}] Content-Length:`, req.headers['content-length']);
+    console.log(`[${submissionId}] User-Agent:`, req.headers['user-agent']);
+    console.log(`[${submissionId}] Timestamp:`, new Date().toISOString());
     
     // Parse multipart form data
     let formData;
@@ -91,45 +97,80 @@ export default async function handler(req, res) {
     });
     
     // Check required environment variables
+    console.log(`[${submissionId}] Checking environment variables...`);
+    const envCheck = {
+      EMAIL_USER: !!process.env.EMAIL_USER,
+      EMAIL_PASS: !!process.env.EMAIL_PASS,
+      RECIPIENT_EMAIL: !!process.env.RECIPIENT_EMAIL,
+      EMAIL_USER_VALUE: process.env.EMAIL_USER ? `${process.env.EMAIL_USER.substring(0, 3)}***@${process.env.EMAIL_USER.split('@')[1]}` : 'MISSING',
+      RECIPIENT_EMAIL_VALUE: process.env.RECIPIENT_EMAIL || 'jason.cameron@flydubai.com'
+    };
+    
+    console.log(`[${submissionId}] Environment variables:`, envCheck);
+    
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-      console.error('Missing email configuration:', {
-        EMAIL_USER: !!process.env.EMAIL_USER,
-        EMAIL_PASS: !!process.env.EMAIL_PASS,
-        RECIPIENT_EMAIL: !!process.env.RECIPIENT_EMAIL
-      });
+      console.error(`[${submissionId}] ❌ CRITICAL: Missing email configuration:`, envCheck);
       return res.status(500).json({ 
-        error: 'Email service not configured. Please contact administrator.' 
+        error: 'Email service not configured. Please contact administrator.',
+        submissionId: submissionId
       });
     }
+    
+    console.log(`[${submissionId}] ✅ Environment variables validated`);
 
     // Create transporter
-    console.log('Creating nodemailer transporter...');
+    console.log(`[${submissionId}] Creating nodemailer transporter...`);
+    const transporterStartTime = Date.now();
+    
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
+      debug: true, // Enable debug logging
+      logger: true // Enable logger
     });
     
-    console.log('Email transporter created successfully');
+    console.log(`[${submissionId}] ✅ Email transporter created (${Date.now() - transporterStartTime}ms)`);
     
     // Test the connection
+    console.log(`[${submissionId}] Testing email connection...`);
+    const verifyStartTime = Date.now();
+    
     try {
       await transporter.verify();
-      console.log('Email transporter connection verified successfully');
+      console.log(`[${submissionId}] ✅ Email connection verified (${Date.now() - verifyStartTime}ms)`);
     } catch (verifyError) {
-      console.error('Email transporter verification failed:', verifyError.message);
+      console.error(`[${submissionId}] ❌ Email connection verification failed:`, {
+        message: verifyError.message,
+        code: verifyError.code,
+        command: verifyError.command,
+        response: verifyError.response,
+        responseCode: verifyError.responseCode,
+        duration: Date.now() - verifyStartTime
+      });
       return res.status(500).json({ 
-        error: 'Email service configuration error. Please check credentials.' 
+        error: 'Email service configuration error. Please check credentials.',
+        submissionId: submissionId,
+        details: verifyError.message
       });
     }
 
     // Create HTML email content from form data
+    console.log(`[${submissionId}] Generating email content...`);
+    const contentStartTime = Date.now();
     const emailContent = generateEmailContent(formData);
+    console.log(`[${submissionId}] ✅ Email content generated (${Date.now() - contentStartTime}ms, ${emailContent.length} chars)`);
 
     // Create zip file with all attachments
+    console.log(`[${submissionId}] Creating ZIP attachment...`);
+    const zipStartTime = Date.now();
     const zipAttachment = await createZipAttachment(formData);
+    console.log(`[${submissionId}] ${zipAttachment ? '✅' : '⚠️'} ZIP attachment ${zipAttachment ? 'created' : 'not created'} (${Date.now() - zipStartTime}ms)`);
+    if (zipAttachment) {
+      console.log(`[${submissionId}] ZIP size: ${(zipAttachment.content.length / 1024 / 1024).toFixed(2)}MB`);
+    }
 
     // Send email
     const mailOptions = {
@@ -140,34 +181,81 @@ export default async function handler(req, res) {
       attachments: zipAttachment ? [zipAttachment] : [],
     };
 
-    console.log('Attempting to send email...');
-    console.log('- To:', mailOptions.to);
-    console.log('- Subject:', mailOptions.subject);
-    console.log('- Has ZIP attachment:', !!zipAttachment);
-    console.log('- Email content length:', emailContent.length);
+    console.log(`[${submissionId}] 📧 ATTEMPTING EMAIL SEND...`);
+    console.log(`[${submissionId}] Email details:`, {
+      from: mailOptions.from,
+      to: mailOptions.to,
+      subject: mailOptions.subject,
+      hasAttachment: !!zipAttachment,
+      attachmentSize: zipAttachment ? `${(zipAttachment.content.length / 1024 / 1024).toFixed(2)}MB` : 'N/A',
+      contentLength: `${(emailContent.length / 1024).toFixed(1)}KB`,
+      timestamp: new Date().toISOString()
+    });
     
-    const emailResult = await transporter.sendMail(mailOptions);
-    console.log('✅ EMAIL SENT SUCCESSFULLY!');
-    console.log('- Message ID:', emailResult.messageId);
-    console.log('- Response:', emailResult.response);
+    const sendStartTime = Date.now();
+    
+    try {
+      const emailResult = await transporter.sendMail(mailOptions);
+      const sendDuration = Date.now() - sendStartTime;
+      
+      console.log(`[${submissionId}] 🎉 EMAIL SENT SUCCESSFULLY! (${sendDuration}ms)`);
+      console.log(`[${submissionId}] Email result:`, {
+        messageId: emailResult.messageId,
+        response: emailResult.response,
+        accepted: emailResult.accepted,
+        rejected: emailResult.rejected,
+        pending: emailResult.pending,
+        envelope: emailResult.envelope
+      });
+      
+      // Additional verification
+      if (emailResult.rejected && emailResult.rejected.length > 0) {
+        console.warn(`[${submissionId}] ⚠️ Some recipients rejected:`, emailResult.rejected);
+      }
+      
+      if (emailResult.pending && emailResult.pending.length > 0) {
+        console.warn(`[${submissionId}] ⚠️ Some recipients pending:`, emailResult.pending);
+      }
+      
+    } catch (sendError) {
+      const sendDuration = Date.now() - sendStartTime;
+      console.error(`[${submissionId}] ❌ EMAIL SEND FAILED! (${sendDuration}ms)`);
+      console.error(`[${submissionId}] Send error details:`, {
+        message: sendError.message,
+        code: sendError.code,
+        command: sendError.command,
+        response: sendError.response,
+        responseCode: sendError.responseCode,
+        stack: sendError.stack
+      });
+      
+      throw sendError; // Re-throw to be caught by outer try-catch
+    }
 
-    res.status(200).json({ 
+    const response = { 
       success: true, 
       message: 'Form submitted successfully',
-      emailId: emailResult.messageId
-    });
+      emailId: emailResult.messageId,
+      submissionId: submissionId,
+      timestamp: new Date().toISOString()
+    };
+    
+    console.log(`[${submissionId}] ✅ SUBMISSION COMPLETE - sending success response:`, response);
+    
+    res.status(200).json(response);
 
   } catch (error) {
-    console.error('=== SUBMISSION ERROR ===');
-    console.error('Error type:', error.name);
-    console.error('Error message:', error.message);
-    console.error('Error stack:', error.stack);
-    console.error('Request info:', {
+    console.error(`=== [${submissionId}] SUBMISSION ERROR ===`);
+    console.error(`[${submissionId}] Error type:`, error.name);
+    console.error(`[${submissionId}] Error message:`, error.message);
+    console.error(`[${submissionId}] Error stack:`, error.stack);
+    console.error(`[${submissionId}] Request info:`, {
       method: req.method,
       contentType: req.headers['content-type'],
       contentLength: req.headers['content-length'],
       hasBody: !!req.body,
-      hasFiles: !!(req.files && req.files.length > 0)
+      hasFiles: !!(req.files && req.files.length > 0),
+      timestamp: new Date().toISOString()
     });
     
     // Provide more specific error messages
@@ -191,7 +279,9 @@ export default async function handler(req, res) {
     res.status(errorCode).json({ 
       success: false, 
       error: errorMessage,
-      details: error.message // Include original error for debugging
+      details: error.message,
+      submissionId: submissionId,
+      timestamp: new Date().toISOString()
     });
   }
 }
