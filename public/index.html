@@ -1294,24 +1294,36 @@
     #signSection .grid{
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     }
+    /* Initially hide all content until password is verified */
+    .content-container {
+      display: none;
+    }
+    
+    .password-protecting {
+      display: block;
+    }
   </style>
 </head>
-<body>
+<body style="margin: 0; padding: 0;">
   <script>
     // ===== Password Protection =====
-    let originalBodyContent = '';
-    let isAuthenticated = false;
+    // Check authentication immediately to prevent content flash
+    const SESSION_KEY = 'flydubai_auth_' + new Date().toDateString();
+    let isAuthenticated = localStorage.getItem(SESSION_KEY) === 'true';
     
-    // Wait for full page load before initializing password protection
-    window.addEventListener('load', function() {
-      if (isAuthenticated) return; // Already authenticated
+    // If not authenticated, immediately replace content
+    if (!isAuthenticated) {
+      document.body.innerHTML = '';
+      document.body.style.margin = '0';
+      document.body.style.padding = '0';
+    }
+    
+    (function() {
+      if (isAuthenticated) return; // Skip if already authenticated
       
       const FORM_PASSWORD = "FlightTime2025";
-      let attempts = 0;
+      let attempts = parseInt(localStorage.getItem('auth_attempts') || '0');
       const maxAttempts = 3;
-      
-      // Store original body content after page is fully loaded
-      originalBodyContent = document.body.innerHTML;
       
       function showPasswordForm() {
         const errorMessage = attempts > 0 ? `<div style="color: #dc2626; margin-bottom: 16px; padding: 12px; background: #fef2f2; border-radius: 8px; border: 1px solid #fecaca;">
@@ -1368,23 +1380,16 @@
             const userPassword = document.getElementById('passwordInput')?.value;
             
             if (userPassword === FORM_PASSWORD) {
-              // Mark as authenticated
-              isAuthenticated = true;
+              // Mark as authenticated and store in localStorage for session
+              localStorage.setItem(SESSION_KEY, 'true');
+              localStorage.removeItem('auth_attempts');
               
-              // Restore original body content and show the form
-              document.body.innerHTML = originalBodyContent;
-              
-              // Trigger DOMContentLoaded event for form initialization
-              setTimeout(() => {
-                const event = new Event('DOMContentLoaded', {
-                  bubbles: true,
-                  cancelable: true
-                });
-                document.dispatchEvent(event);
-              }, 100);
+              // Reload page to show authenticated content
+              window.location.reload();
               
             } else {
               attempts++;
+              localStorage.setItem('auth_attempts', attempts.toString());
               if (attempts >= maxAttempts) {
                 document.body.innerHTML = `
                   <div style="display: flex; justify-content: center; align-items: center; height: 100vh; background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);">
@@ -1403,9 +1408,9 @@
         }
       }
       
-      // Show password form
+      // Show password form immediately
       showPasswordForm();
-    });
+    })();
   </script>
 
   <div class="container">
