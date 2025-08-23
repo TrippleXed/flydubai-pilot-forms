@@ -37,9 +37,22 @@ export default async function handler(req, res) {
         upload.any()(req, res, (err) => {
           if (err) return reject(err);
           
-          // Parse form data from multipart
-          formData = JSON.parse(req.body.formData || '{}');
-          console.log('Parsed form data keys:', Object.keys(formData));
+          // Parse form data from multipart with validation
+          try {
+            const formDataString = req.body.formData || '{}';
+            console.log('Form data string length:', formDataString.length);
+            formData = JSON.parse(formDataString);
+            console.log('Parsed form data keys:', Object.keys(formData));
+            
+            // Validate required sections
+            if (!formData.personalInfo) {
+              throw new Error('Missing personal information');
+            }
+            
+          } catch (parseError) {
+            console.error('Error parsing form data:', parseError.message);
+            throw new Error('Invalid form data format');
+          }
           
           // Process uploaded files
           if (req.files) {
@@ -145,10 +158,40 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error('Error sending email:', error);
-    res.status(500).json({ 
+    console.error('=== SUBMISSION ERROR ===');
+    console.error('Error type:', error.name);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    console.error('Request info:', {
+      method: req.method,
+      contentType: req.headers['content-type'],
+      contentLength: req.headers['content-length'],
+      hasBody: !!req.body,
+      hasFiles: !!(req.files && req.files.length > 0)
+    });
+    
+    // Provide more specific error messages
+    let errorMessage = 'Failed to submit form. Please try again.';
+    let errorCode = 500;
+    
+    if (error.message.includes('Request entity too large')) {
+      errorMessage = 'Upload size too large. Please reduce file sizes and try again.';
+      errorCode = 413;
+    } else if (error.message.includes('timeout')) {
+      errorMessage = 'Request timeout. Please try again with smaller files.';
+      errorCode = 408;
+    } else if (error.message.includes('JSON')) {
+      errorMessage = 'Data format error. Please refresh the page and try again.';
+      errorCode = 400;
+    } else if (error.message.includes('auth') || error.message.includes('credential')) {
+      errorMessage = 'Email service configuration error. Please contact support.';
+      errorCode = 500;
+    }
+    
+    res.status(errorCode).json({ 
       success: false, 
-      message: 'Failed to submit form. Please try again.' 
+      error: errorMessage,
+      details: error.message // Include original error for debugging
     });
   }
 }

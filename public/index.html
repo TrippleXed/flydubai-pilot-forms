@@ -3116,17 +3116,23 @@
       
       // Step 4: Review & Submit
       if (currentStep >= 4) {
-        // Collect signature data
+        // Collect signature data with safe handling
         const canvas = document.getElementById('sigCanvas');
         let signatureData = '';
         if (canvas) {
-          // Check if canvas has content (not just blank)
-          const ctx = canvas.getContext('2d');
-          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          const hasSignature = imageData.data.some(channel => channel !== 0);
-          
-          if (hasSignature) {
-            signatureData = canvas.toDataURL();
+          try {
+            // Check if canvas has content (not just blank)
+            const ctx = canvas.getContext('2d');
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const hasSignature = imageData.data.some(channel => channel !== 0);
+            
+            if (hasSignature) {
+              // Use compressed JPEG format to reduce data size
+              signatureData = canvas.toDataURL('image/jpeg', 0.8);
+            }
+          } catch (error) {
+            console.error('Error collecting signature data:', error);
+            signatureData = '';
           }
         }
         
@@ -3929,20 +3935,32 @@
       nextBtn.disabled = true;
       
       try {
+        // Collect current form data before submission
+        collectFormData();
+        
         // Prepare form data with files
         const formDataToSubmit = new FormData();
         
-        // Add all form fields
-        formDataToSubmit.append('formData', JSON.stringify(formData));
+        // Log form data size for debugging
+        const formDataJSON = JSON.stringify(formData);
+        console.log('📊 Form data size:', (formDataJSON.length / 1024).toFixed(2) + ' KB');
+        console.log('📊 Form data keys:', Object.keys(formData));
         
-        // Add all uploaded files
+        // Add all form fields
+        formDataToSubmit.append('formData', formDataJSON);
+        
+        // Add all uploaded files with size logging
         const fileInputs = document.querySelectorAll('input[type="file"]');
+        let totalFileSize = 0;
         fileInputs.forEach(input => {
           if (input.files && input.files[0]) {
-            formDataToSubmit.append(input.id, input.files[0]);
-            console.log(`📎 Added file: ${input.id} - ${input.files[0].name}`);
+            const file = input.files[0];
+            totalFileSize += file.size;
+            formDataToSubmit.append(input.id, file);
+            console.log(`📎 Added file: ${input.id} - ${file.name} (${(file.size / 1024).toFixed(1)} KB)`);
           }
         });
+        console.log('📊 Total file size:', (totalFileSize / 1024).toFixed(2) + ' KB');
         
         console.log('🚀 Sending form data to server...');
         
