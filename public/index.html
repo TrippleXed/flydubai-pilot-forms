@@ -1307,47 +1307,36 @@
 <body style="margin: 0; padding: 0;">
   <script>
     // ===== Password Protection =====
-    // Check authentication immediately to prevent content flash
-    const SESSION_KEY = 'flydubai_auth_' + new Date().toDateString();
-    
-    // Check for debug parameter to force re-authentication
+    // Check if this is an authenticated reload (temporary session flag)
     const urlParams = new URLSearchParams(window.location.search);
-    const forceAuth = urlParams.get('debug') === 'auth';
+    let isAuthenticated = urlParams.has('authenticated');
     
-    if (forceAuth) {
-      localStorage.removeItem(SESSION_KEY);
-      console.log('🔓 Debug mode: Forcing re-authentication');
-    }
+    console.log('🔐 Password Protection Status:', isAuthenticated ? 'AUTHENTICATED' : 'REQUIRES PASSWORD');
     
-    let isAuthenticated = localStorage.getItem(SESSION_KEY) === 'true';
-    
-    console.log('🔐 Auth Debug Info:');
-    console.log('- Session Key:', SESSION_KEY);
-    console.log('- Stored Value:', localStorage.getItem(SESSION_KEY));
-    console.log('- Is Authenticated:', isAuthenticated);
-    console.log('- Force Auth:', forceAuth);
-    
-    // If not authenticated, hide content but preserve session recovery functions
     if (!isAuthenticated) {
-      // Wait a moment to let the page load, then check for session recovery
+      // Check for session recovery data immediately
       setTimeout(() => {
         const hasSessionData = localStorage.getItem('formData') || localStorage.getItem('aircraftSections');
         if (hasSessionData) {
-          // Show a session recovery prompt in the password form
+          console.log('📋 Previous session data detected');
           window.hasSessionToRecover = true;
         }
         
+        // Clear content and show password form
         document.body.innerHTML = '';
         document.body.style.margin = '0';
         document.body.style.padding = '0';
       }, 10);
+    } else {
+      // Clean URL after authentication
+      window.history.replaceState({}, document.title, window.location.pathname);
     }
     
     (function() {
-      if (isAuthenticated) return; // Skip if already authenticated
+      if (isAuthenticated) return; // Skip password form if already authenticated
       
       const FORM_PASSWORD = "FlightTime2025";
-      let attempts = parseInt(localStorage.getItem('auth_attempts') || '0');
+      let attempts = 0; // Reset attempts on each visit
       const maxAttempts = 3;
       
       function showPasswordForm() {
@@ -1414,16 +1403,12 @@
             const userPassword = document.getElementById('passwordInput')?.value;
             
             if (userPassword === FORM_PASSWORD) {
-              // Mark as authenticated and store in localStorage for session
-              localStorage.setItem(SESSION_KEY, 'true');
-              localStorage.removeItem('auth_attempts');
-              
-              // Reload page to show authenticated content
-              window.location.reload();
+              // Reload page with authenticated parameter
+              const newUrl = window.location.pathname + '?authenticated=true';
+              window.location.href = newUrl;
               
             } else {
               attempts++;
-              localStorage.setItem('auth_attempts', attempts.toString());
               if (attempts >= maxAttempts) {
                 document.body.innerHTML = `
                   <div style="display: flex; justify-content: center; align-items: center; height: 100vh; background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);">
