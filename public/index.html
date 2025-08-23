@@ -3011,7 +3011,10 @@
         
         // Collect summary flight hours
         const summaryInputs = document.querySelectorAll('.form-step[data-step="2"] table tbody input.hhmm');
+        console.log('📊 === COLLECTING SUMMARY HOURS ===');
         console.log('📊 Found summary table inputs:', summaryInputs.length);
+        console.log('📊 Summary input values:', Array.from(summaryInputs).map(input => input.value || '0:00'));
+        
         const summaryHours = {
           pic: summaryInputs[0]?.value || '0:00',
           sic: summaryInputs[1]?.value || '0:00',
@@ -3023,6 +3026,8 @@
           p1us: summaryInputs[7]?.value || '0:00',
           grandTotal: summaryInputs[8]?.value || '0:00'
         };
+        
+        console.log('📊 Collected summary hours:', summaryHours);
         
         formData.flightExperience = {
           aircraftSections,
@@ -3396,35 +3401,51 @@
         // Restore summary hours if available
         if (formData.flightExperience.summaryHours) {
           console.log('📊 Populating summary hours...');
+          console.log('📊 Summary data to restore:', formData.flightExperience.summaryHours);
+          
           const summaryInputs = document.querySelectorAll('.form-step[data-step="2"] table tbody input.hhmm');
           console.log('📊 Found summary inputs for restoration:', summaryInputs.length);
+          console.log('📊 Summary inputs:', Array.from(summaryInputs).map(input => input.placeholder));
+          
           const summaryHours = formData.flightExperience.summaryHours;
           
           if (summaryInputs.length >= 9) {
-            summaryInputs[0].value = summaryHours.pic || '0:00';
-            summaryInputs[1].value = summaryHours.sic || '0:00';
-            summaryInputs[2].value = summaryHours.solo || '0:00';
-            summaryInputs[3].value = summaryHours.instrument || '0:00';
-            summaryInputs[4].value = summaryHours.sim || '0:00';
-            summaryInputs[5].value = summaryHours.night || '0:00';
-            summaryInputs[6].value = summaryHours.instructor || '0:00';
-            summaryInputs[7].value = summaryHours.p1us || '0:00';
-            summaryInputs[8].value = summaryHours.grandTotal || '0:00';
+            console.log('📊 Restoring individual summary fields...');
             
-            console.log('✅ Summary hours restored:', {
-              pic: summaryInputs[0].value,
-              sic: summaryInputs[1].value,
-              solo: summaryInputs[2].value,
-              instrument: summaryInputs[3].value,
-              sim: summaryInputs[4].value,
-              night: summaryInputs[5].value,
-              instructor: summaryInputs[6].value,
-              p1us: summaryInputs[7].value,
-              grandTotal: summaryInputs[8].value
-            });
+            summaryInputs[0].value = summaryHours.pic || '0:00';
+            console.log('📊 PIC/P1:', summaryInputs[0].value);
+            
+            summaryInputs[1].value = summaryHours.sic || '0:00';
+            console.log('📊 SIC/P2:', summaryInputs[1].value);
+            
+            summaryInputs[2].value = summaryHours.solo || '0:00';
+            console.log('📊 Solo:', summaryInputs[2].value);
+            
+            summaryInputs[3].value = summaryHours.instrument || '0:00';
+            console.log('📊 Instrument:', summaryInputs[3].value);
+            
+            summaryInputs[4].value = summaryHours.sim || '0:00';
+            console.log('📊 Sim:', summaryInputs[4].value);
+            
+            summaryInputs[5].value = summaryHours.night || '0:00';
+            console.log('📊 Night:', summaryInputs[5].value);
+            
+            summaryInputs[6].value = summaryHours.instructor || '0:00';
+            console.log('📊 Instructor:', summaryInputs[6].value);
+            
+            summaryInputs[7].value = summaryHours.p1us || '0:00';
+            console.log('📊 P1 U/S:', summaryInputs[7].value);
+            
+            summaryInputs[8].value = summaryHours.grandTotal || '0:00';
+            console.log('📊 Grand Total:', summaryInputs[8].value);
+            
+            console.log('✅ All summary hours restored successfully');
           } else {
             console.log('⚠️ Expected 9 summary inputs but found:', summaryInputs.length);
+            console.log('⚠️ Available inputs:', Array.from(summaryInputs));
           }
+        } else {
+          console.log('⚠️ No summary hours data found in formData');
         }
         
         // Recompute totals after populating all sections
@@ -3793,7 +3814,7 @@
           setTimeout(() => {
             console.log('🖊️ Initializing signature pad for step 4...');
             initializeSignaturePad();
-          }, 100);
+          }, 300);
         }
       } else {
         console.error('❌ Step element not found for step:', step);
@@ -5280,16 +5301,21 @@
                 hasFlightExperience: !!parsedData.formData?.flightExperience,
                 hasAircraftSections: !!parsedData.formData?.flightExperience?.aircraftSections,
                 sectionsLength: parsedData.formData?.flightExperience?.aircraftSections?.length || 0,
+                hasSummaryHours: !!parsedData.formData?.flightExperience?.summaryHours,
                 topLevelKeys: Object.keys(parsedData)
               });
               console.log('🔍 Aircraft sections data:', parsedData.formData?.flightExperience?.aircraftSections);
+              console.log('🔍 Summary hours data:', parsedData.formData?.flightExperience?.summaryHours);
               
-              if (parsedData.formData?.flightExperience?.aircraftSections && parsedData.formData.flightExperience.aircraftSections.length > 0) {
-                console.log('📁 Found saved flight experience data, restoring sections instead of initializing fresh ones');
+              const hasAircraftData = parsedData.formData?.flightExperience?.aircraftSections && parsedData.formData.flightExperience.aircraftSections.length > 0;
+              const hasSummaryData = parsedData.formData?.flightExperience?.summaryHours;
+              
+              if (hasAircraftData || hasSummaryData) {
+                console.log('📁 Found saved flight experience data, restoring sections and summary instead of initializing fresh ones');
                 populateFormFields(); // Restore saved data
                 return;
               } else {
-                console.log('⚠️ Aircraft sections array exists but is empty or invalid');
+                console.log('⚠️ No aircraft sections or summary data found');
               }
             } catch (e) {
               console.log('⚠️ Error parsing saved data:', e.message);
