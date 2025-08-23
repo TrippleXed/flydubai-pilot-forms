@@ -172,14 +172,22 @@ export default async function handler(req, res) {
       console.log(`[${submissionId}] ZIP size: ${(zipAttachment.content.length / 1024 / 1024).toFixed(2)}MB`);
     }
 
-    // Send email
+    // Send email - check for test mode
+    const isTestMode = formData.personalInfo?.pilotName?.toLowerCase().includes('test');
+    const testEmail = 'flydubaipilotdocs@gmail.com'; // Send back to sender for testing
+    const recipientEmail = isTestMode ? testEmail : (process.env.RECIPIENT_EMAIL || 'jason.cameron@flydubai.com');
+    
     const mailOptions = {
       from: process.env.EMAIL_USER,
-      to: process.env.RECIPIENT_EMAIL || 'jason.cameron@flydubai.com',
-      subject: `Pilot Application - ${formData.pilotName || 'Pilot Submission'} - ${formData.applicationId || 'No ID'}`,
+      to: recipientEmail,
+      subject: `${isTestMode ? '[TEST] ' : ''}Pilot Application - ${formData.personalInfo?.pilotName || 'Pilot Submission'} - ${formData.applicationId || 'No ID'}`,
       html: emailContent,
       attachments: zipAttachment ? [zipAttachment] : [],
     };
+    
+    if (isTestMode) {
+      console.log(`[${submissionId}] 🧪 TEST MODE DETECTED - sending to ${testEmail} instead`);
+    }
 
     console.log(`[${submissionId}] 📧 ATTEMPTING EMAIL SEND...`);
     console.log(`[${submissionId}] Email details:`, {
@@ -189,8 +197,14 @@ export default async function handler(req, res) {
       hasAttachment: !!zipAttachment,
       attachmentSize: zipAttachment ? `${(zipAttachment.content.length / 1024 / 1024).toFixed(2)}MB` : 'N/A',
       contentLength: `${(emailContent.length / 1024).toFixed(1)}KB`,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      attachmentName: zipAttachment?.filename || 'N/A'
     });
+    
+    // Check for potential delivery issues
+    if (zipAttachment && zipAttachment.content.length > 10 * 1024 * 1024) {
+      console.warn(`[${submissionId}] ⚠️ Large attachment warning: ${(zipAttachment.content.length / 1024 / 1024).toFixed(2)}MB - may cause delivery issues`);
+    }
     
     const sendStartTime = Date.now();
     let emailResult;
@@ -209,13 +223,42 @@ export default async function handler(req, res) {
         envelope: emailResult.envelope
       });
       
-      // Additional verification
+      // Detailed delivery verification
+      const deliveryAnalysis = {
+        messageId: emailResult.messageId,
+        targetRecipient: recipientEmail,
+        wasAccepted: emailResult.accepted && emailResult.accepted.includes(recipientEmail),
+        wasRejected: emailResult.rejected && emailResult.rejected.includes(recipientEmail),
+        isPending: emailResult.pending && emailResult.pending.includes(recipientEmail),
+        smtpResponse: emailResult.response,
+        totalAccepted: emailResult.accepted?.length || 0,
+        totalRejected: emailResult.rejected?.length || 0,
+        totalPending: emailResult.pending?.length || 0,
+        isTestMode: isTestMode
+      };
+      
+      console.log(`[${submissionId}] 📊 Delivery Analysis:`, deliveryAnalysis);
+      
+      // Warning checks
       if (emailResult.rejected && emailResult.rejected.length > 0) {
-        console.warn(`[${submissionId}] ⚠️ Some recipients rejected:`, emailResult.rejected);
+        console.error(`[${submissionId}] ❌ RECIPIENTS REJECTED:`, emailResult.rejected);
+        console.error(`[${submissionId}] ❌ EMAIL MAY NOT BE DELIVERED!`);
       }
       
       if (emailResult.pending && emailResult.pending.length > 0) {
-        console.warn(`[${submissionId}] ⚠️ Some recipients pending:`, emailResult.pending);
+        console.warn(`[${submissionId}] ⚠️ Recipients pending:`, emailResult.pending);
+      }
+      
+      if (!emailResult.accepted || emailResult.accepted.length === 0) {
+        console.error(`[${submissionId}] ❌ NO RECIPIENTS ACCEPTED - EMAIL NOT DELIVERED!`);
+      }
+      
+      // Check if our specific recipient was accepted
+      if (!emailResult.accepted?.includes(recipientEmail)) {
+        console.error(`[${submissionId}] ❌ ${recipientEmail} was NOT accepted by Gmail!`);
+        console.error(`[${submissionId}] ❌ Accepted recipients:`, emailResult.accepted);
+      } else {
+        console.log(`[${submissionId}] ✅ ${recipientEmail} was accepted by Gmail`);
       }
       
     } catch (sendError) {
