@@ -2164,7 +2164,6 @@
                 <option value="Aviation English Test">Aviation English Test</option>
                 <option value="TEA (Test of English for Aviation)">TEA (Test of English for Aviation)</option>
                 <option value="IELTS">IELTS (Academic)</option>
-                <option value="Native Speaker">Native English Speaker</option>
                 <option value="Attached to License">Attached to License (ELP Endorsement)</option>
                 <option value="Other">Other Approved Test</option>
               </select>
@@ -2913,17 +2912,21 @@
     function toggleEnglishTestDate() {
       const testType = document.getElementById('englishTestType').value;
       const testDateDiv = document.getElementById('englishTestDateDiv');
-      const englishLevel = document.getElementById('englishLevel');
-      const englishLevelDiv = englishLevel ? englishLevel.parentElement : null;
+      const englishUploadDiv = document.getElementById('englishUploadDiv');
       
       if (testType === 'Attached to License') {
+        // Hide date and upload fields only - keep proficiency level visible
         testDateDiv.style.display = 'none';
-        if (englishLevelDiv) englishLevelDiv.style.display = 'none';
-        document.getElementById('englishTestDate').value = ''; // Clear the field
-        if (englishLevel) englishLevel.value = ''; // Clear proficiency level
+        if (englishUploadDiv) englishUploadDiv.style.display = 'none';
+        
+        // Clear the hidden fields
+        document.getElementById('englishTestDate').value = '';
+        const fileInput = document.getElementById('englishFile');
+        if (fileInput) fileInput.value = '';
       } else {
+        // Show all fields for other test types
         testDateDiv.style.display = 'block';
-        if (englishLevelDiv) englishLevelDiv.style.display = 'block';
+        if (englishUploadDiv) englishUploadDiv.style.display = 'block';
       }
     }
 
