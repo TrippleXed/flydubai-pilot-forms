@@ -2218,7 +2218,7 @@
               <input type="date" id="passportExpiry" onchange="checkValidity('passport')" />
             </div>
           </div>
-          <div class="grid" style="margin-top: 16px; grid-template-columns: 170px 170px 250px 250px;">
+          <div class="grid" style="margin-top: 16px; grid-template-columns: 250px 300px 170px 170px;">
             <div>
               <label>Upload Document</label>
               <input type="file" id="passportFile" accept=".pdf,.jpg,.png" />
@@ -2233,35 +2233,6 @@
           </div>
         </div>
 
-        <div class="form-section">
-          <h2 class="section-h">🛂 UAE Visa & Work Permit</h2>
-          <div class="grid">
-            <div>
-              <label>Current Visa Status</label>
-              <select id="visaStatus">
-                <option value="">Select Visa Status</option>
-                <option value="Tourist Visa">Tourist Visa</option>
-                <option value="Visit Visa">Visit Visa</option>
-                <option value="Residence Visa">Residence Visa</option>
-                <option value="Employment Visa">Employment Visa</option>
-                <option value="No Current UAE Visa">No Current UAE Visa</option>
-              </select>
-            </div>
-            <div>
-              <label>Visa Expiry Date</label>
-              <input type="date" id="visaExpiry" onchange="checkValidity('visa')" />
-            </div>
-            <div>
-              <label>Upload Current Visa Copy</label>
-              <input type="file" id="visaFile" accept=".pdf,.jpg,.png" />
-            </div>
-            <div></div>
-          </div>
-          <div id="visaStatus"></div>
-          <div class="requirement-note">
-            <strong>Requirement:</strong> Valid UAE entry visa or residence permit. If currently outside UAE, company will provide visa assistance. Work permit will be processed after job offer acceptance.
-          </div>
-        </div>
 
         <div class="form-section">
           <h2 class="section-h">⏱️ Flight Hours Verification Letter</h2>
@@ -2591,6 +2562,36 @@
           </div>
           <div class="requirement-note">
             <strong>Requirement:</strong> ICAO Level 4 or higher English proficiency certificate. Native English speakers may provide alternative documentation. Certificate must be current and valid for commercial aviation operations.
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="section-h">🛂 UAE Visa & Work Permit</h2>
+          <div class="grid">
+            <div>
+              <label>Current Visa Status</label>
+              <select id="visaStatus">
+                <option value="">Select Visa Status</option>
+                <option value="Tourist Visa">Tourist Visa</option>
+                <option value="Visit Visa">Visit Visa</option>
+                <option value="Residence Visa">Residence Visa</option>
+                <option value="Employment Visa">Employment Visa</option>
+                <option value="No Current UAE Visa">No Current UAE Visa</option>
+              </select>
+            </div>
+            <div>
+              <label>Visa Expiry Date</label>
+              <input type="date" id="visaExpiry" onchange="checkValidity('visa')" />
+            </div>
+            <div>
+              <label>Upload Current Visa Copy</label>
+              <input type="file" id="visaFile" accept=".pdf,.jpg,.png" />
+            </div>
+            <div></div>
+          </div>
+          <div id="visaStatus"></div>
+          <div class="requirement-note">
+            <strong>Requirement:</strong> Valid UAE entry visa or residence permit. If currently outside UAE, company will provide visa assistance. Work permit will be processed after job offer acceptance.
           </div>
         </div>
       </div>
