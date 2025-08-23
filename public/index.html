@@ -1311,11 +1311,20 @@
     const SESSION_KEY = 'flydubai_auth_' + new Date().toDateString();
     let isAuthenticated = localStorage.getItem(SESSION_KEY) === 'true';
     
-    // If not authenticated, immediately replace content
+    // If not authenticated, hide content but preserve session recovery functions
     if (!isAuthenticated) {
-      document.body.innerHTML = '';
-      document.body.style.margin = '0';
-      document.body.style.padding = '0';
+      // Wait a moment to let the page load, then check for session recovery
+      setTimeout(() => {
+        const hasSessionData = localStorage.getItem('formData') || localStorage.getItem('aircraftSections');
+        if (hasSessionData) {
+          // Show a session recovery prompt in the password form
+          window.hasSessionToRecover = true;
+        }
+        
+        document.body.innerHTML = '';
+        document.body.style.margin = '0';
+        document.body.style.padding = '0';
+      }, 10);
     }
     
     (function() {
@@ -1330,6 +1339,14 @@
           <strong>Incorrect access code.</strong> ${maxAttempts - attempts} attempt(s) remaining.
         </div>` : '';
         
+        const sessionRecoveryMessage = window.hasSessionToRecover ? `<div style="color: #059669; margin-bottom: 16px; padding: 12px; background: #ecfdf5; border-radius: 8px; border: 1px solid #a7f3d0;">
+          <div style="display: flex; align-items: center; margin-bottom: 8px;">
+            <span style="font-size: 18px;">📋</span>
+            <span style="margin-left: 8px; font-weight: 600;">Previous session found!</span>
+          </div>
+          <div style="font-size: 14px;">Your previous form data will be restored after authentication.</div>
+        </div>` : '';
+        
         document.body.innerHTML = `
           <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh; background: linear-gradient(135deg, #6d28d9 0%, #7c3aed 12%, #8b5cf6 25%, #a855f7 37%, #c084fc 50%, #6366f1 62%, #8b5cf6 75%, #9333ea 87%, #7c3aed 100%); padding: 20px;">
             <div style="background: white; padding: 40px; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4); width: 100%; max-width: 400px;">
@@ -1338,6 +1355,7 @@
                 <p style="color: #6b7280; margin: 0;">Enter your access code to continue to the pilot application form.</p>
               </div>
               
+              ${sessionRecoveryMessage}
               ${errorMessage}
               
               <form id="passwordForm" style="display: flex; flex-direction: column; gap: 20px;">
@@ -1408,8 +1426,10 @@
         }
       }
       
-      // Show password form immediately
-      showPasswordForm();
+      // Show password form after session check
+      setTimeout(() => {
+        showPasswordForm();
+      }, 50);
     })();
   </script>
 
