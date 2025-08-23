@@ -3977,13 +3977,16 @@
           showSubmissionSuccess();
         } else {
           console.error('❌ Form submission failed:', result);
-          const errorMessage = result.error || `HTTP ${response.status}: ${response.statusText}`;
-          showSubmissionError(errorMessage, true); // Show detailed error
+          console.error('Response status:', response.status);
+          console.error('Response details:', result);
+          
+          // Show specific error message based on response
+          showDetailedSubmissionError(response.status, result, formDataJSON, totalFileSize);
         }
         
       } catch (error) {
         console.error('❌ Network error during submission:', error);
-        showSubmissionError(`Network error: ${error.message}`, true);
+        showNetworkError(error, formDataJSON, totalFileSize);
       } finally {
         // Restore button state
         nextBtn.textContent = originalText;
@@ -4031,52 +4034,261 @@
     }
     
     // Show submission error message
-    function showSubmissionError(errorText, showDetails = false) {
-      const message = document.createElement('div');
-      message.style.cssText = `
+    // Show detailed submission error with specific guidance
+    function showDetailedSubmissionError(status, result, formDataJSON, totalFileSize) {
+      let title = 'Submission Failed';
+      let message = '';
+      let solutions = [];
+      let technicalDetails = '';
+      
+      // Determine specific error type and provide targeted solutions
+      switch (status) {
+        case 413:
+          title = 'Upload Size Too Large';
+          message = 'Your files are too large to upload.';
+          solutions = [
+            'Reduce file sizes (compress images, use PDF instead of images)',
+            'Maximum total size is approximately 10MB',
+            'Try uploading fewer documents at once'
+          ];
+          technicalDetails = `Total files: ${(totalFileSize/1024/1024).toFixed(2)}MB, Form data: ${(formDataJSON.length/1024).toFixed(1)}KB`;
+          break;
+          
+        case 408:
+          title = 'Request Timeout';
+          message = 'The upload took too long and timed out.';
+          solutions = [
+            'Check your internet connection',
+            'Reduce file sizes to speed up upload',
+            'Try again when connection is more stable'
+          ];
+          technicalDetails = `Total files: ${(totalFileSize/1024/1024).toFixed(2)}MB`;
+          break;
+          
+        case 400:
+          title = 'Invalid Form Data';
+          message = 'There was an error processing your form data.';
+          solutions = [
+            'Refresh the page and re-enter your information',
+            'Check that all required fields are completed',
+            'Try clearing your browser cache'
+          ];
+          technicalDetails = result.details || 'Form data validation failed';
+          break;
+          
+        case 401:
+        case 403:
+          title = 'Access Denied';
+          message = 'You are not authorized to submit this form.';
+          solutions = [
+            'Refresh the page and try again',
+            'Contact the system administrator'
+          ];
+          break;
+          
+        case 429:
+          title = 'Too Many Requests';
+          message = 'You have submitted too many requests recently.';
+          solutions = [
+            'Wait a few minutes before trying again',
+            'Avoid clicking submit multiple times'
+          ];
+          break;
+          
+        case 500:
+          title = 'Server Error';
+          if (result.error && result.error.includes('Email service')) {
+            message = 'Email service is temporarily unavailable.';
+            solutions = [
+              'Try again in a few minutes',
+              'Contact flydubai IT support if error persists'
+            ];
+          } else if (result.error && result.error.includes('auth')) {
+            message = 'Email authentication failed.';
+            solutions = [
+              'This is a system configuration issue',
+              'Contact flydubai IT support immediately'
+            ];
+            technicalDetails = 'EMAIL_USER or EMAIL_PASS environment variables may be incorrect';
+          } else {
+            message = 'An internal server error occurred.';
+            solutions = [
+              'Try again in a few minutes',
+              'If error persists, contact flydubai IT support'
+            ];
+          }
+          technicalDetails = result.details || result.error || 'Unknown server error';
+          break;
+          
+        case 502:
+        case 503:
+        case 504:
+          title = 'Service Unavailable';
+          message = 'The server is temporarily unavailable.';
+          solutions = [
+            'Try again in a few minutes',
+            'The service may be under maintenance'
+          ];
+          break;
+          
+        default:
+          title = 'Unexpected Error';
+          message = result.error || `Server returned error code ${status}`;
+          solutions = [
+            'Try refreshing the page and resubmitting',
+            'Contact flydubai IT support if error continues'
+          ];
+          technicalDetails = `HTTP ${status}: ${result.details || 'No additional details'}`;
+      }
+      
+      showErrorModal(title, message, solutions, technicalDetails);
+    }
+    
+    // Show network error with specific guidance
+    function showNetworkError(error, formDataJSON, totalFileSize) {
+      let title = 'Connection Error';
+      let message = '';
+      let solutions = [];
+      let technicalDetails = error.message;
+      
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        message = 'Unable to connect to the server.';
+        solutions = [
+          'Check your internet connection',
+          'Try refreshing the page',
+          'Ensure you are not blocking the connection with a firewall or VPN'
+        ];
+      } else if (error.message.includes('timeout')) {
+        message = 'The connection timed out.';
+        solutions = [
+          'Check your internet connection speed',
+          'Reduce file sizes to speed up upload',
+          `Current upload size: ${(totalFileSize/1024/1024).toFixed(2)}MB`
+        ];
+      } else if (error.message.includes('aborted')) {
+        message = 'The upload was interrupted.';
+        solutions = [
+          'Try again with a stable internet connection',
+          'Do not close the browser tab during submission'
+        ];
+      } else {
+        message = 'An unexpected network error occurred.';
+        solutions = [
+          'Check your internet connection',
+          'Try again in a few minutes',
+          'Contact your IT support if the problem persists'
+        ];
+      }
+      
+      showErrorModal(title, message, solutions, technicalDetails);
+    }
+    
+    // Generic error modal with detailed information
+    function showErrorModal(title, message, solutions, technicalDetails) {
+      const modal = document.createElement('div');
+      modal.style.cssText = `
         position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: #ef4444;
-        color: white;
-        padding: 20px 30px;
-        border-radius: 12px;
-        font-size: 16px;
-        font-weight: 600;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
         z-index: 10000;
-        text-align: center;
-        min-width: 300px;
-        max-width: 500px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
       `;
       
-      const helpText = showDetails ? `
-        <div style="font-size: 12px; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.3); opacity: 0.8; text-align: left;">
-          <strong>Need help?</strong><br>
-          • Check that all required fields are filled<br>
-          • Ensure all files are uploaded<br>
-          • Try refreshing the page and resubmitting<br>
-          • If problem persists, check the Vercel function logs
-        </div>
-      ` : '';
+      const solutionsList = solutions.map(solution => `<li style="margin: 8px 0;">${solution}</li>`).join('');
       
-      message.innerHTML = `
-        <div style="margin-bottom: 10px; font-size: 24px;">❌</div>
-        <div>Submission Failed</div>
-        <div style="font-size: 14px; font-weight: 400; margin-top: 8px; opacity: 0.9; word-break: break-word;">
-          ${errorText}
-        </div>
-        ${helpText}
-        <div style="font-size: 12px; margin-top: 12px;">
-          <button onclick="this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode)" 
-                  style="background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer;">
-            Close
-          </button>
+      modal.innerHTML = `
+        <div style="
+          background: white;
+          border-radius: 12px;
+          max-width: 600px;
+          width: 100%;
+          max-height: 80vh;
+          overflow-y: auto;
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        ">
+          <div style="
+            background: #ef4444;
+            color: white;
+            padding: 20px 30px;
+            border-radius: 12px 12px 0 0;
+            text-align: center;
+          ">
+            <div style="font-size: 32px; margin-bottom: 10px;">❌</div>
+            <h2 style="margin: 0; font-size: 20px; font-weight: 600;">${title}</h2>
+          </div>
+          
+          <div style="padding: 30px;">
+            <div style="margin-bottom: 25px;">
+              <h3 style="color: #1f2937; margin: 0 0 10px 0; font-size: 16px;">What happened:</h3>
+              <p style="color: #4b5563; margin: 0; line-height: 1.5;">${message}</p>
+            </div>
+            
+            <div style="margin-bottom: 25px;">
+              <h3 style="color: #1f2937; margin: 0 0 15px 0; font-size: 16px;">How to fix this:</h3>
+              <ul style="color: #4b5563; margin: 0; padding-left: 20px; line-height: 1.6;">
+                ${solutionsList}
+              </ul>
+            </div>
+            
+            ${technicalDetails ? `
+            <details style="margin-bottom: 25px;">
+              <summary style="color: #6b7280; cursor: pointer; font-size: 14px; font-weight: 500;">Technical Details</summary>
+              <div style="
+                background: #f9fafb;
+                border: 1px solid #e5e7eb;
+                border-radius: 6px;
+                padding: 15px;
+                margin-top: 10px;
+                font-family: monospace;
+                font-size: 12px;
+                color: #374151;
+                word-break: break-all;
+              ">
+                ${technicalDetails}
+              </div>
+            </details>
+            ` : ''}
+            
+            <div style="text-align: center;">
+              <button onclick="document.body.removeChild(this.closest('[style*=\"position: fixed\"]'))" 
+                      style="
+                        background: #3b82f6;
+                        color: white;
+                        border: none;
+                        padding: 12px 24px;
+                        border-radius: 8px;
+                        font-size: 14px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        margin-right: 10px;
+                      ">
+                Try Again
+              </button>
+              <button onclick="window.location.reload()" 
+                      style="
+                        background: #6b7280;
+                        color: white;
+                        border: none;
+                        padding: 12px 24px;
+                        border-radius: 8px;
+                        font-size: 14px;
+                        font-weight: 600;
+                        cursor: pointer;
+                      ">
+                Refresh Page
+              </button>
+            </div>
+          </div>
         </div>
       `;
       
-      document.body.appendChild(message);
+      document.body.appendChild(modal);
     }
 
     // Validate personal information
