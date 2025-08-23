@@ -6202,10 +6202,13 @@
         }
         
         // Aviation documents must be valid for at least 90 days after joining
-        if (['license', 'medical', 'rol', 'emiratesId', 'visa'].includes(docType) && daysAfterJoining < 90) {
+        if (['license', 'medical', 'rol'].includes(docType) && daysAfterJoining < 90) {
           statusDiv.innerHTML = '<span class="status-indicator status-expired">EXPIRES TOO SOON AFTER JOINING (Need 90+ days)</span>';
           return;
         }
+        
+        // Emirates ID and UAE Visa only need to be valid at submission (no DOJ requirement)
+        // They are handled by the basic expiry check only
         
         // English Proficiency - only validate if not "Attached to License"
         if (docType === 'english') {
