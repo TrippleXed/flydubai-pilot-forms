@@ -448,9 +448,9 @@ function generateEmailContent(formData) {
       <div style="background: #f0fdf4; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #16a34a;">
         <h2 style="color: #1a365d; margin-top: 0; margin-bottom: 15px;">✍️ Declaration & Signature</h2>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
-          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Declaration Accepted:</strong> ${formData.declaration?.declarationAccepted ? '✅ Yes' : '❌ No'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Declaration Accepted:</strong> ${(formData.declaration?.agreed === true || formData.declaration?.agreed === 'true') ? '✅ Yes' : '❌ No'}</p>
           <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Signature Date:</strong> ${formData.declaration?.signatureDate || 'N/A'}</p>
-          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Digital Signature:</strong> ${formData.declaration?.signatureDataUrl ? '✅ Provided' : '❌ Missing'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Digital Signature:</strong> ${(formData.declaration?.signatureData || formData.declaration?.typedSignature) ? '✅ Provided' : '❌ Missing'}</p>
         </div>
       </div>
 
@@ -473,8 +473,8 @@ function generateEmailContent(formData) {
 function generateDocumentStatus(uploads, docId, docName) {
   const doc = uploads && uploads[docId];
   const status = doc ? '✅ Uploaded' : '❌ Missing';
-  const fileName = doc ? doc.fileName : 'Not uploaded';
-  const size = doc ? `(${(doc.size / 1024).toFixed(1)}KB)` : '';
+  const fileName = doc ? doc.name : 'Not uploaded';
+  const size = doc && doc.data ? `(${(doc.data.length / 1024).toFixed(1)}KB)` : '';
   
   return `<p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>${docName}:</strong> ${status}<br><span style="font-size: 12px; color: #6b7280;">${fileName} ${size}</span></p>`;
 }

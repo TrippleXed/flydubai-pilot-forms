@@ -3561,13 +3561,11 @@
         console.log('📄 Documentation fields populated:', docFields.filter(f => f.value).length, 'of', docFields.length);
       }
       
-      // Step 4: Declaration
-      if (formData.declaration) {
-        const declarationCheckbox = document.getElementById('declaration');
-        if (declarationCheckbox) {
-          declarationCheckbox.checked = formData.declaration.agreed || false;
-          console.log(`✅ Declaration: ${declarationCheckbox.checked}`);
-        }
+      // Step 4: Declaration - Always start unchecked for final confirmation
+      const declarationCheckbox = document.getElementById('declaration');
+      if (declarationCheckbox) {
+        declarationCheckbox.checked = false; // Force unchecked for review confirmation
+        console.log(`✅ Declaration checkbox reset to unchecked for final confirmation`);
       }
       
       // Step 4: Restore file upload indicators
