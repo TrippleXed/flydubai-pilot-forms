@@ -1299,10 +1299,19 @@
 <body>
   <script>
     // ===== Password Protection =====
-    (function() {
+    let originalBodyContent = '';
+    let isAuthenticated = false;
+    
+    // Wait for full page load before initializing password protection
+    window.addEventListener('load', function() {
+      if (isAuthenticated) return; // Already authenticated
+      
       const FORM_PASSWORD = "FlightTime2025";
       let attempts = 0;
       const maxAttempts = 3;
+      
+      // Store original body content after page is fully loaded
+      originalBodyContent = document.body.innerHTML;
       
       function showPasswordForm() {
         const errorMessage = attempts > 0 ? `<div style="color: #dc2626; margin-bottom: 16px; padding: 12px; background: #fef2f2; border-radius: 8px; border: 1px solid #fecaca;">
@@ -1347,43 +1356,56 @@
         
         // Focus on the password input
         setTimeout(() => {
-          document.getElementById('passwordInput').focus();
+          const passwordInput = document.getElementById('passwordInput');
+          if (passwordInput) passwordInput.focus();
         }, 100);
         
         // Handle form submission
-        document.getElementById('passwordForm').addEventListener('submit', function(e) {
-          e.preventDefault();
-          const userPassword = document.getElementById('passwordInput').value;
-          
-          if (userPassword === FORM_PASSWORD) {
-            // Restore original body content and show the form
-            document.body.innerHTML = originalBodyContent;
-            // Re-run the DOMContentLoaded event manually
-            const event = new Event('DOMContentLoaded');
-            document.dispatchEvent(event);
-          } else {
-            attempts++;
-            if (attempts >= maxAttempts) {
-              document.body.innerHTML = `
-                <div style="display: flex; justify-content: center; align-items: center; height: 100vh; background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);">
-                  <div style="text-align: center; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);">
-                    <h2 style="color: #dc2626; margin-bottom: 20px; font-size: 28px; font-weight: 700;">Access Denied</h2>
-                    <p style="color: #6b7280; margin-bottom: 20px;">Too many incorrect attempts. Please contact your administrator for the correct access code.</p>
-                    <p style="color: #6b7280; font-size: 14px;">Contact: jason.cameron@flydubai.com</p>
-                  </div>
-                </div>
-              `;
+        const passwordForm = document.getElementById('passwordForm');
+        if (passwordForm) {
+          passwordForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const userPassword = document.getElementById('passwordInput')?.value;
+            
+            if (userPassword === FORM_PASSWORD) {
+              // Mark as authenticated
+              isAuthenticated = true;
+              
+              // Restore original body content and show the form
+              document.body.innerHTML = originalBodyContent;
+              
+              // Trigger DOMContentLoaded event for form initialization
+              setTimeout(() => {
+                const event = new Event('DOMContentLoaded', {
+                  bubbles: true,
+                  cancelable: true
+                });
+                document.dispatchEvent(event);
+              }, 100);
+              
             } else {
-              showPasswordForm();
+              attempts++;
+              if (attempts >= maxAttempts) {
+                document.body.innerHTML = `
+                  <div style="display: flex; justify-content: center; align-items: center; height: 100vh; background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);">
+                    <div style="text-align: center; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);">
+                      <h2 style="color: #dc2626; margin-bottom: 20px; font-size: 28px; font-weight: 700;">Access Denied</h2>
+                      <p style="color: #6b7280; margin-bottom: 20px;">Too many incorrect attempts. Please contact your administrator for the correct access code.</p>
+                      <p style="color: #6b7280; font-size: 14px;">Contact: jason.cameron@flydubai.com</p>
+                    </div>
+                  </div>
+                `;
+              } else {
+                showPasswordForm();
+              }
             }
-          }
-        });
+          });
+        }
       }
       
-      // Store original body content before showing password form
-      const originalBodyContent = document.body.innerHTML;
+      // Show password form
       showPasswordForm();
-    })();
+    });
   </script>
 
   <div class="container">
