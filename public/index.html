@@ -2172,11 +2172,18 @@
               <label>Test Date</label>
               <input type="date" id="englishTestDate" />
             </div>
+            <div id="englishExpiryDiv">
+              <label>Expiry Date</label>
+              <input type="date" id="englishExpiry" onchange="checkValidity('english')" />
+            </div>
+          </div>
+          <div class="grid" style="grid-template-columns: 1fr; margin-top: 16px;">
             <div id="englishUploadDiv">
               <label>Upload Certificate</label>
               <input type="file" id="englishFile" accept=".pdf,.jpg,.png" />
             </div>
           </div>
+          <div id="englishStatus"></div>
           <div class="requirement-note">
             <strong>Requirement:</strong> ICAO Level 4 or higher English proficiency certificate. Native English speakers may provide alternative documentation. Certificate must be current and valid for commercial aviation operations.
           </div>
@@ -2539,7 +2546,7 @@
             </div>
             <div>
               <label>Verification Letter Date</label>
-              <input type="date" id="licenseVerificationDate" />
+              <input type="date" id="licenseVerificationDate" onchange="validateLetterDate('licenseVerificationDate', 'License Verification Letter')" />
             </div>
             <div>
               <label>Upload Verification Letter</label>
@@ -2547,6 +2554,7 @@
             </div>
             <div></div>
           </div>
+          <div id="licenseVerificationStatus"></div>
           <div class="requirement-note">
             <strong>Requirement:</strong> Official letter from the aviation authority that issued your license confirming its validity, ratings, and any restrictions. Required for license conversion to UAE GCAA license.
           </div>
@@ -2661,7 +2669,7 @@
             </div>
             <div>
               <label>Letter Issue Date</label>
-              <input type="date" id="incidentLetterDate" />
+              <input type="date" id="incidentLetterDate" onchange="validateLetterDate('incidentLetterDate', 'No Incident/Accident Letter')" />
             </div>
             <div>
               <label>Upload Letter</label>
@@ -2669,6 +2677,7 @@
             </div>
             <div></div>
           </div>
+          <div id="incidentLetterStatus"></div>
           <div class="requirement-note">
             <strong>Requirement:</strong> Official letter confirming no aviation incidents, accidents, or violations on record. Must be issued by relevant aviation authority or previous employer within the last 6 months.
           </div>
@@ -2683,7 +2692,7 @@
             </div>
             <div>
               <label>Letter Issue Date</label>
-              <input type="date" id="flightHoursIssue" />
+              <input type="date" id="flightHoursIssue" onchange="validateLetterDate('flightHoursIssue', 'Flight Hours Verification Letter')" />
             </div>
             <div>
               <label>Upload Verification Letter</label>
@@ -2691,6 +2700,7 @@
             </div>
             <div></div>
           </div>
+          <div id="flightHoursStatus"></div>
           <div class="requirement-note">
             <strong>Requirement:</strong> Official letter from previous employer or aviation authority verifying your total flight hours, aircraft types flown, and positions held. Must be on company letterhead with official signature and stamp.
           </div>
@@ -2912,21 +2922,34 @@
     function toggleEnglishTestDate() {
       const testType = document.getElementById('englishTestType').value;
       const testDateDiv = document.getElementById('englishTestDateDiv');
+      const expiryDiv = document.getElementById('englishExpiryDiv');
       const englishUploadDiv = document.getElementById('englishUploadDiv');
+      const statusDiv = document.getElementById('englishStatus');
       
       if (testType === 'Attached to License') {
-        // Hide date and upload fields only - keep proficiency level visible
+        // Hide date, expiry and upload fields only - keep proficiency level visible
         testDateDiv.style.display = 'none';
+        if (expiryDiv) expiryDiv.style.display = 'none';
         if (englishUploadDiv) englishUploadDiv.style.display = 'none';
         
         // Clear the hidden fields
         document.getElementById('englishTestDate').value = '';
+        document.getElementById('englishExpiry').value = '';
         const fileInput = document.getElementById('englishFile');
         if (fileInput) fileInput.value = '';
+        
+        // Show attached to license status
+        if (statusDiv) {
+          statusDiv.innerHTML = '<span class="status-indicator status-valid">ATTACHED TO LICENSE</span>';
+        }
       } else {
         // Show all fields for other test types
         testDateDiv.style.display = 'block';
+        if (expiryDiv) expiryDiv.style.display = 'block';
         if (englishUploadDiv) englishUploadDiv.style.display = 'block';
+        
+        // Clear status when not attached to license
+        if (statusDiv) statusDiv.innerHTML = '';
       }
     }
 
@@ -3409,6 +3432,7 @@
           englishLevel: document.getElementById('englishLevel')?.value || '',
           englishTestType: document.getElementById('englishTestType')?.value || '',
           englishTestDate: document.getElementById('englishTestDate')?.value || '',
+          englishExpiry: document.getElementById('englishExpiry')?.value || '',
           englishFile: document.getElementById('englishFile')?.files[0]?.name || ''
         };
         console.log('📄 Documentation data collected:', Object.keys(formData.documentation).length, 'fields');
@@ -3850,7 +3874,8 @@
           // English Proficiency Certificate
           { id: 'englishLevel', value: docs.englishLevel },
           { id: 'englishTestType', value: docs.englishTestType },
-          { id: 'englishTestDate', value: docs.englishTestDate }
+          { id: 'englishTestDate', value: docs.englishTestDate },
+          { id: 'englishExpiry', value: docs.englishExpiry }
         ];
         
         docFields.forEach(field => {
@@ -5112,13 +5137,24 @@
         
         // No Incident/Accident Letter fields
         { id: 'incidentLetterAuthority', label: 'Incident Letter Authority' },
-        { id: 'incidentLetterDate', label: 'Letter Issue Date' }
+        { id: 'incidentLetterDate', label: 'Letter Issue Date' },
+        
+        // Flight Hours Verification Letter fields  
+        { id: 'flightHoursAuthority', label: 'Flight Hours Authority' },
+        { id: 'flightHoursIssue', label: 'Flight Hours Letter Date' },
+        
+        // English Proficiency Certificate fields
+        { id: 'englishLevel', label: 'English Proficiency Level' },
+        { id: 'englishTestType', label: 'English Test Type' },
+        { id: 'englishTestDate', label: 'English Test Date' },
+        { id: 'englishExpiry', label: 'English Certificate Expiry Date' }
       ];
       
       const requiredFiles = [
         { id: 'licenseFile', label: 'Pilot License Document' },
         { id: 'medicalFile', label: 'Medical Certificate' },
         { id: 'rolFile', label: 'Radio Operator License' },
+        { id: 'englishFile', label: 'English Proficiency Certificate' },
         { id: 'passportFile', label: 'Passport Copy' },
         { id: 'visaFile', label: 'UAE Visa & Work Permit' },
         { id: 'flightHoursFile', label: 'Flight Hours Verification Letter' },
@@ -5183,6 +5219,12 @@
           return; // Skip validation for ROL fields
         }
         
+        // Skip English fields (except level) if "Attached to License" is selected
+        const englishTestType = document.getElementById('englishTestType')?.value;
+        if ((id === 'englishTestDate' || id === 'englishExpiry') && englishTestType === 'Attached to License') {
+          return; // Skip validation for English test date and expiry when attached to license
+        }
+        
         if (field && !field.value.trim()) {
           field.classList.add('validation-error');
           
@@ -5221,6 +5263,12 @@
         const rolType = document.getElementById('rolType')?.value;
         if (id === 'rolFile' && rolType === 'Attached to License') {
           return; // Skip validation for ROL file
+        }
+        
+        // Skip English file if "Attached to License" is selected
+        const englishTestType = document.getElementById('englishTestType')?.value;
+        if (id === 'englishFile' && englishTestType === 'Attached to License') {
+          return; // Skip validation for English file
         }
         
         if (fileInput && (!fileInput.files || fileInput.files.length === 0)) {
@@ -6153,10 +6201,23 @@
           return;
         }
         
-        // License documents must be valid for at least 90 days after joining
-        if (['license', 'medical', 'rol'].includes(docType) && daysAfterJoining < 90) {
+        // Aviation documents must be valid for at least 90 days after joining
+        if (['license', 'medical', 'rol', 'emiratesId', 'visa'].includes(docType) && daysAfterJoining < 90) {
           statusDiv.innerHTML = '<span class="status-indicator status-expired">EXPIRES TOO SOON AFTER JOINING (Need 90+ days)</span>';
           return;
+        }
+        
+        // English Proficiency - only validate if not "Attached to License"
+        if (docType === 'english') {
+          const englishTestType = document.getElementById('englishTestType')?.value;
+          if (englishTestType === 'Attached to License') {
+            statusDiv.innerHTML = '<span class="status-indicator status-valid">ATTACHED TO LICENSE</span>';
+            return;
+          }
+          if (daysAfterJoining < 90) {
+            statusDiv.innerHTML = '<span class="status-indicator status-expired">EXPIRES TOO SOON AFTER JOINING (Need 90+ days)</span>';
+            return;
+          }
         }
       }
       
@@ -6910,7 +6971,23 @@
         const dojInput = document.getElementById('doj');
         const letterDateInput = document.getElementById(letterDateId);
         
-        if (!dojInput?.value || !letterDateInput?.value) return;
+        // Determine status div ID based on letter type
+        let statusDivId = '';
+        if (letterDateId === 'licenseVerificationDate') statusDivId = 'licenseVerificationStatus';
+        else if (letterDateId === 'incidentLetterDate') statusDivId = 'incidentLetterStatus';
+        else if (letterDateId === 'flightHoursIssue') statusDivId = 'flightHoursStatus';
+        
+        const statusDiv = document.getElementById(statusDivId);
+        
+        if (!letterDateInput?.value || !statusDiv) {
+          if (statusDiv) statusDiv.innerHTML = '';
+          return;
+        }
+        
+        if (!dojInput?.value) {
+          statusDiv.innerHTML = '<span class="status-indicator status-warning">NEED JOINING DATE</span>';
+          return;
+        }
         
         const joiningDate = new Date(dojInput.value);
         const letterDate = new Date(letterDateInput.value);
@@ -6922,7 +6999,11 @@
           daysDifference: daysDifference
         });
         
+        statusDiv.innerHTML = '';
+        
         if (daysDifference > 30) {
+          statusDiv.innerHTML = '<span class="status-indicator status-expired">ISSUED TOO EARLY (Need within 30 days of joining)</span>';
+          
           const message = `⚠️ Important Notice Regarding ${letterName}\n\n` +
             `The ${letterName.toLowerCase()} is dated more than 30 days from your flydubai joining date.\n\n` +
             `📅 Letter Date: ${letterDate.toLocaleDateString()}\n` +
@@ -6935,6 +7016,8 @@
             `an updated letter closer to your joining date to avoid any delays in your employment commencement.`;
           
           setTimeout(() => alert(message), 500);
+        } else {
+          statusDiv.innerHTML = '<span class="status-indicator status-valid">VALID TIMING</span>';
         }
       }
       
