@@ -3151,7 +3151,7 @@
       }
     }
 
-    // Save form data to localStorage
+    // Save form data to localStorage including files
     function saveFormData() {
       console.log('💾 === SAVING FORM DATA ===');
       console.log('🆔 Session ID:', sessionId);
@@ -3159,10 +3159,29 @@
       console.log('📝 Form data keys:', Object.keys(formData));
       console.log('📝 Form data structure:', formData);
       
+      // Save file information for restoration
+      const fileInputs = document.querySelectorAll('input[type="file"]');
+      const uploadedFiles = {};
+      
+      fileInputs.forEach(input => {
+        if (input.files && input.files.length > 0) {
+          const file = input.files[0];
+          uploadedFiles[input.id] = {
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            lastModified: file.lastModified,
+            uploadedAt: Date.now()
+          };
+          console.log(`📎 Saving file info: ${input.id} - ${file.name}`);
+        }
+      });
+      
       const saveData = {
         sessionId: sessionId,
         currentStep: currentStep,
         formData: formData,
+        uploadedFiles: uploadedFiles,
         lastSaved: Date.now(),
         expiresAt: Date.now() + (30 * 24 * 60 * 60 * 1000) // 30 days
       };
@@ -3171,6 +3190,7 @@
         hasSessionId: !!saveData.sessionId,
         currentStep: saveData.currentStep,
         formDataSize: JSON.stringify(saveData.formData).length,
+        uploadedFilesCount: Object.keys(uploadedFiles).length,
         lastSaved: new Date(saveData.lastSaved).toLocaleString(),
         expiresAt: new Date(saveData.expiresAt).toLocaleString()
       });
@@ -3217,6 +3237,13 @@
           if (!isExpired) {
             formData = data.formData || {};
             console.log('📝 Form data loaded:', Object.keys(formData));
+            
+            // Store uploaded files info for restoration indicators
+            if (data.uploadedFiles) {
+              window.savedUploadedFiles = data.uploadedFiles;
+              console.log('📎 File upload history loaded:', Object.keys(data.uploadedFiles));
+            }
+            
             console.log('✅ Data successfully loaded');
             return true;
           } else {
@@ -3599,6 +3626,9 @@
     
     // Restore file upload indicators for previously uploaded files
     function restoreFileUploadIndicators(documentation) {
+      console.log('📎 === RESTORING FILE UPLOAD INDICATORS ===');
+      console.log('📎 Documentation data:', documentation);
+      console.log('📎 Saved uploaded files:', window.savedUploadedFiles);
       const fileFields = [
         { id: 'licenseFile', key: 'licenseFile', label: 'Pilot License' },
         { id: 'medicalFile', key: 'medicalFile', label: 'Medical Certificate' },
@@ -3613,8 +3643,12 @@
       ];
       
       fileFields.forEach(({ id, key, label }) => {
-        const fileName = documentation[key];
-        if (fileName) {
+        // Check if file was previously uploaded and is still missing
+        const savedFile = window.savedUploadedFiles && window.savedUploadedFiles[id];
+        const currentFile = document.getElementById(id)?.files?.[0];
+        
+        // Only show indicator if file was previously uploaded but is not currently selected
+        if (savedFile && !currentFile) {
           const fileInput = document.getElementById(id);
           if (fileInput) {
             // Create or update the file restoration indicator
@@ -3638,7 +3672,7 @@
               <div style="display: flex; align-items: center; gap: 8px;">
                 <span style="color: #dc6545;">⚠️</span>
                 <div>
-                  <div style="font-weight: 600;">Previously uploaded: ${fileName}</div>
+                  <div style="font-weight: 600;">Previously uploaded: ${savedFile.name}</div>
                   <div style="font-size: 11px; opacity: 0.8;">Please re-upload this file to continue</div>
                 </div>
               </div>
@@ -3648,10 +3682,24 @@
             fileInput.addEventListener('change', function() {
               if (this.files && this.files[0]) {
                 indicator.style.display = 'none';
+                // Update saved files info
+                if (window.savedUploadedFiles) {
+                  delete window.savedUploadedFiles[this.id];
+                }
+                // Save the form data to persist the file upload
+                saveFormData();
+                console.log(`📎 File re-uploaded for ${this.id}, indicator hidden`);
               }
-            }, { once: true });
+            });
             
-            console.log(`📎 Added restoration indicator for ${label}: ${fileName}`);
+            // Also remove indicator if the file input is cleared
+            fileInput.addEventListener('input', function() {
+              if (!this.files || this.files.length === 0) {
+                indicator.style.display = 'none';
+              }
+            });
+            
+            console.log(`📎 Added restoration indicator for ${label}: ${savedFile.name}`);
           }
         }
       });
@@ -4080,9 +4128,26 @@
         
         const result = await response.json();
         
-        if (response.ok) {
+        console.log('📬 Server response:', {
+          ok: response.ok,
+          status: response.status,
+          statusText: response.statusText,
+          result: result
+        });
+        
+        if (response.ok && result.success !== false) {
           console.log('✅ Form submitted successfully:', result);
-          showSubmissionSuccess();
+          
+          // Additional validation of successful submission
+          if (result.emailId || result.message === 'Form submitted successfully') {
+            showSubmissionSuccess();
+          } else {
+            console.error('⚠️ Response OK but submission may have failed:', result);
+            showDetailedSubmissionError(500, { 
+              error: 'Server responded OK but email may not have been sent',
+              details: JSON.stringify(result) 
+            }, formDataJSON, totalFileSize);
+          }
         } else {
           console.error('❌ Form submission failed:', result);
           console.error('Response status:', response.status);
