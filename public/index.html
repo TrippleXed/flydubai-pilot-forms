@@ -4282,7 +4282,7 @@
               'This is a system configuration issue',
               'Contact flydubai IT support immediately'
             ];
-            technicalDetails = 'EMAIL_USER or EMAIL_PASS environment variables may be incorrect';
+            technicalDetails = 'Email service configuration error - contact IT support';
           } else {
             message = 'An internal server error occurred.';
             solutions = [
@@ -4311,7 +4311,7 @@
             'Try refreshing the page and resubmitting',
             'Contact flydubai IT support if error continues'
           ];
-          technicalDetails = `HTTP ${status}: ${result.details || 'No additional details'}`;
+          technicalDetails = `Error code ${status}: ${result.details || 'Contact IT support for assistance'}`;
       }
       
       showErrorModal(title, message, solutions, technicalDetails);
