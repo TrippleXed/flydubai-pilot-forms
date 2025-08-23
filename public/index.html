@@ -3010,8 +3010,8 @@
         });
         
         // Collect summary flight hours
-        const grandTotalElement = document.getElementById('grandTotalHours');
-        const summaryInputs = grandTotalElement ? grandTotalElement.closest('tr').querySelectorAll('.hhmm') : [];
+        const summaryInputs = document.querySelectorAll('.form-step[data-step="2"] table tbody input.hhmm');
+        console.log('📊 Found summary table inputs:', summaryInputs.length);
         const summaryHours = {
           pic: summaryInputs[0]?.value || '0:00',
           sic: summaryInputs[1]?.value || '0:00',
@@ -3020,7 +3020,8 @@
           sim: summaryInputs[4]?.value || '0:00',
           night: summaryInputs[5]?.value || '0:00',
           instructor: summaryInputs[6]?.value || '0:00',
-          p1us: summaryInputs[7]?.value || '0:00'
+          p1us: summaryInputs[7]?.value || '0:00',
+          grandTotal: summaryInputs[8]?.value || '0:00'
         };
         
         formData.flightExperience = {
@@ -3395,21 +3396,34 @@
         // Restore summary hours if available
         if (formData.flightExperience.summaryHours) {
           console.log('📊 Populating summary hours...');
-          const summaryRow = document.querySelector('#grandTotalHours');
-          if (summaryRow) {
-            const summaryInputs = summaryRow.querySelectorAll('.hhmm');
-            const summaryHours = formData.flightExperience.summaryHours;
+          const summaryInputs = document.querySelectorAll('.form-step[data-step="2"] table tbody input.hhmm');
+          console.log('📊 Found summary inputs for restoration:', summaryInputs.length);
+          const summaryHours = formData.flightExperience.summaryHours;
+          
+          if (summaryInputs.length >= 9) {
+            summaryInputs[0].value = summaryHours.pic || '0:00';
+            summaryInputs[1].value = summaryHours.sic || '0:00';
+            summaryInputs[2].value = summaryHours.solo || '0:00';
+            summaryInputs[3].value = summaryHours.instrument || '0:00';
+            summaryInputs[4].value = summaryHours.sim || '0:00';
+            summaryInputs[5].value = summaryHours.night || '0:00';
+            summaryInputs[6].value = summaryHours.instructor || '0:00';
+            summaryInputs[7].value = summaryHours.p1us || '0:00';
+            summaryInputs[8].value = summaryHours.grandTotal || '0:00';
             
-            if (summaryInputs.length >= 8) {
-              summaryInputs[0].value = summaryHours.pic || '0:00';
-              summaryInputs[1].value = summaryHours.sic || '0:00';
-              summaryInputs[2].value = summaryHours.solo || '0:00';
-              summaryInputs[3].value = summaryHours.instrument || '0:00';
-              summaryInputs[4].value = summaryHours.sim || '0:00';
-              summaryInputs[5].value = summaryHours.night || '0:00';
-              summaryInputs[6].value = summaryHours.instructor || '0:00';
-              summaryInputs[7].value = summaryHours.p1us || '0:00';
-            }
+            console.log('✅ Summary hours restored:', {
+              pic: summaryInputs[0].value,
+              sic: summaryInputs[1].value,
+              solo: summaryInputs[2].value,
+              instrument: summaryInputs[3].value,
+              sim: summaryInputs[4].value,
+              night: summaryInputs[5].value,
+              instructor: summaryInputs[6].value,
+              p1us: summaryInputs[7].value,
+              grandTotal: summaryInputs[8].value
+            });
+          } else {
+            console.log('⚠️ Expected 9 summary inputs but found:', summaryInputs.length);
           }
         }
         
@@ -3780,19 +3794,50 @@
             const canvas = document.getElementById('sigCanvas');
             if (canvas) {
               console.log('✍️ Reinitializing signature canvas for proper sizing...');
+              
+              // Force canvas to be visible and get proper dimensions
+              const rect = canvas.getBoundingClientRect();
+              console.log('📐 Canvas rect before setup:', rect);
+              
+              if (rect.width === 0) {
+                console.log('⚠️ Canvas has zero width, trying to set fixed dimensions...');
+                // Set explicit canvas parent width if needed
+                const canvasParent = canvas.parentElement;
+                if (canvasParent) {
+                  const parentRect = canvasParent.getBoundingClientRect();
+                  console.log('📐 Parent rect:', parentRect);
+                }
+              }
+              
               const ctx = canvas.getContext('2d');
               const ratio = Math.max(window.devicePixelRatio || 1, 1);
-              const rect = canvas.getBoundingClientRect();
-              canvas.width = rect.width * ratio;
+              const canvasWidth = Math.max(rect.width, 400); // Minimum width fallback
+              canvas.width = canvasWidth * ratio;
               canvas.height = 160 * ratio;
               ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
               ctx.lineWidth = 2;
               ctx.lineJoin = 'round';
               ctx.lineCap = 'round';
               ctx.strokeStyle = '#111827';
-              console.log('✅ Signature canvas reinitialized with dimensions:', rect.width, 'x', '160');
+              
+              console.log('✅ Signature canvas reinitialized:', {
+                actualWidth: rect.width,
+                usedWidth: canvasWidth,
+                canvasWidth: canvas.width,
+                canvasHeight: canvas.height,
+                ratio: ratio
+              });
+              
+              // Test if drawing works by drawing a small test dot
+              ctx.fillStyle = '#111827';
+              ctx.beginPath();
+              ctx.arc(10, 10, 2, 0, Math.PI * 2);
+              ctx.fill();
+              console.log('🎨 Test dot drawn to verify canvas functionality');
+            } else {
+              console.error('❌ Signature canvas not found during step 4 initialization');
             }
-          }, 100);
+          }, 200); // Increased timeout to ensure DOM is fully rendered
         }
       } else {
         console.error('❌ Step element not found for step:', step);
