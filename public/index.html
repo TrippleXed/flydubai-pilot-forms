@@ -1309,7 +1309,23 @@
     // ===== Password Protection =====
     // Check authentication immediately to prevent content flash
     const SESSION_KEY = 'flydubai_auth_' + new Date().toDateString();
+    
+    // Check for debug parameter to force re-authentication
+    const urlParams = new URLSearchParams(window.location.search);
+    const forceAuth = urlParams.get('debug') === 'auth';
+    
+    if (forceAuth) {
+      localStorage.removeItem(SESSION_KEY);
+      console.log('🔓 Debug mode: Forcing re-authentication');
+    }
+    
     let isAuthenticated = localStorage.getItem(SESSION_KEY) === 'true';
+    
+    console.log('🔐 Auth Debug Info:');
+    console.log('- Session Key:', SESSION_KEY);
+    console.log('- Stored Value:', localStorage.getItem(SESSION_KEY));
+    console.log('- Is Authenticated:', isAuthenticated);
+    console.log('- Force Auth:', forceAuth);
     
     // If not authenticated, hide content but preserve session recovery functions
     if (!isAuthenticated) {
