@@ -3009,8 +3009,8 @@
           });
         });
         
-        // Collect summary flight hours
-        const summaryInputs = document.querySelectorAll('.form-step[data-step="2"] table tbody input.hhmm');
+        // Collect summary flight hours - use specific selector for summary table only
+        const summaryInputs = document.querySelectorAll('.form-step[data-step="2"] .summary table tbody input.hhmm');
         console.log('📊 === COLLECTING SUMMARY HOURS ===');
         console.log('📊 Found summary table inputs:', summaryInputs.length);
         console.log('📊 Summary input values:', Array.from(summaryInputs).map(input => input.value || '0:00'));
@@ -3403,7 +3403,7 @@
           console.log('📊 Populating summary hours...');
           console.log('📊 Summary data to restore:', formData.flightExperience.summaryHours);
           
-          const summaryInputs = document.querySelectorAll('.form-step[data-step="2"] table tbody input.hhmm');
+          const summaryInputs = document.querySelectorAll('.form-step[data-step="2"] .summary table tbody input.hhmm');
           console.log('📊 Found summary inputs for restoration:', summaryInputs.length);
           console.log('📊 Summary inputs:', Array.from(summaryInputs).map(input => input.placeholder));
           
@@ -4265,7 +4265,7 @@
       }
       
       // Validate summary/grand total fields (9 fields: PIC/P1, SIC/P2, Solo, Instrument, Sim, Night, Instructor, P1 U/S, Grand Total)
-      const summaryTableInputs = document.querySelectorAll('.form-step[data-step="2"] table tbody input.hhmm');
+      const summaryTableInputs = document.querySelectorAll('.form-step[data-step="2"] .summary table tbody input.hhmm');
       summaryTableInputs.forEach((summaryInput, index) => {
         if (summaryInput && (!summaryInput.value.trim() || summaryInput.value === '0:00')) {
           hasTimeError = true;
@@ -5541,7 +5541,7 @@
       
       // Validate summary/grand total table fields
       if (isValid) {  // Only check summary fields if aircraft sections are valid
-        const summaryTableInputs = document.querySelectorAll('.form-step[data-step="2"] table tbody input.hhmm');
+        const summaryTableInputs = document.querySelectorAll('.form-step[data-step="2"] .summary table tbody input.hhmm');
         summaryTableInputs.forEach((summaryInput, index) => {
           if (summaryInput && (!summaryInput.value.trim() || summaryInput.value === '0:00')) {
             console.log(`❌ Summary field ${index + 1} not completed`);
