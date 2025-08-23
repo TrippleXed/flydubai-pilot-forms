@@ -5177,6 +5177,12 @@
           return; // Skip validation for these fields
         }
         
+        // Skip ROL fields if "Attached to License" is selected
+        const rolType = document.getElementById('rolType')?.value;
+        if ((id === 'rolNumber' || id === 'rolIssue' || id === 'rolExpiry') && rolType === 'Attached to License') {
+          return; // Skip validation for ROL fields
+        }
+        
         if (field && !field.value.trim()) {
           field.classList.add('validation-error');
           
