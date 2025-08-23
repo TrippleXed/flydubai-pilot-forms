@@ -193,9 +193,10 @@ export default async function handler(req, res) {
     });
     
     const sendStartTime = Date.now();
+    let emailResult;
     
     try {
-      const emailResult = await transporter.sendMail(mailOptions);
+      emailResult = await transporter.sendMail(mailOptions);
       const sendDuration = Date.now() - sendStartTime;
       
       console.log(`[${submissionId}] 🎉 EMAIL SENT SUCCESSFULLY! (${sendDuration}ms)`);
