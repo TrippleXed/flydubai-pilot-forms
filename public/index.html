@@ -1326,12 +1326,20 @@
     // Force password protection for testing - remove this line for production
     const forcePassword = true; // Set to false in production
     
-    let isAuthenticated = !forcePassword && urlParams.has('authenticated');
+    // Check for temporary authentication
+    const tempAuth = localStorage.getItem('temp_auth') === 'true';
+    if (tempAuth) {
+      localStorage.removeItem('temp_auth'); // Clear it immediately
+      console.log('🔓 Temporary authentication found - allowing access');
+    }
+    
+    let isAuthenticated = (!forcePassword && urlParams.has('authenticated')) || tempAuth;
     
     console.log('🔐 Password Protection Debug:');
     console.log('- URL params:', urlParams.toString());
     console.log('- Has authenticated param:', urlParams.has('authenticated'));
     console.log('- Force password mode:', forcePassword);
+    console.log('- Temporary auth:', tempAuth);
     console.log('- Final authenticated status:', isAuthenticated);
     console.log('- localStorage keys:', Object.keys(localStorage));
     
@@ -1436,19 +1444,32 @@
         
         // Handle form submission
         const passwordForm = document.getElementById('passwordForm');
+        console.log('🔗 Looking for password form:', passwordForm ? 'FOUND' : 'NOT FOUND');
+        
         if (passwordForm) {
           passwordForm.addEventListener('submit', function(e) {
+            console.log('📝 Form submission triggered!');
             e.preventDefault();
             const userPassword = document.getElementById('passwordInput')?.value;
+            console.log('🔑 Password entered:', userPassword ? 'YES' : 'NO');
+            console.log('🔑 Correct password:', FORM_PASSWORD);
             
             if (userPassword === FORM_PASSWORD) {
+              console.log('✅ Password correct! Redirecting...');
+              
+              // Temporarily disable force password for the redirect
+              localStorage.setItem('temp_auth', 'true');
+              
               // Reload page with authenticated parameter
               const newUrl = window.location.pathname + '?authenticated=true';
+              console.log('🔄 Redirecting to:', newUrl);
               window.location.href = newUrl;
               
             } else {
+              console.log('❌ Password incorrect! Attempt:', attempts + 1);
               attempts++;
               if (attempts >= maxAttempts) {
+                console.log('🚫 Too many attempts - showing denied screen');
                 document.body.innerHTML = `
                   <div style="display: flex; justify-content: center; align-items: center; height: 100vh; background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);">
                     <div style="text-align: center; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);">
@@ -1459,10 +1480,13 @@
                   </div>
                 `;
               } else {
+                console.log('🔄 Showing password form again with error');
                 showPasswordForm();
               }
             }
           });
+        } else {
+          console.log('❌ CRITICAL: Password form not found in DOM!');
         }
       }
       
