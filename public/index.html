@@ -5370,8 +5370,8 @@
           `;
         }
         
-        // 9. Emirates ID (only if not "No Current UAE Visa")
-        if (docs.emiratesIdNumber && (!docs.visaStatus || docs.visaStatus !== 'No Current UAE Visa')) {
+        // 9. Emirates ID
+        if (docs.emiratesIdNumber) {
           html += `
             <div style="margin-bottom: 20px;">
               <h4 style="color: var(--flydubai-navy); margin-bottom: 12px;">🆔 Emirates ID</h4>

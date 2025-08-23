@@ -178,11 +178,28 @@ export default async function handler(req, res) {
     const recipientEmail = isTestMode ? testEmail : (process.env.RECIPIENT_EMAIL || 'jason.cameron@flydubai.com');
     
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: `"flydubai Pilot Forms" <${process.env.EMAIL_USER}>`,
       to: recipientEmail,
       subject: `${isTestMode ? '[TEST] ' : ''}Pilot Application - ${formData.personalInfo?.pilotName || 'Pilot Submission'} - ${formData.applicationId || 'No ID'}`,
       html: emailContent,
       attachments: zipAttachment ? [zipAttachment] : [],
+      // Enhanced headers for better deliverability  
+      headers: {
+        'X-Priority': '1',
+        'X-MSMail-Priority': 'High', 
+        'Importance': 'High',
+        'X-Mailer': 'flydubai Pilot Forms System v1.0',
+        'Reply-To': process.env.EMAIL_USER,
+        'Organization': 'flydubai',
+        'X-Application': 'flydubai-pilot-forms',
+        'X-Submission-ID': submissionId,
+        'List-Unsubscribe': `<mailto:${process.env.EMAIL_USER}?subject=unsubscribe>`,
+        'MIME-Version': '1.0'
+      },
+      messageId: `<pilot-app-${submissionId}-${Date.now()}@flydubai-forms.local>`,
+      date: new Date(),
+      encoding: 'utf8',
+      textEncoding: 'base64'
     };
     
     if (isTestMode) {
@@ -257,6 +274,35 @@ export default async function handler(req, res) {
       if (!emailResult.accepted?.includes(recipientEmail)) {
         console.error(`[${submissionId}] ❌ ${recipientEmail} was NOT accepted by Gmail!`);
         console.error(`[${submissionId}] ❌ Accepted recipients:`, emailResult.accepted);
+        
+        // Try backup delivery method - send copy to sender with note about delivery issue
+        console.log(`[${submissionId}] 🔄 ATTEMPTING BACKUP DELIVERY to sender...`);
+        try {
+          const backupMailOptions = {
+            ...mailOptions,
+            to: process.env.EMAIL_USER, // Send to sender
+            subject: `[DELIVERY ISSUE] ${mailOptions.subject}`,
+            html: `
+              <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+                <h3 style="color: #dc2626; margin: 0 0 10px 0;">⚠️ Email Delivery Issue</h3>
+                <p style="margin: 0; color: #7f1d1d;">
+                  The original email to <strong>${recipientEmail}</strong> was not accepted by the mail server. 
+                  This backup copy has been sent to you. Please forward it manually to the intended recipient.
+                </p>
+                <p style="margin: 10px 0 0 0; font-size: 12px; color: #991b1b;">
+                  Submission ID: ${submissionId} | Original Recipient: ${recipientEmail}
+                </p>
+              </div>
+              ${emailContent}
+            `
+          };
+          
+          const backupResult = await transporter.sendMail(backupMailOptions);
+          console.log(`[${submissionId}] ✅ Backup delivery sent to ${process.env.EMAIL_USER}`);
+          
+        } catch (backupError) {
+          console.error(`[${submissionId}] ❌ Backup delivery also failed:`, backupError.message);
+        }
       } else {
         console.log(`[${submissionId}] ✅ ${recipientEmail} was accepted by Gmail`);
       }
@@ -340,7 +386,7 @@ function generateEmailContent(formData) {
       
       <!-- Application ID -->
       <div style="background: #e6f3ff; border: 1px solid #007acc; border-radius: 8px; padding: 15px; margin-bottom: 25px; text-align: center;">
-        <h2 style="margin: 0; color: #1a365d; font-size: 18px;">Application ID: ${formData.applicationId || 'Not Generated'}</h2>
+        <h2 style="margin: 0; color: #1a365d; font-size: 18px;">Application ID: ${formData.personalInfo?.pilotName ? `FD-${Date.now().toString(36).toUpperCase()}-${formData.personalInfo.pilotName.replace(/\s+/g, '').substring(0,3).toUpperCase()}` : 'Not Generated'}</h2>
         <p style="margin: 5px 0 0 0; color: #374151; font-size: 14px;">Submitted: ${formData.submittedAt ? new Date(formData.submittedAt).toLocaleString() : new Date().toLocaleString()}</p>
       </div>
 
@@ -348,14 +394,14 @@ function generateEmailContent(formData) {
       <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #007acc;">
         <h2 style="color: #1a365d; margin-top: 0; margin-bottom: 15px;">👤 Personal Information</h2>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px;">
-          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Full Name:</strong> ${formData.pilotName || 'N/A'}</p>
-          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Nationality:</strong> ${formData.nationality || 'N/A'}</p>
-          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Email:</strong> ${formData.contactEmail || 'N/A'}</p>
-          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Phone:</strong> ${formData.phoneNumber || 'N/A'}</p>
-          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Date of Birth:</strong> ${formData.dateOfBirth || 'N/A'}</p>
-          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Designation:</strong> ${formData.designation || 'N/A'}</p>
-          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Expected Date of Joining:</strong> ${formData.expectedDateOfJoining || 'N/A'}</p>
-          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Previous Employer:</strong> ${formData.previousEmployer || 'N/A'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Full Name:</strong> ${formData.personalInfo?.pilotName || 'N/A'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Nationality:</strong> ${formData.personalInfo?.nationality || 'N/A'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Email:</strong> ${formData.personalInfo?.contactEmail || 'N/A'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Phone:</strong> ${(formData.personalInfo?.countryCode || '') + ' ' + (formData.personalInfo?.phoneNumber || 'N/A')}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Date of Birth:</strong> ${formData.personalInfo?.dateOfBirth || 'N/A'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Designation:</strong> ${formData.personalInfo?.designation || 'N/A'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Expected Date of Joining:</strong> ${formData.personalInfo?.expectedDateOfJoining || 'N/A'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Previous Employer:</strong> ${formData.personalInfo?.previousEmployer || 'N/A'}</p>
         </div>
       </div>
 
@@ -363,13 +409,15 @@ function generateEmailContent(formData) {
       <div style="background: #f0f9ff; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #0ea5e9;">
         <h2 style="color: #1a365d; margin-top: 0; margin-bottom: 15px;">✈️ Flight Experience</h2>
         <div style="background: white; padding: 15px; border-radius: 6px; margin-bottom: 15px; text-align: center;">
-          <h3 style="margin: 0; color: #16a34a; font-size: 20px;">Grand Total Flight Hours: ${formData.grandTotalHours || 'Not Calculated'}</h3>
+          <h3 style="margin: 0; color: #16a34a; font-size: 20px;">Grand Total Flight Hours: ${formData.flightExperience?.grandTotals?.combined || 'Not Calculated'}</h3>
         </div>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
-          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Boeing 737 NG/MAX Hours:</strong> ${formData.b737_combined || 'N/A'}</p>
-          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Multi-Pilot Hours:</strong> ${formData.b737_mp || 'N/A'}</p>
-          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Night Hours:</strong> ${formData.b737_night || 'N/A'}</p>
-          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Boeing 737 Classic Hours:</strong> ${formData.b737c_combined || 'N/A'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>PIC/P1 Total:</strong> ${formData.flightExperience?.summaryHours?.pic || 'N/A'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>SIC/P2 Total:</strong> ${formData.flightExperience?.summaryHours?.sic || 'N/A'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Multi-Pilot Hours:</strong> ${formData.flightExperience?.grandTotals?.multiPilot || 'N/A'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Night Hours:</strong> ${formData.flightExperience?.summaryHours?.night || 'N/A'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Simulator Hours:</strong> ${formData.flightExperience?.summaryHours?.sim || 'N/A'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Instructor Hours:</strong> ${formData.flightExperience?.summaryHours?.instructor || 'N/A'}</p>
         </div>
       </div>
 
@@ -381,7 +429,7 @@ function generateEmailContent(formData) {
           <p style="margin: 0; color: #7c2d12; font-size: 14px;">Download and extract the attached ZIP file to access all uploaded documents</p>
         </div>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
-          ${generateDocumentStatus(formData.uploads, 'pilotLicenseFile', 'Pilot License')}
+          ${generateDocumentStatus(formData.uploads, 'licenseFile', 'Pilot License')}
           ${generateDocumentStatus(formData.uploads, 'medicalFile', 'Medical Certificate')}
           ${generateDocumentStatus(formData.uploads, 'radioLicenseFile', 'Radio License')}
           ${generateDocumentStatus(formData.uploads, 'rolFile', 'ROL Certificate')}
@@ -400,9 +448,9 @@ function generateEmailContent(formData) {
       <div style="background: #f0fdf4; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #16a34a;">
         <h2 style="color: #1a365d; margin-top: 0; margin-bottom: 15px;">✍️ Declaration & Signature</h2>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
-          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Declaration Accepted:</strong> ${formData.declaration ? '✅ Yes' : '❌ No'}</p>
-          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Signature Date:</strong> ${formData.signatureDate || 'N/A'}</p>
-          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Digital Signature:</strong> ${formData.signaturePad ? '✅ Provided' : '❌ Missing'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Declaration Accepted:</strong> ${formData.declaration?.declarationAccepted ? '✅ Yes' : '❌ No'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Signature Date:</strong> ${formData.declaration?.signatureDate || 'N/A'}</p>
+          <p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>Digital Signature:</strong> ${formData.declaration?.signatureDataUrl ? '✅ Provided' : '❌ Missing'}</p>
         </div>
       </div>
 
