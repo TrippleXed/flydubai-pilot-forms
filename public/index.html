@@ -2146,7 +2146,7 @@
 
         <div class="form-section">
           <h2 class="section-h">🌐 English Proficiency Certificate (if applicable)</h2>
-          <div class="grid" style="grid-template-columns: 250px 300px 170px 170px;">
+          <div class="grid" style="grid-template-columns: 250px 350px 170px 170px;">
             <div>
               <label>Proficiency Level</label>
               <select id="englishLevel">
@@ -6835,39 +6835,6 @@
       const englishTestDateDiv = document.getElementById('englishTestDateDiv');
       const englishLevelDiv = englishLevel ? englishLevel.parentElement : null;
       
-      if (englishTestType && englishUploadDiv) {
-        englishTestType.addEventListener('change', () => {
-          if (englishTestType.value === 'Attached to License') {
-            // Hide upload, test date, and proficiency level fields
-            englishUploadDiv.style.display = 'none';
-            if (englishTestDateDiv) englishTestDateDiv.style.display = 'none';
-            if (englishLevelDiv) englishLevelDiv.style.display = 'none';
-            
-            // Clear the file input when hiding
-            const fileInput = document.getElementById('englishFile');
-            if (fileInput) {
-              fileInput.value = '';
-              // Remove any validation errors
-              const formSection = fileInput.closest('.form-section');
-              if (formSection) {
-                formSection.style.borderColor = '';
-                formSection.style.backgroundColor = '';
-                const errorMsg = formSection.querySelector('.error-message');
-                if (errorMsg) errorMsg.remove();
-              }
-            }
-            
-            // Clear other fields
-            if (englishTestDate) englishTestDate.value = '';
-            if (englishLevel) englishLevel.value = '';
-          } else {
-            // Show all fields when not "Attached to License"
-            englishUploadDiv.style.display = 'block';
-            if (englishTestDateDiv) englishTestDateDiv.style.display = 'block';
-            if (englishLevelDiv) englishLevelDiv.style.display = 'block';
-          }
-        });
-      }
       
       console.log('✅ English test type handler set up completed');
       
