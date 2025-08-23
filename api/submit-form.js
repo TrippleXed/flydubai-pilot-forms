@@ -535,6 +535,11 @@ function generateDocumentStatus(uploads, docId, docName, formData = null) {
     return `<p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>${docName}:</strong> ✅ Not Required<br><span style="font-size: 12px; color: #6b7280;">Applicant does not have Emirates ID</span></p>`;
   }
   
+  // Special handling for UAE Visa "No Current UAE Visa"
+  if (docId === 'visaFile' && formData?.documentation?.visaStatus === 'No Current UAE Visa') {
+    return `<p style="margin: 8px 0; padding: 8px; background: white; border-radius: 6px;"><strong>${docName}:</strong> ✅ Not Required<br><span style="font-size: 12px; color: #6b7280;">No current UAE visa</span></p>`;
+  }
+  
   const status = doc ? '✅ Uploaded' : '❌ Missing';
   const fileName = doc ? doc.name : 'Not uploaded';
   const size = doc && doc.data ? `(${(doc.data.length / 1024).toFixed(1)}KB)` : '';
