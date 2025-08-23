@@ -1323,8 +1323,8 @@
     // Check if this is an authenticated reload (temporary session flag)
     const urlParams = new URLSearchParams(window.location.search);
     
-    // Force password protection for testing - remove this line for production
-    const forcePassword = true; // Set to false in production
+    // Force password protection for testing - set to false for production
+    const forcePassword = false; // Set to false in production - CHANGED FOR TESTING
     
     // Check for temporary authentication
     const tempAuth = localStorage.getItem('temp_auth') === 'true';
@@ -2983,12 +2983,23 @@
     function recoverSession() {
       console.log('🔄 Recovering session...');
       const savedData = localStorage.getItem('pilotFormData');
+      console.log('💾 Raw saved data:', savedData ? 'EXISTS' : 'NOT FOUND');
+      
       if (savedData) {
         try {
           const data = JSON.parse(savedData);
+          console.log('📊 Parsed session data:', data);
+          console.log('📋 Form data in session:', data.formData);
+          console.log('👤 Personal info in session:', data.formData?.personalInfo);
+          
           formData = data.formData || {};
           currentStep = data.currentStep || 1;
           sessionId = data.sessionId || generateSessionId();
+          
+          console.log('🔄 After restoration:');
+          console.log('- formData:', formData);
+          console.log('- currentStep:', currentStep);
+          console.log('- sessionId:', sessionId);
           
           populateFormFields();
           showStep(currentStep);
@@ -3006,8 +3017,15 @@
           
           // Force a complete form reload to restore aircraft sections and other data
           setTimeout(() => {
+            console.log('🔄 Triggering complete form data reload...');
             loadFormData();
             console.log('🔄 Complete form data reload triggered');
+            
+            // Also manually populate fields after load
+            setTimeout(() => {
+              console.log('📝 Manual field population after reload...');
+              populateFormFields();
+            }, 200);
           }, 100);
           
           console.log('✅ Session recovered successfully');
@@ -3434,6 +3452,7 @@
       if (formData.personalInfo) {
         console.log('👤 Populating personal information...');
         const info = formData.personalInfo;
+        console.log('📋 Personal info to populate:', info);
         
         const personalFields = [
           { id: 'pilotName', value: info.pilotName },
@@ -3445,6 +3464,8 @@
           { id: 'countryCode', value: info.countryCode },
           { id: 'phoneNumber', value: info.phoneNumber }
         ];
+        
+        console.log('📝 Fields to populate:', personalFields);
         
         personalFields.forEach(field => {
           const element = document.getElementById(field.id);
