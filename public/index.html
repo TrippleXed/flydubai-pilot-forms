@@ -895,6 +895,45 @@
       }
     }
     
+    /* Portrait mode mobile - force single column */
+    @media (max-width: 768px) and (orientation: portrait) {
+      .form-grid, .form-section .form-grid {
+        grid-template-columns: 1fr !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+      }
+      
+      .form-group {
+        width: 100% !important;
+        min-width: unset !important;
+        flex: none !important;
+      }
+      
+      /* Force signature section to single column */
+      #signSection .form-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+      }
+      
+      #signSection .form-grid > * {
+        width: 100% !important;
+        margin-bottom: 10px;
+      }
+      
+      /* Aircraft section single column */
+      .aircraft-type-section .form-grid {
+        display: flex !important;
+        flex-direction: column !important;
+      }
+      
+      .aircraft-type-section .form-grid > * {
+        width: 100% !important;
+        margin-bottom: 10px;
+      }
+    }
+    
     /* Loading States */
     .loading {
       opacity: 0.6;
