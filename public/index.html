@@ -594,41 +594,58 @@
     /* Responsive */
     @media (max-width: 768px) {
       .container {
-        margin: 10px;
-        padding: 10px;
+        margin: 5px;
+        padding: 8px;
       }
       
       .header {
-        padding: 16px 20px;
+        padding: 12px 15px;
         flex-direction: column;
         text-align: center;
-        gap: 12px;
+        gap: 8px;
+        min-height: auto;
       }
       
-      .header h1 {
-        position: static;
-        transform: none;
-        margin-top: 12px;
+      .header-center {
+        order: 2;
       }
       
       .header .logo {
-        width: 280px;
-        height: 56px;
+        width: 250px;
+        height: 50px;
+        order: 1;
       }
       
       .fof-logo {
-        width: 80px;
-        height: 56px;
+        width: 70px;
+        height: 50px;
+        order: 3;
+        background-position: center;
+      }
+      
+      .header h1 {
+        font-size: 20px;
+        margin: 5px 0;
+        line-height: 1.2;
       }
       
       .form-step {
-        padding: 20px;
+        padding: 15px;
+        margin: 10px 0;
+      }
+      
+      .step-title {
+        font-size: 18px;
+      }
+      
+      .step-subtitle {
+        font-size: 13px;
       }
       
       .form-navigation {
-        padding: 16px 20px;
+        padding: 12px 15px;
         flex-direction: column;
-        gap: 16px;
+        gap: 12px;
       }
       
       .nav-left, .nav-right {
@@ -638,16 +655,100 @@
       
       .form-grid {
         grid-template-columns: 1fr;
+        gap: 15px;
+      }
+      
+      .progress-container {
+        padding: 10px 15px;
       }
       
       .progress-steps {
-        font-size: 10px;
+        font-size: 9px;
+        gap: 8px;
+      }
+      
+      .step-number {
+        width: 18px;
+        height: 18px;
+        font-size: 9px;
+      }
+      
+      .form-group label {
+        font-size: 13px;
+      }
+      
+      .form-input, .form-select {
+        font-size: 14px;
+        padding: 10px;
+      }
+      
+      .btn {
+        font-size: 14px;
+        padding: 10px 20px;
+      }
+      
+      .section-title {
+        font-size: 16px;
+      }
+      
+      .upload-area {
+        padding: 15px;
+        font-size: 13px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .container {
+        margin: 2px;
+        padding: 5px;
+      }
+      
+      .header {
+        padding: 10px;
+        gap: 6px;
+      }
+      
+      .header .logo {
+        width: 200px;
+        height: 40px;
+      }
+      
+      .fof-logo {
+        width: 60px;
+        height: 40px;
+      }
+      
+      .header h1 {
+        font-size: 16px;
+      }
+      
+      .form-step {
+        padding: 10px;
+      }
+      
+      .step-title {
+        font-size: 16px;
+      }
+      
+      .progress-steps {
+        font-size: 8px;
+        gap: 4px;
       }
       
       .step-number {
         width: 16px;
         height: 16px;
         font-size: 8px;
+      }
+      
+      .form-input, .form-select {
+        font-size: 13px;
+        padding: 8px;
+      }
+      
+      .btn {
+        font-size: 13px;
+        padding: 8px 16px;
       }
     }
     
@@ -1422,7 +1523,7 @@
             <div style="background: white; padding: 40px; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4); width: 100%; max-width: 400px;">
               <div style="text-align: center; margin-bottom: 32px;">
                 <h2 style="color: #7c3aed; margin-bottom: 12px; font-size: 28px; font-weight: 700;">Access Code Required</h2>
-                <p style="color: #6b7280; margin: 0;">Enter your access code to continue to the pilot application form.</p>
+                <p style="color: #6b7280; margin: 0;">Enter your access code to continue to the pilot documentation form.</p>
               </div>
               
               ${sessionRecoveryMessage}
@@ -2804,10 +2905,10 @@
       <!-- Step 4: Review & Submit -->
       <div class="form-step" data-step="4">
         <h2 class="step-title">🔍 Review & Submit</h2>
-        <p class="step-subtitle">Please review all your information before submitting your application.</p>
+        <p class="step-subtitle">Please review all your information before submitting your documentation.</p>
         
         <div class="form-section">
-          <div class="section-title">Application Summary</div>
+          <div class="section-title">Documentation Summary</div>
           <div id="applicationSummary">
             <!-- Summary will be populated by JavaScript -->
           </div>
@@ -4227,7 +4328,7 @@
         
         // Generate summary if showing review step
         if (step === 4) {
-          console.log('📄 Generating application summary...');
+          console.log('📄 Generating documentation summary...');
           collectFormData();
           generateApplicationSummary();
           
@@ -4402,7 +4503,7 @@
       
       showErrorModal(
         'Form Incomplete',
-        'Your application cannot be submitted because some required information is missing.',
+        'Your documentation cannot be submitted because some required information is missing.',
         errors.map(error => `Fix: ${error}`),
         `Found ${errors.length} validation error(s)`
       );
@@ -4563,9 +4664,9 @@
       
       message.innerHTML = `
         <div style="margin-bottom: 10px; font-size: 24px;">✅</div>
-        <div>Application Submitted Successfully!</div>
+        <div>Documentation Submitted Successfully!</div>
         <div style="font-size: 14px; font-weight: 400; margin-top: 8px; opacity: 0.9;">
-          Your application has been sent to flydubai for review.
+          Your documentation has been sent to flydubai for review.
         </div>
         ${submissionDetails}
         </div>
@@ -5443,7 +5544,7 @@
       // Check declaration checkbox
       const declaration = document.getElementById('declaration');
       if (!declaration.checked) {
-        alert('Please accept the declaration before submitting your application.');
+        alert('Please accept the declaration before submitting your documentation.');
         return false;
       }
       
@@ -5513,7 +5614,7 @@
       uploadArea.style.borderColor = '#e2e8f0';
     }
 
-    // Generate application summary for review step
+    // Generate documentation summary for review step
     function generateApplicationSummary() {
       if (currentStep !== 4) return;
       
