@@ -1107,43 +1107,59 @@
           <h2 class="section-h">FLYING EXPERIENCE SUMMARY</h2>
           <h3 class="section-h" style="margin-top:6px">GENERAL</h3>
           <div class="section">
-            <!-- Mobile-friendly individual inputs -->
-            <div class="form-grid">
-              <div class="form-group">
-                <label><strong>PIC/P1</strong></label>
-                <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center;">
+            <!-- Mobile-friendly compact row layout -->
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              <!-- Row 1: PIC, SIC, SOLO -->
+              <div style="display: flex; gap: 8px;">
+                <div style="flex: 1;">
+                  <label style="display: block; font-size: 11px; font-weight: bold; margin-bottom: 4px; text-align: center;">PIC/P1</label>
+                  <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center; font-size: 12px; padding: 6px;">
+                </div>
+                <div style="flex: 1;">
+                  <label style="display: block; font-size: 11px; font-weight: bold; margin-bottom: 4px; text-align: center;">SIC/P2</label>
+                  <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center; font-size: 12px; padding: 6px;">
+                </div>
+                <div style="flex: 1;">
+                  <label style="display: block; font-size: 11px; font-weight: bold; margin-bottom: 4px; text-align: center;">SOLO</label>
+                  <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center; font-size: 12px; padding: 6px;">
+                </div>
               </div>
-              <div class="form-group">
-                <label><strong>SIC/P2</strong></label>
-                <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center;">
+              
+              <!-- Row 2: INSTRUMENT, SIM, NIGHT -->
+              <div style="display: flex; gap: 8px;">
+                <div style="flex: 1;">
+                  <label style="display: block; font-size: 11px; font-weight: bold; margin-bottom: 4px; text-align: center;">INSTRUMENT</label>
+                  <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center; font-size: 12px; padding: 6px;">
+                </div>
+                <div style="flex: 1;">
+                  <label style="display: block; font-size: 11px; font-weight: bold; margin-bottom: 4px; text-align: center;">SIM</label>
+                  <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center; font-size: 12px; padding: 6px;">
+                </div>
+                <div style="flex: 1;">
+                  <label style="display: block; font-size: 11px; font-weight: bold; margin-bottom: 4px; text-align: center;">NIGHT</label>
+                  <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center; font-size: 12px; padding: 6px;">
+                </div>
               </div>
-              <div class="form-group">
-                <label><strong>SOLO</strong></label>
-                <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center;">
+              
+              <!-- Row 3: INSTRUCTOR, P1 U/S -->
+              <div style="display: flex; gap: 8px;">
+                <div style="flex: 1;">
+                  <label style="display: block; font-size: 11px; font-weight: bold; margin-bottom: 4px; text-align: center;">INSTRUCTOR</label>
+                  <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center; font-size: 12px; padding: 6px;">
+                </div>
+                <div style="flex: 1;">
+                  <label style="display: block; font-size: 11px; font-weight: bold; margin-bottom: 4px; text-align: center;">P1 U/S</label>
+                  <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center; font-size: 12px; padding: 6px;">
+                </div>
+                <div style="flex: 1;">
+                  <!-- Empty space to maintain alignment -->
+                </div>
               </div>
-              <div class="form-group">
-                <label><strong>INSTRUMENT</strong></label>
-                <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center;">
-              </div>
-              <div class="form-group">
-                <label><strong>SIM</strong></label>
-                <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center;">
-              </div>
-              <div class="form-group">
-                <label><strong>NIGHT</strong></label>
-                <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center;">
-              </div>
-              <div class="form-group">
-                <label><strong>INSTRUCTOR</strong></label>
-                <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center;">
-              </div>
-              <div class="form-group">
-                <label><strong>P1 U/S</strong></label>
-                <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center;">
-              </div>
-              <div class="form-group">
-                <label><strong>GRAND TOTAL</strong></label>
-                <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center; font-weight: bold; background: #f0f9ff;">
+              
+              <!-- Row 4: GRAND TOTAL (full width, highlighted) -->
+              <div style="margin-top: 8px;">
+                <label style="display: block; font-size: 12px; font-weight: bold; margin-bottom: 6px; text-align: center; color: #1e40af;">GRAND TOTAL</label>
+                <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center; font-size: 14px; font-weight: bold; background: #dbeafe; border: 2px solid #3b82f6; padding: 8px;">
               </div>
             </div>
           </div>
