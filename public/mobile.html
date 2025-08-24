@@ -54,6 +54,15 @@
       width: 100vw;
       max-width: 100vw;
     }
+
+    /* Initially hide all content until password is verified */
+    .content-container {
+      display: none;
+    }
+    
+    .password-protecting {
+      display: block;
+    }
     
     .container {
       width: 100vw;
@@ -122,11 +131,13 @@
     }
     
     .header h1 {
-      font-size: 12px;
+      font-size: 14px;
       font-weight: 700;
       color: var(--flydubai-navy);
       margin: 0;
       line-height: 1.2;
+      text-align: center;
+      flex: 1;
     }
     
     /* Mobile Progress */
@@ -203,10 +214,16 @@
       padding: 15px 12px;
       width: 100%;
       display: none;
+      animation: fadeIn 0.3s ease;
     }
     
     .form-step.active {
       display: block;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     
     .step-title {
@@ -228,7 +245,7 @@
       width: 100%;
     }
     
-    .section-title {
+    .section-title, .section-h {
       font-size: 16px;
       font-weight: 600;
       color: var(--flydubai-navy);
@@ -238,7 +255,7 @@
     }
     
     /* Mobile Form Grid - Always Single Column */
-    .form-grid {
+    .form-grid, .grid {
       display: flex;
       flex-direction: column;
       gap: 15px;
@@ -251,7 +268,7 @@
       margin-bottom: 15px;
     }
     
-    .form-group label {
+    .form-group label, label {
       display: block;
       margin-bottom: 6px;
       font-weight: 500;
@@ -265,7 +282,7 @@
     }
     
     /* Mobile Form Inputs */
-    .form-input, .form-select {
+    .form-input, .form-select, input, select, textarea {
       width: 100%;
       padding: 12px;
       border-radius: 8px;
@@ -278,7 +295,7 @@
       box-sizing: border-box;
     }
     
-    .form-input:focus, .form-select:focus {
+    .form-input:focus, .form-select:focus, input:focus, select:focus, textarea:focus {
       outline: none;
       border-color: var(--flydubai-blue);
       box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
@@ -315,6 +332,10 @@
       border: 1px solid var(--line);
     }
     
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+    
     /* Mobile Navigation */
     .form-navigation {
       padding: 15px 12px;
@@ -349,7 +370,7 @@
     }
     
     /* Mobile Aircraft Sections */
-    .aircraft-type-section {
+    .aircraft-type-section, .section {
       background: var(--card);
       border: 1px solid var(--line);
       border-radius: 16px;
@@ -379,41 +400,79 @@
       margin: 8px 0;
       width: fit-content;
     }
+
+    /* Time input styling */
+    .hhmm {
+      width: 80px !important;
+      padding: 8px !important;
+      font-family: 'Courier New', monospace !important;
+      text-align: center;
+      font-weight: 600;
+      border: 2px solid var(--line) !important;
+    }
+
+    .hhmm:focus {
+      border-color: var(--flydubai-blue) !important;
+    }
     
-    /* Mobile Tables */
+    /* Mobile Tables - Convert to vertical cards */
+    .table-mobile {
+      display: block;
+      width: 100%;
+    }
+    
+    .table-mobile .table-row {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 10px;
+      display: block;
+    }
+    
+    .table-mobile .table-cell {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .table-mobile .table-cell:last-child {
+      border-bottom: none;
+    }
+    
+    .table-mobile .table-label {
+      font-weight: 600;
+      color: var(--flydubai-navy);
+      flex: 1;
+    }
+    
+    .table-mobile .table-value {
+      flex: 1;
+      text-align: right;
+    }
+
+    /* Regular tables for summary */
     table {
       width: 100%;
       border-collapse: collapse;
       margin: 15px 0;
-      overflow-x: auto;
-      display: block;
-      white-space: nowrap;
-    }
-    
-    table thead, table tbody {
-      display: block;
-    }
-    
-    table tr {
-      display: block;
-      border-bottom: 1px solid var(--line);
+      font-size: 12px;
     }
     
     table th, table td {
-      display: inline-block;
-      padding: 8px 12px;
-      text-align: left;
-      vertical-align: top;
-      width: 150px;
-      white-space: normal;
-      word-wrap: break-word;
-      font-size: 12px;
+      padding: 8px 4px;
+      text-align: center;
+      border: 1px solid var(--line);
+      vertical-align: middle;
     }
     
     table th {
       background: var(--flydubai-light-blue);
       font-weight: 600;
       color: var(--flydubai-navy);
+      font-size: 10px;
     }
     
     /* Mobile Signature Section */
@@ -429,7 +488,7 @@
       margin: 5px 0;
     }
     
-    .signature-canvas {
+    .signature-canvas, #sigCanvas {
       width: 100%;
       height: 150px;
       border: 2px solid var(--line);
@@ -472,6 +531,72 @@
       cursor: pointer;
       color: var(--muted);
     }
+
+    /* Status indicators */
+    .status-valid {
+      color: var(--success);
+      font-weight: 600;
+    }
+    
+    .status-warning {
+      color: var(--warning);
+      font-weight: 600;
+    }
+    
+    .status-expired {
+      color: var(--expired);
+      font-weight: 600;
+    }
+
+    .requirement-note {
+      background: #f8fafc;
+      padding: 12px;
+      border-radius: 8px;
+      border-left: 4px solid var(--flydubai-blue);
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .file-restoration-indicator {
+      margin-top: 8px;
+      padding: 8px 12px;
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      border-radius: 6px;
+      font-size: 12px;
+      color: #856404;
+    }
+
+    .date-print {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .kpi {
+      margin: 5px 0;
+      font-size: 13px;
+    }
+
+    .grand {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .controls {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .summary {
+      margin-top: 30px;
+    }
+
+    .no-print {
+      /* Mobile doesn't need this but keeping for compatibility */
+    }
     
     /* Hide elements not needed on mobile */
     .desktop-only {
@@ -503,9 +628,40 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
+    /* Auto-save status */
+    #autoSaveStatus {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+      z-index: 1000;
+      display: none;
+    }
+
+    /* Recovery banner */
+    #recoveryBanner {
+      background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+      border: 1px solid #a7f3d0;
+      border-radius: 12px;
+      padding: 16px;
+      margin: 10px;
+      display: none;
+    }
+
+    #recoveryBanner.show {
+      display: block;
+    }
   </style>
 </head>
 <body>
+  <!-- Auto-save status indicator -->
+  <div id="autoSaveStatus"></div>
+
   <!-- Redirect message for desktop users -->
   <script>
     // If screen is large, redirect to desktop version
@@ -514,7 +670,26 @@
     }
   </script>
   
-  <div class="container">
+  <!-- Session Recovery Banner -->
+  <div id="recoveryBanner">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+      <div style="font-size: 20px;">💾</div>
+      <div>
+        <div style="font-weight: 600; color: var(--success);">Previous Session Found</div>
+        <div style="font-size: 12px; color: var(--muted);">We found your previous form data. Would you like to restore it?</div>
+      </div>
+    </div>
+    <div style="display: flex; gap: 12px;">
+      <button onclick="recoverSession()" style="flex: 1; padding: 8px 16px; background: var(--success); color: white; border: none; border-radius: 8px; font-weight: 500; cursor: pointer;">
+        Restore Session
+      </button>
+      <button onclick="clearSession()" style="flex: 1; padding: 8px 16px; background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; font-weight: 500; cursor: pointer;">
+        Start Fresh
+      </button>
+    </div>
+  </div>
+
+  <div class="container content-container">
     <div class="card">
       <!-- Mobile Header -->
       <div class="header">
@@ -550,35 +725,667 @@
         </div>
       </div>
 
-      <div id="mobileMessage" style="text-align: center; padding: 20px; background: #f0f9ff; border: 1px solid #0369a1; margin: 10px; border-radius: 8px; color: #0369a1;">
-        📱 Mobile-optimized version loaded
+      <!-- Step 1: Personal Information -->
+      <div class="form-step active" data-step="1">
+        <h2 class="step-title">👨‍✈️ Personal Information</h2>
+        <p class="step-subtitle">Let's start with your basic information. All fields marked with <span class="required">*</span> are required.</p>
+        
+        <div class="form-section">
+          <div class="section-title">Basic Information</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="pilotName" class="required">Full Name</label>
+              <input type="text" id="pilotName" class="form-input" placeholder="Enter your full name" required />
+            </div>
+            <div class="form-group">
+              <label for="designation" class="required">Position/Role</label>
+              <select id="designation" class="form-select" required>
+                <option value="">Select Position</option>
+                <option>Captain</option>
+                <option>First Officer</option>
+                <option>Senior First Officer</option>
+                <option>Training Captain</option>
+                <option>Line Training Captain</option>
+                <option>Check Captain</option>
+                <option>Deputy Chief Pilot</option>
+                <option>Chief Pilot</option>
+                <option>Fleet Manager</option>
+                <option>Cadet</option>
+                <option>Ab-Initio</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="dateOfBirth" class="required">Date of Birth</label>
+              <input type="date" id="dateOfBirth" class="form-input" required />
+            </div>
+            <div class="form-group">
+              <label for="nationality" class="required">Nationality</label>
+              <select id="nationality" class="form-select" required>
+                <option value="">Select your nationality</option>
+                <option value="AF">Afghanistan</option>
+                <option value="AL">Albania</option>
+                <option value="DZ">Algeria</option>
+                <option value="AS">American Samoa</option>
+                <option value="AD">Andorra</option>
+                <option value="AO">Angola</option>
+                <option value="AI">Anguilla</option>
+                <option value="AQ">Antarctica</option>
+                <option value="AG">Antigua and Barbuda</option>
+                <option value="AR">Argentina</option>
+                <option value="AM">Armenia</option>
+                <option value="AW">Aruba</option>
+                <option value="AU">Australia</option>
+                <option value="AT">Austria</option>
+                <option value="AZ">Azerbaijan</option>
+                <option value="BS">Bahamas</option>
+                <option value="BH">Bahrain</option>
+                <option value="BD">Bangladesh</option>
+                <option value="BB">Barbados</option>
+                <option value="BY">Belarus</option>
+                <option value="BE">Belgium</option>
+                <option value="BZ">Belize</option>
+                <option value="BJ">Benin</option>
+                <option value="BM">Bermuda</option>
+                <option value="BT">Bhutan</option>
+                <option value="BO">Bolivia</option>
+                <option value="BA">Bosnia and Herzegovina</option>
+                <option value="BW">Botswana</option>
+                <option value="BV">Bouvet Island</option>
+                <option value="BR">Brazil</option>
+                <option value="IO">British Indian Ocean Territory</option>
+                <option value="BN">Brunei Darussalam</option>
+                <option value="BG">Bulgaria</option>
+                <option value="BF">Burkina Faso</option>
+                <option value="BI">Burundi</option>
+                <option value="KH">Cambodia</option>
+                <option value="CM">Cameroon</option>
+                <option value="CA">Canada</option>
+                <option value="CV">Cape Verde</option>
+                <option value="KY">Cayman Islands</option>
+                <option value="CF">Central African Republic</option>
+                <option value="TD">Chad</option>
+                <option value="CL">Chile</option>
+                <option value="CN">China</option>
+                <option value="CX">Christmas Island</option>
+                <option value="CC">Cocos (Keeling) Islands</option>
+                <option value="CO">Colombia</option>
+                <option value="KM">Comoros</option>
+                <option value="CG">Congo</option>
+                <option value="CD">Congo, Democratic Republic</option>
+                <option value="CK">Cook Islands</option>
+                <option value="CR">Costa Rica</option>
+                <option value="CI">Cote D'Ivoire</option>
+                <option value="HR">Croatia</option>
+                <option value="CU">Cuba</option>
+                <option value="CY">Cyprus</option>
+                <option value="CZ">Czech Republic</option>
+                <option value="DK">Denmark</option>
+                <option value="DJ">Djibouti</option>
+                <option value="DM">Dominica</option>
+                <option value="DO">Dominican Republic</option>
+                <option value="EC">Ecuador</option>
+                <option value="EG">Egypt</option>
+                <option value="SV">El Salvador</option>
+                <option value="GQ">Equatorial Guinea</option>
+                <option value="ER">Eritrea</option>
+                <option value="EE">Estonia</option>
+                <option value="ET">Ethiopia</option>
+                <option value="FK">Falkland Islands (Malvinas)</option>
+                <option value="FO">Faroe Islands</option>
+                <option value="FJ">Fiji</option>
+                <option value="FI">Finland</option>
+                <option value="FR">France</option>
+                <option value="GF">French Guiana</option>
+                <option value="PF">French Polynesia</option>
+                <option value="TF">French Southern Territories</option>
+                <option value="GA">Gabon</option>
+                <option value="GM">Gambia</option>
+                <option value="GE">Georgia</option>
+                <option value="DE">Germany</option>
+                <option value="GH">Ghana</option>
+                <option value="GI">Gibraltar</option>
+                <option value="GR">Greece</option>
+                <option value="GL">Greenland</option>
+                <option value="GD">Grenada</option>
+                <option value="GP">Guadeloupe</option>
+                <option value="GU">Guam</option>
+                <option value="GT">Guatemala</option>
+                <option value="GN">Guinea</option>
+                <option value="GW">Guinea-Bissau</option>
+                <option value="GY">Guyana</option>
+                <option value="HT">Haiti</option>
+                <option value="HM">Heard Island & Mcdonald Islands</option>
+                <option value="VA">Holy See (Vatican City State)</option>
+                <option value="HN">Honduras</option>
+                <option value="HK">Hong Kong</option>
+                <option value="HU">Hungary</option>
+                <option value="IS">Iceland</option>
+                <option value="IN">India</option>
+                <option value="ID">Indonesia</option>
+                <option value="IR">Iran, Islamic Republic Of</option>
+                <option value="IQ">Iraq</option>
+                <option value="IE">Ireland</option>
+                <option value="IL">Israel</option>
+                <option value="IT">Italy</option>
+                <option value="JM">Jamaica</option>
+                <option value="JP">Japan</option>
+                <option value="JO">Jordan</option>
+                <option value="KZ">Kazakhstan</option>
+                <option value="KE">Kenya</option>
+                <option value="KI">Kiribati</option>
+                <option value="KR">Korea</option>
+                <option value="KW">Kuwait</option>
+                <option value="KG">Kyrgyzstan</option>
+                <option value="LA">Lao People's Democratic Republic</option>
+                <option value="LV">Latvia</option>
+                <option value="LB">Lebanon</option>
+                <option value="LS">Lesotho</option>
+                <option value="LR">Liberia</option>
+                <option value="LY">Libyan Arab Jamahiriya</option>
+                <option value="LI">Liechtenstein</option>
+                <option value="LT">Lithuania</option>
+                <option value="LU">Luxembourg</option>
+                <option value="MO">Macao</option>
+                <option value="MK">Macedonia</option>
+                <option value="MG">Madagascar</option>
+                <option value="MW">Malawi</option>
+                <option value="MY">Malaysia</option>
+                <option value="MV">Maldives</option>
+                <option value="ML">Mali</option>
+                <option value="MT">Malta</option>
+                <option value="MH">Marshall Islands</option>
+                <option value="MQ">Martinique</option>
+                <option value="MR">Mauritania</option>
+                <option value="MU">Mauritius</option>
+                <option value="YT">Mayotte</option>
+                <option value="MX">Mexico</option>
+                <option value="FM">Micronesia, Federated States Of</option>
+                <option value="MD">Moldova</option>
+                <option value="MC">Monaco</option>
+                <option value="MN">Mongolia</option>
+                <option value="MS">Montserrat</option>
+                <option value="MA">Morocco</option>
+                <option value="MZ">Mozambique</option>
+                <option value="MM">Myanmar</option>
+                <option value="NA">Namibia</option>
+                <option value="NR">Nauru</option>
+                <option value="NP">Nepal</option>
+                <option value="NL">Netherlands</option>
+                <option value="AN">Netherlands Antilles</option>
+                <option value="NC">New Caledonia</option>
+                <option value="NZ">New Zealand</option>
+                <option value="NI">Nicaragua</option>
+                <option value="NE">Niger</option>
+                <option value="NG">Nigeria</option>
+                <option value="NU">Niue</option>
+                <option value="NF">Norfolk Island</option>
+                <option value="MP">Northern Mariana Islands</option>
+                <option value="NO">Norway</option>
+                <option value="OM">Oman</option>
+                <option value="PK">Pakistan</option>
+                <option value="PW">Palau</option>
+                <option value="PS">Palestinian Territory, Occupied</option>
+                <option value="PA">Panama</option>
+                <option value="PG">Papua New Guinea</option>
+                <option value="PY">Paraguay</option>
+                <option value="PE">Peru</option>
+                <option value="PH">Philippines</option>
+                <option value="PN">Pitcairn</option>
+                <option value="PL">Poland</option>
+                <option value="PT">Portugal</option>
+                <option value="PR">Puerto Rico</option>
+                <option value="QA">Qatar</option>
+                <option value="RE">Reunion</option>
+                <option value="RO">Romania</option>
+                <option value="RU">Russian Federation</option>
+                <option value="RW">Rwanda</option>
+                <option value="SH">Saint Helena</option>
+                <option value="KN">Saint Kitts And Nevis</option>
+                <option value="LC">Saint Lucia</option>
+                <option value="PM">Saint Pierre And Miquelon</option>
+                <option value="VC">Saint Vincent And Grenadines</option>
+                <option value="WS">Samoa</option>
+                <option value="SM">San Marino</option>
+                <option value="ST">Sao Tome And Principe</option>
+                <option value="SA">Saudi Arabia</option>
+                <option value="SN">Senegal</option>
+                <option value="CS">Serbia And Montenegro</option>
+                <option value="SC">Seychelles</option>
+                <option value="SL">Sierra Leone</option>
+                <option value="SG">Singapore</option>
+                <option value="SK">Slovakia</option>
+                <option value="SI">Slovenia</option>
+                <option value="SB">Solomon Islands</option>
+                <option value="SO">Somalia</option>
+                <option value="ZA">South Africa</option>
+                <option value="GS">South Georgia And Sandwich Isl.</option>
+                <option value="ES">Spain</option>
+                <option value="LK">Sri Lanka</option>
+                <option value="SD">Sudan</option>
+                <option value="SR">Suriname</option>
+                <option value="SJ">Svalbard And Jan Mayen</option>
+                <option value="SZ">Swaziland</option>
+                <option value="SE">Sweden</option>
+                <option value="CH">Switzerland</option>
+                <option value="SY">Syrian Arab Republic</option>
+                <option value="TW">Taiwan</option>
+                <option value="TJ">Tajikistan</option>
+                <option value="TZ">Tanzania</option>
+                <option value="TH">Thailand</option>
+                <option value="TL">Timor-Leste</option>
+                <option value="TG">Togo</option>
+                <option value="TK">Tokelau</option>
+                <option value="TO">Tonga</option>
+                <option value="TT">Trinidad And Tobago</option>
+                <option value="TN">Tunisia</option>
+                <option value="TR">Turkey</option>
+                <option value="TM">Turkmenistan</option>
+                <option value="TC">Turks And Caicos Islands</option>
+                <option value="TV">Tuvalu</option>
+                <option value="UG">Uganda</option>
+                <option value="UA">Ukraine</option>
+                <option value="AE">United Arab Emirates</option>
+                <option value="GB">United Kingdom</option>
+                <option value="US">United States</option>
+                <option value="UM">United States Outlying Islands</option>
+                <option value="UY">Uruguay</option>
+                <option value="UZ">Uzbekistan</option>
+                <option value="VU">Vanuatu</option>
+                <option value="VE">Venezuela</option>
+                <option value="VN">Viet Nam</option>
+                <option value="VG">Virgin Islands, British</option>
+                <option value="VI">Virgin Islands, U.S.</option>
+                <option value="WF">Wallis And Futuna</option>
+                <option value="EH">Western Sahara</option>
+                <option value="YE">Yemen</option>
+                <option value="ZM">Zambia</option>
+                <option value="ZW">Zimbabwe</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="contactEmail" class="required">Email Address</label>
+              <input type="email" id="contactEmail" class="form-input" placeholder="your.email@example.com" 
+                     pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" 
+                     title="Please enter a valid email address (e.g., name@example.com)" 
+                     required />
+            </div>
+            <div class="form-group">
+              <label for="doj" class="required">Date of Joining</label>
+              <input type="date" id="doj" class="form-input" required />
+            </div>
+            <div class="form-group">
+              <label for="countryCode" class="required">Country Code</label>
+              <select id="countryCode" class="form-select" required>
+                <option value="">Select Code</option>
+                <option value="+971">🇦🇪 +971 UAE</option>
+                <option value="+1">🇺🇸 +1 USA</option>
+                <option value="+44">🇬🇧 +44 UK</option>
+                <option value="+1">🇨🇦 +1 Canada</option>
+                <option value="+61">🇦🇺 +61 Australia</option>
+                <option value="+49">🇩🇪 +49 Germany</option>
+                <option value="+33">🇫🇷 +33 France</option>
+                <option value="+34">🇪🇸 +34 Spain</option>
+                <option value="+39">🇮🇹 +39 Italy</option>
+                <option value="+31">🇳🇱 +31 Netherlands</option>
+                <option value="+46">🇸🇪 +46 Sweden</option>
+                <option value="+47">🇳🇴 +47 Norway</option>
+                <option value="+45">🇩🇰 +45 Denmark</option>
+                <option value="+358">🇫🇮 +358 Finland</option>
+                <option value="+41">🇨🇭 +41 Switzerland</option>
+                <option value="+43">🇦🇹 +43 Austria</option>
+                <option value="+32">🇧🇪 +32 Belgium</option>
+                <option value="+353">🇮🇪 +353 Ireland</option>
+                <option value="+351">🇵🇹 +351 Portugal</option>
+                <option value="+30">🇬🇷 +30 Greece</option>
+                <option value="+966">🇸🇦 +966 Saudi Arabia</option>
+                <option value="+974">🇶🇦 +974 Qatar</option>
+                <option value="+965">🇰🇼 +965 Kuwait</option>
+                <option value="+973">🇧🇭 +973 Bahrain</option>
+                <option value="+968">🇴🇲 +968 Oman</option>
+                <option value="+20">🇪🇬 +20 Egypt</option>
+                <option value="+962">🇯🇴 +962 Jordan</option>
+                <option value="+961">🇱🇧 +961 Lebanon</option>
+                <option value="+963">🇸🇾 +963 Syria</option>
+                <option value="+964">🇮🇶 +964 Iraq</option>
+                <option value="+91">🇮🇳 +91 India</option>
+                <option value="+92">🇵🇰 +92 Pakistan</option>
+                <option value="+880">🇧🇩 +880 Bangladesh</option>
+                <option value="+94">🇱🇰 +94 Sri Lanka</option>
+                <option value="+63">🇵🇭 +63 Philippines</option>
+                <option value="+62">🇮🇩 +62 Indonesia</option>
+                <option value="+60">🇲🇾 +60 Malaysia</option>
+                <option value="+65">🇸🇬 +65 Singapore</option>
+                <option value="+66">🇹🇭 +66 Thailand</option>
+                <option value="+84">🇻🇳 +84 Vietnam</option>
+                <option value="+86">🇨🇳 +86 China</option>
+                <option value="+81">🇯🇵 +81 Japan</option>
+                <option value="+82">🇰🇷 +82 South Korea</option>
+                <option value="+27">🇿🇦 +27 South Africa</option>
+                <option value="+234">🇳🇬 +234 Nigeria</option>
+                <option value="+254">🇰🇪 +254 Kenya</option>
+                <option value="+251">🇪🇹 +251 Ethiopia</option>
+                <option value="+233">🇬🇭 +233 Ghana</option>
+                <option value="+212">🇲🇦 +212 Morocco</option>
+                <option value="+55">🇧🇷 +55 Brazil</option>
+                <option value="+54">🇦🇷 +54 Argentina</option>
+                <option value="+56">🇨🇱 +56 Chile</option>
+                <option value="+57">🇨🇴 +57 Colombia</option>
+                <option value="+52">🇲🇽 +52 Mexico</option>
+                <option value="+58">🇻🇪 +58 Venezuela</option>
+                <option value="+51">🇵🇪 +51 Peru</option>
+                <option value="+593">🇪🇨 +593 Ecuador</option>
+                <option value="+64">🇳🇿 +64 New Zealand</option>
+                <option value="+90">🇹🇷 +90 Turkey</option>
+                <option value="+98">🇮🇷 +98 Iran</option>
+                <option value="+972">🇮🇱 +972 Israel</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="phoneNumber" class="required">Phone Number</label>
+              <input type="tel" id="phoneNumber" class="form-input" placeholder="50 123 4567" required />
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Form content will be loaded here dynamically -->
-      <div id="formContent">
-        <div class="form-step active" data-step="1">
-          <h2 class="step-title">📋 Personal Information</h2>
-          <p class="step-subtitle">Please provide your personal details for the documentation submission.</p>
+      <!-- Step 2: Flight Experience -->
+      <div class="form-step" data-step="2">
+        <h2 class="section-h">Flight Experience by Aircraft Type</h2>
+        <div id="sections"></div>
+        <div class="controls no-print">
+          <button class="btn" id="btnAddSection">+ Add another aircraft type</button>
+        </div>
+
+        <!-- Grand totals for all aircraft types -->
+        <div class="section" id="grandTotals">
+          <div class="section-title">
+            <h3>GRAND TOTALS (All Aircraft Types)</h3>
+          </div>
+          <div class="grand">
+            <div class="kpi">Combined Block Hours: <b id="gtCombined">0:00</b></div>
+            <div class="kpi">Multi‑Pilot Block Hours: <b id="gtMP">0:00</b></div>
+            <div class="kpi">Night Hours: <b id="gtNight">0:00</b></div>
+          </div>
+        </div>
+
+        <!-- SUMMARY SECTION -->
+        <div class="summary">
+          <h2 class="section-h">FLYING EXPERIENCE SUMMARY</h2>
+          <h3 class="section-h" style="margin-top:6px">GENERAL</h3>
+          <div class="section">
+            <table>
+              <thead>
+                <tr>
+                  <th><b>PIC/P1</b></th>
+                  <th><b>SIC/P2</b></th>
+                  <th><b>SOLO</b></th>
+                  <th><b>INSTRUMENT</b></th>
+                  <th><b>SIM</b></th>
+                  <th><b>NIGHT</b></th>
+                  <th><b>INSTRUCTOR</b></th>
+                  <th><b>P1 U/S</b></th>
+                  <th><b>GRAND TOTAL</b></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
+                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
+                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
+                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
+                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
+                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
+                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
+                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
+                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Documentation -->
+      <div class="form-step" data-step="3">
+        <div class="form-section">
+          <h2 class="section-h">🛂 Pilot License (ATPL/CPL/MPL)</h2>
+          <div class="grid">
+            <div>
+              <label>License Type</label>
+              <select id="licenseType">
+                <option value="">Select License Type</option>
+                <option value="ATPL">ATPL (Airline Transport Pilot License)</option>
+                <option value="CPL">CPL (Commercial Pilot License)</option>
+                <option value="MPL">MPL (Multi-Crew Pilot License)</option>
+              </select>
+            </div>
+            <div>
+              <label>License Number</label>
+              <input type="text" id="licenseNumber" placeholder="Enter license number" />
+            </div>
+            <div>
+              <label>Issue Date</label>
+              <input type="date" id="licenseIssue" />
+            </div>
+            <div>
+              <label>Expiry Date</label>
+              <input type="date" id="licenseExpiry" onchange="checkValidity('license')" />
+            </div>
+            <div>
+              <label>Upload Document</label>
+              <input type="file" id="licenseFile" accept=".pdf,.jpg,.png" />
+            </div>
+          </div>
+          <div id="licenseStatus"></div>
+          <div class="requirement-note">
+            <strong>Requirement:</strong> Current valid pilot license (ATPL/CPL/MPL) with appropriate aircraft type ratings. License must be valid for the duration of employment and recognized by UAE GCAA or convertible to UAE license.
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="section-h">🏥 Medical Certificate</h2>
+          <div class="grid">
+            <div>
+              <label>Medical Class</label>
+              <select id="medicalClass">
+                <option value="">Select Medical Class</option>
+                <option value="Class 1">Class 1 Medical Certificate</option>
+              </select>
+            </div>
+            <div>
+              <label>Issuing Medical Authority</label>
+              <select id="medicalAuthority">
+                <option value="">Select Aviation Medical Authority</option>
+                <option value="EASA">EASA (European Union Aviation Safety Agency)</option>
+                <option value="FAA USA">FAA (Federal Aviation Administration - USA)</option>
+                <option value="ICAO">ICAO (International Civil Aviation Organization)</option>
+                <option value="GCAA UAE">GCAA UAE (General Civil Aviation Authority)</option>
+                <option value="GACA Saudi">GACA (General Authority of Civil Aviation - Saudi Arabia)</option>
+                <option value="CAA Qatar">CAA Qatar (Civil Aviation Authority)</option>
+                <option value="DGCA Kuwait">DGCA Kuwait (Directorate General of Civil Aviation)</option>
+                <option value="CAA Bahrain">CAA Bahrain (Civil Aviation Affairs)</option>
+                <option value="CAA Oman">CAA Oman (Civil Aviation Authority)</option>
+                <option value="DGCA Jordan">DGCA Jordan (Directorate General of Civil Aviation)</option>
+                <option value="Other">Other Aviation Medical Authority (Specify below)</option>
+              </select>
+              <div id="medicalAuthorityOtherDiv" style="margin-top: 8px; display: none;">
+                <input type="text" id="medicalAuthorityOther" placeholder="Please specify aviation medical authority" />
+              </div>
+            </div>
+            <div>
+              <label>Issue Date</label>
+              <input type="date" id="medicalIssue" />
+            </div>
+            <div>
+              <label>Expiry Date</label>
+              <input type="date" id="medicalExpiry" onchange="checkValidity('medical')" />
+            </div>
+            <div>
+              <label>Upload Document</label>
+              <input type="file" id="medicalFile" accept=".pdf,.jpg,.png" />
+            </div>
+          </div>
+          <div id="medicalStatus"></div>
+          <div class="requirement-note">
+            <strong>Requirement:</strong> Valid Class 1 medical certificate issued within the last 12 months. Must meet ICAO medical standards and be valid for commercial aviation operations. Class 2 medical certificates are not accepted.
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="section-h">📘 Passport</h2>
+          <div class="grid">
+            <div>
+              <label>Passport Number</label>
+              <input type="text" id="passportNumber" placeholder="Enter passport number" />
+            </div>
+            <div>
+              <label>Passport Nationality</label>
+              <select id="passportNationality">
+                <option value="">Select Passport Nationality</option>
+                <option value="American">American (USA)</option>
+                <option value="British">British (UK)</option>
+                <option value="Canadian">Canadian</option>
+                <option value="Australian">Australian</option>
+                <option value="German">German</option>
+                <option value="French">French</option>
+                <option value="Spanish">Spanish</option>
+                <option value="Italian">Italian</option>
+                <option value="Dutch">Dutch (Netherlands)</option>
+                <option value="Swedish">Swedish</option>
+                <option value="Norwegian">Norwegian</option>
+                <option value="Danish">Danish</option>
+                <option value="Finnish">Finnish</option>
+                <option value="Swiss">Swiss</option>
+                <option value="Austrian">Austrian</option>
+                <option value="Belgian">Belgian</option>
+                <option value="Irish">Irish</option>
+                <option value="Portuguese">Portuguese</option>
+                <option value="Greek">Greek</option>
+                <option value="Emirati">Emirati (UAE)</option>
+                <option value="Saudi">Saudi Arabian</option>
+                <option value="Qatari">Qatari</option>
+                <option value="Kuwaiti">Kuwaiti</option>
+                <option value="Bahraini">Bahraini</option>
+                <option value="Omani">Omani</option>
+                <option value="Egyptian">Egyptian</option>
+                <option value="Jordanian">Jordanian</option>
+                <option value="Lebanese">Lebanese</option>
+                <option value="Syrian">Syrian</option>
+                <option value="Iraqi">Iraqi</option>
+                <option value="Indian">Indian</option>
+                <option value="Pakistani">Pakistani</option>
+                <option value="Bangladeshi">Bangladeshi</option>
+                <option value="Sri Lankan">Sri Lankan</option>
+                <option value="Filipino">Filipino (Philippines)</option>
+                <option value="Indonesian">Indonesian</option>
+                <option value="Malaysian">Malaysian</option>
+                <option value="Thai">Thai</option>
+                <option value="Vietnamese">Vietnamese</option>
+                <option value="Singaporean">Singaporean</option>
+                <option value="South Korean">South Korean</option>
+                <option value="Japanese">Japanese</option>
+                <option value="Chinese">Chinese</option>
+                <option value="Russian">Russian</option>
+                <option value="Ukrainian">Ukrainian</option>
+                <option value="Polish">Polish</option>
+                <option value="Czech">Czech</option>
+                <option value="Hungarian">Hungarian</option>
+                <option value="Romanian">Romanian</option>
+                <option value="Bulgarian">Bulgarian</option>
+                <option value="Croatian">Croatian</option>
+                <option value="Serbian">Serbian</option>
+                <option value="Slovenian">Slovenian</option>
+                <option value="Slovak">Slovak</option>
+                <option value="South African">South African</option>
+                <option value="Nigerian">Nigerian</option>
+                <option value="Kenyan">Kenyan</option>
+                <option value="Ethiopian">Ethiopian</option>
+                <option value="Moroccan">Moroccan</option>
+                <option value="Tunisian">Tunisian</option>
+                <option value="Algerian">Algerian</option>
+                <option value="Brazilian">Brazilian</option>
+                <option value="Argentinian">Argentinian</option>
+                <option value="Chilean">Chilean</option>
+                <option value="Colombian">Colombian</option>
+                <option value="Mexican">Mexican</option>
+                <option value="Venezuelan">Venezuelan</option>
+                <option value="Peruvian">Peruvian</option>
+                <option value="Ecuadorian">Ecuadorian</option>
+                <option value="New Zealand">New Zealand</option>
+                <option value="Turkish">Turkish</option>
+                <option value="Iranian">Iranian</option>
+                <option value="Israeli">Israeli</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label>Issue Date</label>
+              <input type="date" id="passportIssue" />
+            </div>
+            <div>
+              <label>Expiry Date</label>
+              <input type="date" id="passportExpiry" onchange="checkValidity('passport')" />
+            </div>
+            <div>
+              <label>Upload Document</label>
+              <input type="file" id="passportFile" accept=".pdf,.jpg,.png" />
+            </div>
+          </div>
+          <div id="passportStatus"></div>
+          <div class="requirement-note">
+            <strong>Requirement:</strong> Valid passport with minimum 6 months validity remaining from intended employment start date. Must be machine-readable and in good condition.
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4: Review & Submit -->
+      <div class="form-step" data-step="4">
+        <h2 class="step-title">🔍 Review & Submit</h2>
+        <p class="step-subtitle">Please review all your information before submitting your documentation.</p>
+        
+        <div class="form-section">
+          <div class="section-title">📋 Application Summary</div>
+          <div id="reviewContent" style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid var(--line);">
+            <!-- Review content will be populated here -->
+          </div>
+        </div>
+
+        <div class="form-section" id="signSection">
+          <div class="section-title">✍️ Digital Signature & Declaration</div>
           
-          <div class="form-section">
-            <div class="section-title">Basic Information</div>
-            <div class="form-grid">
-              <div class="form-group">
-                <label for="firstName" class="required">First Name</label>
-                <input type="text" id="firstName" class="form-input" required />
+          <div style="background:linear-gradient(135deg,#fef7ed 0%,#fed7aa 100%);padding:20px;border-radius:12px;border:2px solid var(--flydubai-orange);margin-bottom:24px;">
+            <p style="font-size:14px;line-height:1.7;color:var(--flydubai-navy);margin:0;font-weight:500;text-align:justify;">
+              <strong>DECLARATION:</strong> I solemnly declare and affirm that all documentation, certifications, and validity periods contained herein are true, accurate, and complete in accordance with UAE GCAA regulations, ICAO standards, and applicable civil aviation requirements. I acknowledge that this declaration is made under penalty of regulatory sanctions and understand that any material misrepresentation, omission, or falsification may result in suspension or revocation of aviation privileges, termination of employment, and disciplinary proceedings pursuant to UAE aviation law. I further acknowledge my continuing obligation to maintain current and valid documentation in compliance with UAE employment and aviation regulatory requirements.
+            </p>
+          </div>
+          
+          <div class="grid">
+            <div>
+              <label>Date</label>
+              <input type="date" id="sigDate" />
+              <span class="date-print" id="sigDatePrint"></span>
+            </div>
+            <div>
+              <label>Digital Signature</label>
+              <canvas id="sigCanvas" class="signature-canvas"></canvas>
+              <div style="margin-top: 8px; display: flex; flex-direction: column; gap: 8px;">
+                <button type="button" id="sigClear" class="btn secondary">Clear Signature</button>
               </div>
-              <div class="form-group">
-                <label for="lastName" class="required">Last Name</label>
-                <input type="text" id="lastName" class="form-input" required />
-              </div>
-              <div class="form-group">
-                <label for="email" class="required">Email Address</label>
-                <input type="email" id="email" class="form-input" required />
-              </div>
-              <div class="form-group">
-                <label for="phone" class="required">Phone Number</label>
-                <input type="tel" id="phone" class="form-input" required />
-              </div>
+            </div>
+            <div>
+              <label>Typed Signature (Alternative)</label>
+              <input type="text" id="typedSig" placeholder="Type your full name" />
+              <button type="button" id="sigApply" class="btn secondary">Apply Typed Signature</button>
+            </div>
+            <div>
+              <label>Upload Signature (Alternative)</label>
+              <input type="file" id="sigUpload" accept="image/*" />
+            </div>
+            <div>
+              <label>
+                <input type="checkbox" id="declaration" required />
+                I declare that all information provided is true and accurate
+              </label>
             </div>
           </div>
         </div>
@@ -597,47 +1404,1209 @@
   </div>
 
   <script>
-    // Placeholder for mobile-specific JavaScript
-    console.log('📱 Mobile version loaded');
+    // ===== Password Protection =====
+    // Check if this is an authenticated reload (temporary session flag)
+    const urlParams = new URLSearchParams(window.location.search);
     
-    // Copy essential form logic here
-    let currentStep = 1;
-    const totalSteps = 4;
+    // Force password protection for testing - set to false for production
+    const forcePassword = false; // Set to false in production
     
-    function showStep(step) {
-      document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
-      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    // Check for temporary authentication
+    const tempAuth = localStorage.getItem('temp_auth') === 'true';
+    if (tempAuth) {
+      localStorage.removeItem('temp_auth'); // Clear it immediately
+    }
+    
+    let isAuthenticated = (!forcePassword && urlParams.has('authenticated')) || tempAuth;
+    
+    console.log('🔐 Password Protection Debug:');
+    console.log('- URL params:', urlParams.toString());
+    console.log('- Has authenticated param:', urlParams.has('authenticated'));
+    console.log('- Force password mode:', forcePassword);
+    console.log('- Temporary auth:', tempAuth);
+    console.log('- Final authenticated status:', isAuthenticated);
+    console.log('- localStorage keys:', Object.keys(localStorage));
+    
+    // Debug: Show what's happening with content clearing
+    console.log('📍 About to check authentication...');
+    
+    if (!isAuthenticated) {
+      console.log('❌ NOT AUTHENTICATED - Clearing content and showing password form');
       
-      const stepElement = document.querySelector(`[data-step="${step}"]`);
-      if (stepElement) {
-        if (stepElement.classList.contains('form-step')) {
-          stepElement.classList.add('active');
+      // Check for session recovery data immediately
+      const hasSessionData = localStorage.getItem('pilotFormData') || localStorage.getItem('aircraftSections');
+      if (hasSessionData) {
+        console.log('📋 Previous session data detected');
+        window.hasSessionToRecover = true;
+      }
+      
+      // Immediately clear content and show password form (no timeout)
+      document.body.innerHTML = '';
+      document.body.style.margin = '0';
+      document.body.style.padding = '0';
+      document.body.style.visibility = 'visible';
+      
+      console.log('✅ Content cleared, about to show password form');
+    } else {
+      console.log('✅ AUTHENTICATED - Showing main content');
+      // Clean URL after authentication and show content
+      window.history.replaceState({}, document.title, window.location.pathname);
+      document.querySelector('.content-container').style.display = 'block';
+    }
+    
+    (function() {
+      if (isAuthenticated) {
+        console.log('⏭️ SKIPPING password form - already authenticated');
+        return; // Skip password form if already authenticated
+      }
+      
+      console.log('🔑 STARTING password form setup...');
+      
+      const FORM_PASSWORD = "FlightTime2025";
+      let attempts = 0; // Reset attempts on each visit
+      const maxAttempts = 3;
+      
+      function showPasswordForm() {
+        console.log('🎨 RENDERING password form...');
+        const errorMessage = attempts > 0 ? `<div style="color: #dc2626; margin-bottom: 16px; padding: 12px; background: #fef2f2; border-radius: 8px; border: 1px solid #fecaca;">
+          <strong>Incorrect access code.</strong> ${maxAttempts - attempts} attempt(s) remaining.
+        </div>` : '';
+        
+        const sessionRecoveryMessage = window.hasSessionToRecover ? `<div style="color: #059669; margin-bottom: 16px; padding: 12px; background: #ecfdf5; border-radius: 8px; border: 1px solid #a7f3d0;">
+          <strong>Previous Session Detected!</strong> Your previous form data will be restored after authentication.
+        </div>` : '';
+        
+        document.body.innerHTML = `
+          <div style="background: linear-gradient(135deg, #6d28d9 0%, #7c3aed 12%, #8b5cf6 25%, #a855f7 37%, #c084fc 50%, #6366f1 62%, #8b5cf6 75%, #9333ea 87%, #7c3aed 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; font-family: Inter, system-ui, sans-serif; padding: 20px;">
+            <div style="background: white; border-radius: 20px; padding: 32px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4); max-width: 400px; width: 100%; border: 1px solid #e2e8f0;">
+              <div style="text-align: center; margin-bottom: 24px;">
+                <div style="width: 80px; height: 60px; background-image: url('Flydubai-Logo.png'); background-size: contain; background-repeat: no-repeat; background-position: center; margin: 0 auto 16px;"></div>
+                <h1 style="font-size: 24px; font-weight: 700; color: #1e3a8a; margin: 0 0 8px;">Flight Operations</h1>
+                <p style="color: #64748b; margin: 0; font-size: 14px;">Pilot Documentation Portal</p>
+              </div>
+              
+              ${sessionRecoveryMessage}
+              ${errorMessage}
+              
+              <form id="passwordForm" style="display: flex; flex-direction: column; gap: 20px;">
+                <div>
+                  <label for="passwordInput" style="display: block; margin-bottom: 8px; color: #374151; font-weight: 600; font-size: 14px;">Access Code</label>
+                  <input 
+                    type="password" 
+                    id="passwordInput" 
+                    placeholder="Enter access code"
+                    style="width: 100%; padding: 16px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 16px; transition: all 0.3s ease; box-sizing: border-box;"
+                    onfocus="this.style.borderColor='#7c3aed'; this.style.boxShadow='0 0 0 3px rgba(124, 58, 237, 0.1)'"
+                    onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'"
+                    required
+                  />
+                </div>
+                <button 
+                  type="submit" 
+                  style="width: 100%; padding: 16px; background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;"
+                  onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 25px rgba(124, 58, 237, 0.4)'"
+                  onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'"
+                >
+                  Access Documentation Portal
+                </button>
+              </form>
+              
+              <div style="text-align: center; margin-top: 20px; color: #94a3b8; font-size: 12px;">
+                Authorized Personnel Only
+              </div>
+            </div>
+          </div>
+        `;
+        
+        // Focus on the password input
+        setTimeout(() => {
+          const passwordInput = document.getElementById('passwordInput');
+          console.log('🎯 Trying to focus password input:', passwordInput ? 'FOUND' : 'NOT FOUND');
+          if (passwordInput) passwordInput.focus();
+        }, 100);
+        
+        console.log('✅ Password form HTML set, form should be visible now');
+        
+        // Handle form submission
+        const passwordForm = document.getElementById('passwordForm');
+        console.log('🔗 Looking for password form:', passwordForm ? 'FOUND' : 'NOT FOUND');
+        
+        if (passwordForm) {
+          passwordForm.addEventListener('submit', function(e) {
+            console.log('📝 Form submission triggered!');
+            e.preventDefault();
+            const userPassword = document.getElementById('passwordInput')?.value;
+            console.log('🔑 Password entered:', userPassword ? 'YES' : 'NO');
+            console.log('🔑 Correct password:', FORM_PASSWORD);
+            
+            if (userPassword === FORM_PASSWORD) {
+              console.log('✅ Password correct! Redirecting...');
+              
+              // Temporarily disable force password for the redirect
+              localStorage.setItem('temp_auth', 'true');
+              
+              // Reload page with authenticated parameter
+              const newUrl = window.location.pathname + '?authenticated=true';
+              console.log('🔄 Redirecting to:', newUrl);
+              window.location.href = newUrl;
+              
+            } else {
+              console.log('❌ Password incorrect! Attempt:', attempts + 1);
+              attempts++;
+              if (attempts >= maxAttempts) {
+                document.body.innerHTML = `
+                  <div style="background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; font-family: Inter, system-ui, sans-serif; color: white; text-align: center; padding: 20px;">
+                    <div>
+                      <h1 style="font-size: 48px; margin-bottom: 20px;">🔒</h1>
+                      <h2 style="font-size: 24px; margin-bottom: 16px;">Access Denied</h2>
+                      <p style="font-size: 16px; opacity: 0.9;">Maximum attempts exceeded. Please contact system administrator.</p>
+                    </div>
+                  </div>
+                `;
+              } else {
+                console.log('🔄 Showing password form again with error');
+                showPasswordForm();
+              }
+            }
+          });
         } else {
-          stepElement.classList.add('active');
+          console.error('❌ Password form element not found after setting innerHTML!');
         }
       }
       
-      // Update progress
-      const progress = (step / totalSteps) * 100;
-      document.getElementById('progressFill').style.width = `${progress}%`;
+      // Show password form immediately
+      console.log('📢 CALLING showPasswordForm()...');
+      showPasswordForm();
+      console.log('📢 showPasswordForm() called - check if form appeared');
+    })();
+  </script>
+
+  <!-- Main JavaScript continues after authentication -->
+  <script>
+    // Only execute main script if authenticated
+    document.addEventListener('DOMContentLoaded', function() {
+      if (!isAuthenticated) return;
       
-      // Update navigation
-      document.getElementById('prevBtn').style.display = step > 1 ? 'block' : 'none';
-      document.getElementById('nextBtn').textContent = step === totalSteps ? 'Submit Documentation' : 'Next Step';
-    }
-    
-    document.getElementById('nextBtn').addEventListener('click', () => {
-      if (currentStep < totalSteps) {
-        currentStep++;
-        showStep(currentStep);
+      console.log('📱 Mobile version initialization starting...');
+      
+      // Show content container
+      document.querySelector('.content-container').style.display = 'block';
+      
+      // Global variables
+      let currentStep = 1;
+      const totalSteps = 4;
+      let formData = {};
+      let sectionsWrap;
+      let sectionCounter = 0;
+
+      // Initialize form
+      function initializeForm() {
+        console.log('🚀 Initializing mobile form...');
+        
+        sectionsWrap = document.getElementById('sections');
+        
+        // Load saved data if available
+        const hasData = loadFormData();
+        if (hasData) {
+          populateFormFields();
+        }
+        
+        // Check for recovery
+        checkForRecovery();
+        
+        // Setup auto-save
+        setupAutoSave();
+        
+        // Setup event listeners
+        setupEventListeners();
+        
+        // Add initial flight experience sections
+        addFlightExperienceSection();
+        addFlightExperienceSection('Boeing 737 NG/MAX', true, 'ng-max');
+        addFlightExperienceSection('Boeing 737 Classic (300-500)', true, 'classic');
+        
+        console.log('✅ Mobile form initialized successfully');
       }
-    });
-    
-    document.getElementById('prevBtn').addEventListener('click', () => {
-      if (currentStep > 1) {
-        currentStep--;
-        showStep(currentStep);
+
+      // Show specific step
+      function showStep(step) {
+        console.log('📍 Switching to step:', step);
+        
+        // Hide all steps
+        const allSteps = document.querySelectorAll('.form-step');
+        allSteps.forEach(stepEl => stepEl.classList.remove('active'));
+        
+        // Hide all step indicators
+        const allStepIndicators = document.querySelectorAll('.step');
+        allStepIndicators.forEach(stepEl => {
+          stepEl.classList.remove('active', 'completed');
+        });
+        
+        // Show current step
+        const currentStepEl = document.querySelector(`.form-step[data-step="${step}"]`);
+        if (currentStepEl) {
+          currentStepEl.classList.add('active');
+        }
+        
+        // Update step indicators
+        for (let i = 1; i <= totalSteps; i++) {
+          const indicator = document.querySelector(`.step[data-step="${i}"]`);
+          if (indicator) {
+            if (i < step) {
+              indicator.classList.add('completed');
+            } else if (i === step) {
+              indicator.classList.add('active');
+            }
+          }
+        }
+        
+        // Update progress bar
+        const progress = (step / totalSteps) * 100;
+        document.getElementById('progressFill').style.width = `${progress}%`;
+        
+        // Update navigation buttons
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        
+        if (prevBtn) {
+          prevBtn.style.display = step > 1 ? 'block' : 'none';
+        }
+        
+        if (nextBtn) {
+          nextBtn.textContent = step === totalSteps ? 'Submit Documentation' : 'Next Step';
+        }
+        
+        // Generate review content for step 4
+        if (step === 4) {
+          generateReviewContent();
+        }
+        
+        // Auto-save when changing steps
+        saveFormData();
       }
+      
+      // Navigation functions
+      function nextStep() {
+        console.log('➡️ Next step clicked, current step:', currentStep);
+        
+        if (currentStep < totalSteps) {
+          // Validate current step before proceeding
+          if (validateCurrentStep()) {
+            currentStep++;
+            showStep(currentStep);
+          }
+        } else {
+          // Final submit
+          submitForm();
+        }
+      }
+      
+      function previousStep() {
+        console.log('⬅️ Previous step clicked, current step:', currentStep);
+        
+        if (currentStep > 1) {
+          currentStep--;
+          showStep(currentStep);
+        }
+      }
+
+      // Add flight experience section
+      function addFlightExperienceSection(aircraftType = '', locked = false, b737Type = null) {
+        console.log('➕ Adding flight experience section:', { aircraftType, locked, b737Type });
+        
+        if (!sectionsWrap) {
+          sectionsWrap = document.getElementById('sections');
+        }
+        
+        sectionCounter++;
+        const sectionId = `section${sectionCounter}`;
+        
+        const section = document.createElement('div');
+        section.className = 'section';
+        section.id = sectionId;
+        
+        const aircraftOptions = [
+          'Airbus A319',
+          'Airbus A320',
+          'Airbus A321',
+          'Boeing 737-300',
+          'Boeing 737-400',
+          'Boeing 737-500',
+          'Boeing 737-600',
+          'Boeing 737-700',
+          'Boeing 737-800',
+          'Boeing 737-900',
+          'Boeing 737 MAX 7',
+          'Boeing 737 MAX 8',
+          'Boeing 737 MAX 9',
+          'Embraer E170',
+          'Embraer E175',
+          'Embraer E190',
+          'Other (Please specify in notes)'
+        ];
+        
+        let aircraftSelectHtml;
+        if (locked) {
+          aircraftSelectHtml = `
+            <div>
+              <label>Aircraft Type *</label>
+              <input type="text" value="${aircraftType}" readonly style="background: #f3f4f6; color: #6b7280;" />
+              <input type="hidden" class="ac-type" value="${aircraftType}" />
+            </div>
+          `;
+        } else {
+          aircraftSelectHtml = `
+            <div>
+              <label>Aircraft Type *</label>
+              <select class="ac-type" required>
+                <option value="">Select Aircraft Type</option>
+                ${aircraftOptions.map(option => `<option value="${option}">${option}</option>`).join('')}
+              </select>
+            </div>
+          `;
+        }
+        
+        const heavyJetIndicator = (aircraftType === 'Boeing 737 NG/MAX' || aircraftType === 'Boeing 737 Classic (300-500)') ? 
+          '<div class="heavy-jet-indicator">✈️ Heavy Jet Aircraft</div>' : '';
+        
+        section.innerHTML = `
+          <div class="section-title">
+            <h3>Aircraft Type ${sectionCounter}</h3>
+            ${!locked ? `<button type="button" onclick="removeSection('${sectionId}')" class="btn" style="background: #ef4444; color: white; font-size: 12px; padding: 6px 12px; width: auto; margin-left: 10px;">Remove</button>` : ''}
+          </div>
+          ${heavyJetIndicator}
+          
+          <div class="grid">
+            ${aircraftSelectHtml}
+            <div>
+              <label>Notes/Comments</label>
+              <textarea class="ac-notes" placeholder="Any additional notes about your experience on this aircraft type"></textarea>
+            </div>
+          </div>
+          
+          <!-- Flight Hours Table (Mobile Optimized) -->
+          <div class="table-mobile">
+            <div class="table-row">
+              <div class="table-cell">
+                <span class="table-label">PIC Total Hours</span>
+                <span class="table-value"><input type="text" class="hhmm" placeholder="0:00" /></span>
+              </div>
+              <div class="table-cell">
+                <span class="table-label">PIC Block Hours</span>
+                <span class="table-value"><input type="text" class="hhmm" placeholder="0:00" /></span>
+              </div>
+              <div class="table-cell">
+                <span class="table-label">SIC Total Hours</span>
+                <span class="table-value"><input type="text" class="hhmm" placeholder="0:00" /></span>
+              </div>
+              <div class="table-cell">
+                <span class="table-label">SIC Block Hours</span>
+                <span class="table-value"><input type="text" class="hhmm" placeholder="0:00" /></span>
+              </div>
+              <div class="table-cell">
+                <span class="table-label">Multi-Pilot Hours</span>
+                <span class="table-value"><input type="text" class="hhmm" placeholder="0:00" /></span>
+              </div>
+              <div class="table-cell">
+                <span class="table-label">Night Hours</span>
+                <span class="table-value"><input type="text" class="hhmm" placeholder="0:00" /></span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Date Fields (Mobile Optimized) -->
+          <div class="table-mobile" style="margin-top: 15px;">
+            <div class="table-row">
+              <div class="table-cell">
+                <span class="table-label">PIC First Flight</span>
+                <span class="table-value"><input type="date" class="date-inp" /></span>
+              </div>
+              <div class="table-cell">
+                <span class="table-label">PIC Last Flight</span>
+                <span class="table-value"><input type="date" class="date-inp" /></span>
+              </div>
+              <div class="table-cell">
+                <span class="table-label">SIC First Flight</span>
+                <span class="table-value"><input type="date" class="date-inp" /></span>
+              </div>
+              <div class="table-cell">
+                <span class="table-label">SIC Last Flight</span>
+                <span class="table-value"><input type="date" class="date-inp" /></span>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        sectionsWrap.appendChild(section);
+        
+        // Add event listeners for time fields
+        const timeFields = section.querySelectorAll('.hhmm');
+        timeFields.forEach(field => {
+          field.addEventListener('blur', function() {
+            padHHMM(this);
+            computeAll();
+          });
+        });
+      }
+
+      // Time formatting functions
+      function parseHHMM(str) {
+        if (!str || str.trim() === '') return 0;
+        const parts = str.split(':');
+        if (parts.length !== 2) return 0;
+        const hours = parseInt(parts[0]) || 0;
+        const minutes = parseInt(parts[1]) || 0;
+        return hours * 60 + minutes;
+      }
+      
+      function toHHMM(totalMinutes) {
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+        return `${hours}:${minutes.toString().padStart(2, '0')}`;
+      }
+      
+      function padHHMM(el) {
+        const val = el.value.trim();
+        if (!val) {
+          el.value = '0:00';
+          return;
+        }
+        
+        // Parse various formats
+        let minutes = 0;
+        if (val.includes(':')) {
+          minutes = parseHHMM(val);
+        } else {
+          // Assume it's just hours
+          const hours = parseFloat(val) || 0;
+          minutes = Math.round(hours * 60);
+        }
+        
+        el.value = toHHMM(minutes);
+      }
+
+      // Compute all totals
+      function computeAll() {
+        console.log('🔄 Computing all totals...');
+        
+        let totalCombined = 0;
+        let totalMP = 0;
+        let totalNight = 0;
+        
+        // Sum up all sections
+        const sections = document.querySelectorAll('#sections .section');
+        sections.forEach(section => {
+          const timeInputs = section.querySelectorAll('.hhmm');
+          if (timeInputs.length >= 6) {
+            const picBlock = parseHHMM(timeInputs[1].value);
+            const sicBlock = parseHHMM(timeInputs[3].value);
+            const multiPilot = parseHHMM(timeInputs[4].value);
+            const night = parseHHMM(timeInputs[5].value);
+            
+            totalCombined += picBlock + sicBlock;
+            totalMP += multiPilot;
+            totalNight += night;
+          }
+        });
+        
+        // Update grand totals display
+        const gtCombined = document.getElementById('gtCombined');
+        const gtMP = document.getElementById('gtMP');
+        const gtNight = document.getElementById('gtNight');
+        
+        if (gtCombined) gtCombined.textContent = toHHMM(totalCombined);
+        if (gtMP) gtMP.textContent = toHHMM(totalMP);
+        if (gtNight) gtNight.textContent = toHHMM(totalNight);
+      }
+
+      // Remove section
+      function removeSection(sectionId) {
+        const section = document.getElementById(sectionId);
+        if (section && !section.querySelector('input[readonly]')) {
+          section.remove();
+          computeAll();
+          saveFormData();
+        }
+      }
+
+      // Setup event listeners
+      function setupEventListeners() {
+        console.log('🔗 Setting up event listeners...');
+        
+        // Navigation buttons
+        const nextBtn = document.getElementById('nextBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        
+        if (nextBtn) {
+          nextBtn.addEventListener('click', nextStep);
+        }
+        
+        if (prevBtn) {
+          prevBtn.addEventListener('click', previousStep);
+        }
+        
+        // Add section button
+        const btnAddSection = document.getElementById('btnAddSection');
+        if (btnAddSection) {
+          btnAddSection.addEventListener('click', () => {
+            addFlightExperienceSection();
+            saveFormData();
+          });
+        }
+        
+        // Auto-save on form changes
+        document.addEventListener('change', () => {
+          saveFormData();
+        });
+        
+        document.addEventListener('input', () => {
+          saveFormData();
+        });
+      }
+
+      // Validation functions
+      function validateCurrentStep() {
+        console.log('✅ Validating step:', currentStep);
+        
+        if (currentStep === 1) {
+          return validatePersonalInfo();
+        } else if (currentStep === 2) {
+          return validateFlightExperience();
+        } else if (currentStep === 3) {
+          return validateDocumentation();
+        } else if (currentStep === 4) {
+          return validateDeclaration();
+        }
+        
+        return true;
+      }
+      
+      function validatePersonalInfo() {
+        const required = ['pilotName', 'designation', 'dateOfBirth', 'nationality', 'contactEmail', 'doj', 'countryCode', 'phoneNumber'];
+        
+        for (const fieldId of required) {
+          const field = document.getElementById(fieldId);
+          if (!field || !field.value.trim()) {
+            alert(`Please fill in the ${fieldId.replace(/([A-Z])/g, ' $1').toLowerCase()}`);
+            field?.focus();
+            return false;
+          }
+        }
+        
+        // Email validation
+        const email = document.getElementById('contactEmail');
+        if (email && !email.checkValidity()) {
+          alert('Please enter a valid email address');
+          email.focus();
+          return false;
+        }
+        
+        return true;
+      }
+      
+      function validateFlightExperience() {
+        const sections = document.querySelectorAll('#sections .section');
+        
+        if (sections.length === 0) {
+          alert('Please add at least one aircraft type section');
+          return false;
+        }
+        
+        // Validate each section has aircraft type and some flight hours
+        for (const section of sections) {
+          const aircraftType = section.querySelector('.ac-type');
+          if (!aircraftType || !aircraftType.value) {
+            alert('Please select an aircraft type for all sections');
+            aircraftType?.focus();
+            return false;
+          }
+          
+          // Check if at least one time field has data
+          const timeFields = section.querySelectorAll('.hhmm');
+          let hasTime = false;
+          timeFields.forEach(field => {
+            if (field.value && field.value !== '0:00') {
+              hasTime = true;
+            }
+          });
+          
+          if (!hasTime) {
+            alert('Please enter flight hours for all aircraft type sections');
+            return false;
+          }
+        }
+        
+        // Validate summary table
+        const summaryInputs = document.querySelectorAll('.summary table tbody input.hhmm');
+        let hasSummaryData = false;
+        summaryInputs.forEach(input => {
+          if (input.value && input.value !== '0:00') {
+            hasSummaryData = true;
+          }
+        });
+        
+        if (!hasSummaryData) {
+          alert('Please complete the flying experience summary table');
+          return false;
+        }
+        
+        return true;
+      }
+      
+      function validateDocumentation() {
+        // Basic document validation - at minimum need license, medical, and passport
+        const requiredDocs = [
+          { id: 'licenseType', name: 'License Type' },
+          { id: 'licenseNumber', name: 'License Number' },
+          { id: 'medicalClass', name: 'Medical Class' },
+          { id: 'passportNumber', name: 'Passport Number' }
+        ];
+        
+        for (const doc of requiredDocs) {
+          const field = document.getElementById(doc.id);
+          if (!field || !field.value.trim()) {
+            alert(`Please fill in the ${doc.name}`);
+            field?.focus();
+            return false;
+          }
+        }
+        
+        return true;
+      }
+      
+      function validateDeclaration() {
+        const declaration = document.getElementById('declaration');
+        if (!declaration || !declaration.checked) {
+          alert('Please read and accept the declaration');
+          declaration?.focus();
+          return false;
+        }
+        
+        // Check if signature exists (either canvas, typed, or uploaded)
+        const canvas = document.getElementById('sigCanvas');
+        const typedSig = document.getElementById('typedSig');
+        
+        let hasSignature = false;
+        
+        // Check canvas signature
+        if (canvas) {
+          const ctx = canvas.getContext('2d');
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const hasCanvasData = imageData.data.some(channel => channel !== 0);
+          if (hasCanvasData) hasSignature = true;
+        }
+        
+        // Check typed signature
+        if (typedSig && typedSig.value.trim()) {
+          hasSignature = true;
+        }
+        
+        if (!hasSignature) {
+          alert('Please provide a signature (draw, type, or upload)');
+          return false;
+        }
+        
+        return true;
+      }
+
+      // Generate review content
+      function generateReviewContent() {
+        console.log('📋 Generating review content...');
+        
+        collectFormData(); // Make sure we have latest data
+        
+        let html = '<div style="font-size: 14px; line-height: 1.6;">';
+        
+        // Personal Information
+        if (formData.personalInfo) {
+          const info = formData.personalInfo;
+          html += `
+            <h3 style="color: var(--flydubai-navy); margin-bottom: 16px;">👨‍✈️ Personal Information</h3>
+            <div style="display: grid; gap: 12px; margin-bottom: 24px;">
+              ${info.pilotName ? `<div><strong>Full Name:</strong> ${info.pilotName}</div>` : ''}
+              ${info.designation ? `<div><strong>Position:</strong> ${info.designation}</div>` : ''}
+              ${info.dateOfBirth ? `<div><strong>Date of Birth:</strong> ${info.dateOfBirth}</div>` : ''}
+              ${info.nationality ? `<div><strong>Nationality:</strong> ${info.nationality}</div>` : ''}
+              ${info.contactEmail ? `<div><strong>Email:</strong> ${info.contactEmail}</div>` : ''}
+              ${info.doj ? `<div><strong>Date of Joining:</strong> ${info.doj}</div>` : ''}
+              ${info.countryCode && info.phoneNumber ? `<div><strong>Phone:</strong> ${info.countryCode} ${info.phoneNumber}</div>` : ''}
+            </div>
+          `;
+        }
+        
+        // Flight Experience
+        if (formData.flightExperience && formData.flightExperience.aircraftSections) {
+          html += `
+            <h3 style="color: var(--flydubai-navy); margin-bottom: 16px;">✈️ Flight Experience</h3>
+          `;
+          
+          formData.flightExperience.aircraftSections.forEach((section, index) => {
+            html += `
+              <div style="background: #f8fafc; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+                <h4 style="margin: 0 0 12px; color: var(--flydubai-blue);">${section.aircraftType}</h4>
+                <div style="display: grid; gap: 8px; font-size: 13px;">
+                  <div><strong>PIC Total:</strong> ${section.flightHours?.picTotal || '0:00'}</div>
+                  <div><strong>PIC Block:</strong> ${section.flightHours?.picBlock || '0:00'}</div>
+                  <div><strong>SIC Total:</strong> ${section.flightHours?.sicTotal || '0:00'}</div>
+                  <div><strong>SIC Block:</strong> ${section.flightHours?.sicBlock || '0:00'}</div>
+                  <div><strong>Multi-Pilot:</strong> ${section.flightHours?.multiPilot || '0:00'}</div>
+                  <div><strong>Night:</strong> ${section.flightHours?.night || '0:00'}</div>
+                  ${section.notes ? `<div><strong>Notes:</strong> ${section.notes}</div>` : ''}
+                </div>
+              </div>
+            `;
+          });
+        }
+        
+        // Documentation Summary
+        if (formData.documentation) {
+          const docs = formData.documentation;
+          html += `
+            <h3 style="color: var(--flydubai-navy); margin-bottom: 16px;">📄 Documentation</h3>
+            <div style="display: grid; gap: 12px; margin-bottom: 24px;">
+              ${docs.licenseType ? `<div><strong>License:</strong> ${docs.licenseType} (${docs.licenseNumber || 'N/A'})</div>` : ''}
+              ${docs.medicalClass ? `<div><strong>Medical:</strong> ${docs.medicalClass}</div>` : ''}
+              ${docs.passportNumber ? `<div><strong>Passport:</strong> ${docs.passportNumber}</div>` : ''}
+            </div>
+          `;
+        }
+        
+        html += '</div>';
+        
+        const reviewContent = document.getElementById('reviewContent');
+        if (reviewContent) {
+          reviewContent.innerHTML = html;
+        }
+      }
+
+      // Collect form data
+      function collectFormData() {
+        console.log('📊 Collecting form data...');
+        
+        // Step 1: Personal Information
+        formData.personalInfo = {
+          pilotName: document.getElementById('pilotName')?.value || '',
+          designation: document.getElementById('designation')?.value || '',
+          dateOfBirth: document.getElementById('dateOfBirth')?.value || '',
+          nationality: document.getElementById('nationality')?.value || '',
+          contactEmail: document.getElementById('contactEmail')?.value || '',
+          doj: document.getElementById('doj')?.value || '',
+          countryCode: document.getElementById('countryCode')?.value || '',
+          phoneNumber: document.getElementById('phoneNumber')?.value || ''
+        };
+        
+        // Step 2: Flight Experience
+        const sections = document.querySelectorAll('#sections .section');
+        const aircraftSections = [];
+        
+        sections.forEach(section => {
+          const aircraftType = section.querySelector('.ac-type')?.value || '';
+          const notes = section.querySelector('.ac-notes')?.value || '';
+          
+          const timeInputs = section.querySelectorAll('.hhmm');
+          const dateInputs = section.querySelectorAll('.date-inp');
+          
+          if (aircraftType) {
+            const sectionData = {
+              aircraftType: aircraftType,
+              notes: notes,
+              flightHours: {
+                picTotal: timeInputs[0]?.value || '0:00',
+                picBlock: timeInputs[1]?.value || '0:00',
+                sicTotal: timeInputs[2]?.value || '0:00',
+                sicBlock: timeInputs[3]?.value || '0:00',
+                multiPilot: timeInputs[4]?.value || '0:00',
+                night: timeInputs[5]?.value || '0:00'
+              },
+              dates: {
+                picFrom: dateInputs[0]?.value || '',
+                picTo: dateInputs[1]?.value || '',
+                sicFrom: dateInputs[2]?.value || '',
+                sicTo: dateInputs[3]?.value || ''
+              }
+            };
+            
+            aircraftSections.push(sectionData);
+          }
+        });
+        
+        // Collect summary hours
+        const summaryInputs = document.querySelectorAll('.summary table tbody input.hhmm');
+        const summaryHours = {};
+        if (summaryInputs.length >= 9) {
+          summaryHours.pic = summaryInputs[0]?.value || '0:00';
+          summaryHours.sic = summaryInputs[1]?.value || '0:00';
+          summaryHours.solo = summaryInputs[2]?.value || '0:00';
+          summaryHours.instrument = summaryInputs[3]?.value || '0:00';
+          summaryHours.sim = summaryInputs[4]?.value || '0:00';
+          summaryHours.night = summaryInputs[5]?.value || '0:00';
+          summaryHours.instructor = summaryInputs[6]?.value || '0:00';
+          summaryHours.p1us = summaryInputs[7]?.value || '0:00';
+          summaryHours.grandTotal = summaryInputs[8]?.value || '0:00';
+        }
+        
+        formData.flightExperience = {
+          aircraftSections: aircraftSections,
+          summaryHours: summaryHours
+        };
+        
+        // Step 3: Documentation
+        formData.documentation = {
+          licenseType: document.getElementById('licenseType')?.value || '',
+          licenseNumber: document.getElementById('licenseNumber')?.value || '',
+          licenseIssue: document.getElementById('licenseIssue')?.value || '',
+          licenseExpiry: document.getElementById('licenseExpiry')?.value || '',
+          
+          medicalClass: document.getElementById('medicalClass')?.value || '',
+          medicalAuthority: document.getElementById('medicalAuthority')?.value || '',
+          medicalIssue: document.getElementById('medicalIssue')?.value || '',
+          medicalExpiry: document.getElementById('medicalExpiry')?.value || '',
+          
+          passportNumber: document.getElementById('passportNumber')?.value || '',
+          passportNationality: document.getElementById('passportNationality')?.value || '',
+          passportIssue: document.getElementById('passportIssue')?.value || '',
+          passportExpiry: document.getElementById('passportExpiry')?.value || ''
+        };
+        
+        // Step 4: Declaration
+        const canvas = document.getElementById('sigCanvas');
+        let signatureData = null;
+        if (canvas) {
+          signatureData = canvas.toDataURL();
+        }
+        
+        formData.declaration = {
+          agreed: document.getElementById('declaration')?.checked || false,
+          signatureDate: document.getElementById('sigDate')?.value || '',
+          typedSignature: document.getElementById('typedSig')?.value || '',
+          signatureData: signatureData
+        };
+      }
+
+      // Save form data to localStorage
+      function saveFormData() {
+        collectFormData();
+        
+        try {
+          const saveData = {
+            formData: formData,
+            currentStep: currentStep,
+            sessionId: generateSessionId(),
+            lastSaved: Date.now(),
+            expiresAt: Date.now() + (24 * 60 * 60 * 1000) // 24 hours
+          };
+          
+          localStorage.setItem('pilotFormData', JSON.stringify(saveData));
+          showAutoSaveStatus('Saved', 'saved');
+        } catch (error) {
+          console.error('Error saving form data:', error);
+          showAutoSaveStatus('Error saving', 'error');
+        }
+      }
+
+      // Load form data from localStorage
+      function loadFormData() {
+        try {
+          const savedData = localStorage.getItem('pilotFormData');
+          if (!savedData) return false;
+          
+          const data = JSON.parse(savedData);
+          
+          // Check if data hasn't expired
+          if (Date.now() >= data.expiresAt) {
+            localStorage.removeItem('pilotFormData');
+            return false;
+          }
+          
+          formData = data.formData || {};
+          
+          return true;
+        } catch (error) {
+          console.error('Error loading form data:', error);
+          localStorage.removeItem('pilotFormData');
+          return false;
+        }
+      }
+
+      // Populate form fields with saved data
+      function populateFormFields() {
+        console.log('📝 Populating form fields...');
+        
+        // Step 1: Personal Information
+        if (formData.personalInfo) {
+          const info = formData.personalInfo;
+          const personalFields = [
+            'pilotName', 'designation', 'dateOfBirth', 'nationality',
+            'contactEmail', 'doj', 'countryCode', 'phoneNumber'
+          ];
+          
+          personalFields.forEach(fieldId => {
+            const element = document.getElementById(fieldId);
+            if (element && info[fieldId]) {
+              element.value = info[fieldId];
+            }
+          });
+        }
+        
+        // Step 3: Documentation
+        if (formData.documentation) {
+          const docs = formData.documentation;
+          const docFields = [
+            'licenseType', 'licenseNumber', 'licenseIssue', 'licenseExpiry',
+            'medicalClass', 'medicalAuthority', 'medicalIssue', 'medicalExpiry',
+            'passportNumber', 'passportNationality', 'passportIssue', 'passportExpiry'
+          ];
+          
+          docFields.forEach(fieldId => {
+            const element = document.getElementById(fieldId);
+            if (element && docs[fieldId]) {
+              element.value = docs[fieldId];
+            }
+          });
+        }
+        
+        // Step 4: Declaration
+        if (formData.declaration) {
+          const decl = formData.declaration;
+          
+          const sigDate = document.getElementById('sigDate');
+          if (sigDate && decl.signatureDate) {
+            sigDate.value = decl.signatureDate;
+          }
+          
+          const typedSig = document.getElementById('typedSig');
+          if (typedSig && decl.typedSignature) {
+            typedSig.value = decl.typedSignature;
+          }
+          
+          // Restore signature canvas if data exists
+          if (decl.signatureData) {
+            const canvas = document.getElementById('sigCanvas');
+            if (canvas) {
+              const ctx = canvas.getContext('2d');
+              const img = new Image();
+              img.onload = function() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
+              };
+              img.src = decl.signatureData;
+            }
+          }
+        }
+      }
+
+      // Auto-save status
+      function showAutoSaveStatus(message, type = 'saved') {
+        const statusEl = document.getElementById('autoSaveStatus');
+        if (statusEl) {
+          statusEl.textContent = message;
+          statusEl.style.display = 'block';
+          statusEl.style.background = type === 'error' ? '#fef2f2' : '#f0fdf4';
+          statusEl.style.color = type === 'error' ? '#dc2626' : '#059669';
+          
+          setTimeout(() => {
+            statusEl.style.display = 'none';
+          }, 2000);
+        }
+      }
+
+      // Setup auto-save
+      function setupAutoSave() {
+        setInterval(() => {
+          saveFormData();
+        }, 30000); // Save every 30 seconds
+      }
+
+      // Check for recovery
+      function checkForRecovery() {
+        const hasData = localStorage.getItem('pilotFormData');
+        if (hasData) {
+          const banner = document.getElementById('recoveryBanner');
+          if (banner) {
+            banner.classList.add('show');
+          }
+        }
+      }
+
+      // Recovery functions
+      window.recoverSession = function() {
+        const hasData = loadFormData();
+        if (hasData) {
+          populateFormFields();
+          showAutoSaveStatus('Session recovered', 'saved');
+        }
+        const banner = document.getElementById('recoveryBanner');
+        if (banner) {
+          banner.classList.remove('show');
+        }
+      };
+
+      window.clearSession = function() {
+        localStorage.removeItem('pilotFormData');
+        const banner = document.getElementById('recoveryBanner');
+        if (banner) {
+          banner.classList.remove('show');
+        }
+        showAutoSaveStatus('Session cleared', 'saved');
+      };
+
+      // Utility functions
+      function generateSessionId() {
+        return Date.now().toString(36) + Math.random().toString(36).substr(2);
+      }
+
+      // Date validation
+      function checkValidity(docType) {
+        // Placeholder for document validation
+        console.log('Checking validity for:', docType);
+      }
+
+      // Submit form
+      function submitForm() {
+        console.log('📤 Submitting form...');
+        
+        if (!validateCurrentStep()) {
+          return;
+        }
+        
+        collectFormData();
+        
+        // Here you would normally send the data to a server
+        alert('Form submitted successfully! This is a demo - in production, data would be sent to the server.');
+        
+        // Clear saved data after successful submit
+        localStorage.removeItem('pilotFormData');
+      }
+
+      // Initialize signature date to today
+      const sigDateElement = document.getElementById('sigDate');
+      if (sigDateElement) {
+        sigDateElement.value = new Date().toISOString().split('T')[0];
+      }
+
+      // Initialize signature functionality
+      (function initSignature(){
+        const canvas = document.getElementById('sigCanvas');
+        if(!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+        
+        function setupCanvas(){
+          const ratio = Math.max(window.devicePixelRatio || 1, 1);
+          const rect = canvas.getBoundingClientRect();
+          const canvasWidth = rect.width > 0 ? rect.width : 300;
+          canvas.width = canvasWidth * ratio;
+          canvas.height = 150 * ratio;
+          ctx.setTransform(ratio,0,0,ratio,0,0);
+          ctx.lineWidth = 2;
+          ctx.lineJoin='round';
+          ctx.lineCap='round';
+          ctx.strokeStyle = '#111827';
+        }
+        
+        function clearCanvas(){
+          ctx.clearRect(0,0,canvas.width,canvas.height);
+        }
+        
+        function pos(e){
+          const r = canvas.getBoundingClientRect();
+          const p = e.touches ? e.touches[0] : e;
+          return {x: p.clientX - r.left, y: p.clientY - r.top};
+        }
+        
+        let drawing = false, lastX = 0, lastY = 0;
+        
+        function start(e){
+          drawing = true;
+          const p = pos(e);
+          lastX = p.x;
+          lastY = p.y;
+          e.preventDefault();
+        }
+        
+        function move(e){
+          if(!drawing) return;
+          const p = pos(e);
+          ctx.beginPath();
+          ctx.moveTo(lastX, lastY);
+          ctx.lineTo(p.x, p.y);
+          ctx.stroke();
+          lastX = p.x;
+          lastY = p.y;
+          e.preventDefault();
+        }
+        
+        function end(){
+          drawing = false;
+        }
+        
+        setupCanvas();
+        window.addEventListener('resize', setupCanvas);
+        
+        // Mouse events
+        canvas.addEventListener('mousedown', start);
+        canvas.addEventListener('mousemove', move);
+        window.addEventListener('mouseup', end);
+        
+        // Touch events
+        canvas.addEventListener('touchstart', start, {passive:false});
+        canvas.addEventListener('touchmove', move, {passive:false});
+        window.addEventListener('touchend', end);
+
+        // Clear button
+        const clearBtn = document.getElementById('sigClear');
+        if (clearBtn) {
+          clearBtn.addEventListener('click', clearCanvas);
+        }
+
+        // Apply typed signature
+        const applyBtn = document.getElementById('sigApply');
+        if (applyBtn) {
+          applyBtn.addEventListener('click', () => {
+            const txt = document.getElementById('typedSig')?.value?.trim();
+            if(!txt) return;
+            clearCanvas();
+            ctx.font = '24px cursive';
+            ctx.fillStyle = '#111827';
+            const metrics = ctx.measureText(txt);
+            const cssW = canvas.getBoundingClientRect().width;
+            const x = Math.max(10, (cssW - metrics.width)/2);
+            ctx.fillText(txt, x, 80);
+          });
+        }
+
+        // Upload signature
+        const uploadBtn = document.getElementById('sigUpload');
+        if (uploadBtn) {
+          uploadBtn.addEventListener('change', (ev) => {
+            const file = ev.target.files && ev.target.files[0];
+            if(!file) return;
+            const img = new Image();
+            img.onload = () => {
+              clearCanvas();
+              const cssW = canvas.getBoundingClientRect().width;
+              const cssH = 150;
+              const scale = Math.min(cssW*0.9 / img.width, cssH*0.9 / img.height);
+              const w = img.width * scale;
+              const h = img.height * scale;
+              const x = (cssW - w)/2;
+              const y = (cssH - h)/2;
+              ctx.drawImage(img, x, y, w, h);
+            };
+            img.src = URL.createObjectURL(file);
+          });
+        }
+      })();
+
+      // Make functions globally available
+      window.nextStep = nextStep;
+      window.previousStep = previousStep;
+      window.removeSection = removeSection;
+
+      // Initialize the form
+      initializeForm();
+      
+      console.log('✅ Mobile form initialization complete');
     });
   </script>
 </body>
