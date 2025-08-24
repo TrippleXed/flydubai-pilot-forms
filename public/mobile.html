@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
   <title>flydubai Flight Operations - Fleet</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -212,6 +212,7 @@
     /* Mobile Form Steps */
     .form-step {
       padding: 15px 12px;
+      padding-bottom: 100px; /* Extra space to prevent hiding behind sticky nav */
       width: 100%;
       display: none;
       animation: fadeIn 0.3s ease;
@@ -339,12 +340,17 @@
     /* Mobile Navigation */
     .form-navigation {
       padding: 15px 12px;
+      padding-bottom: max(15px, env(safe-area-inset-bottom, 15px));
       background: var(--card);
       border-top: 1px solid var(--line);
       display: flex;
       flex-direction: column;
       gap: 10px;
       width: 100%;
+      position: sticky;
+      bottom: 0;
+      z-index: 100;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
     }
     
     .nav-left, .nav-right {
@@ -1111,49 +1117,49 @@
             <div style="display: flex; flex-direction: column; gap: 12px;">
               <!-- Row 1: PIC, SIC, SOLO -->
               <div style="display: flex; gap: 8px;">
-                <div style="flex: 1;">
-                  <label style="display: block; font-size: 11px; font-weight: bold; margin-bottom: 4px; text-align: center; width: 100%;">PIC/P1</label>
-                  <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center; font-size: 12px; padding: 6px; width: 100%;">
+                <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                  <label style="font-size: 11px; font-weight: bold; margin-bottom: 4px; text-align: center;">PIC/P1</label>
+                  <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center; font-size: 12px; padding: 6px; width: 100%; box-sizing: border-box; margin: 0;">
                 </div>
-                <div style="flex: 1;">
-                  <label style="display: block; font-size: 11px; font-weight: bold; margin-bottom: 4px; text-align: center; width: 100%;">SIC/P2</label>
-                  <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center; font-size: 12px; padding: 6px; width: 100%;">
+                <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                  <label style="font-size: 11px; font-weight: bold; margin-bottom: 4px; text-align: center;">SIC/P2</label>
+                  <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center; font-size: 12px; padding: 6px; width: 100%; box-sizing: border-box; margin: 0;">
                 </div>
-                <div style="flex: 1;">
-                  <label style="display: block; font-size: 11px; font-weight: bold; margin-bottom: 4px; text-align: center; width: 100%;">SOLO</label>
-                  <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center; font-size: 12px; padding: 6px; width: 100%;">
+                <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                  <label style="font-size: 11px; font-weight: bold; margin-bottom: 4px; text-align: center;">SOLO</label>
+                  <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center; font-size: 12px; padding: 6px; width: 100%; box-sizing: border-box; margin: 0;">
                 </div>
               </div>
               
               <!-- Row 2: INSTRUMENT, SIM, NIGHT -->
               <div style="display: flex; gap: 8px;">
-                <div style="flex: 1;">
-                  <label style="display: block; font-size: 11px; font-weight: bold; margin-bottom: 4px; text-align: center; width: 100%;">INSTRUMENT</label>
-                  <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center; font-size: 12px; padding: 6px; width: 100%;">
+                <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                  <label style="font-size: 11px; font-weight: bold; margin-bottom: 4px; text-align: center;">INSTRUMENT</label>
+                  <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center; font-size: 12px; padding: 6px; width: 100%; box-sizing: border-box; margin: 0;">
                 </div>
-                <div style="flex: 1;">
-                  <label style="display: block; font-size: 11px; font-weight: bold; margin-bottom: 4px; text-align: center; width: 100%;">SIM</label>
-                  <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center; font-size: 12px; padding: 6px; width: 100%;">
+                <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                  <label style="font-size: 11px; font-weight: bold; margin-bottom: 4px; text-align: center;">SIM</label>
+                  <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center; font-size: 12px; padding: 6px; width: 100%; box-sizing: border-box; margin: 0;">
                 </div>
-                <div style="flex: 1;">
-                  <label style="display: block; font-size: 11px; font-weight: bold; margin-bottom: 4px; text-align: center; width: 100%;">NIGHT</label>
-                  <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center; font-size: 12px; padding: 6px; width: 100%;">
+                <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                  <label style="font-size: 11px; font-weight: bold; margin-bottom: 4px; text-align: center;">NIGHT</label>
+                  <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center; font-size: 12px; padding: 6px; width: 100%; box-sizing: border-box; margin: 0;">
                 </div>
               </div>
               
               <!-- Row 3: INSTRUCTOR, P1 U/S, GRAND TOTAL -->
               <div style="display: flex; gap: 8px;">
-                <div style="flex: 1;">
-                  <label style="display: block; font-size: 11px; font-weight: bold; margin-bottom: 4px; text-align: center; width: 100%;">INSTRUCTOR</label>
-                  <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center; font-size: 12px; padding: 6px; width: 100%;">
+                <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                  <label style="font-size: 11px; font-weight: bold; margin-bottom: 4px; text-align: center;">INSTRUCTOR</label>
+                  <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center; font-size: 12px; padding: 6px; width: 100%; box-sizing: border-box; margin: 0;">
                 </div>
-                <div style="flex: 1;">
-                  <label style="display: block; font-size: 11px; font-weight: bold; margin-bottom: 4px; text-align: center; width: 100%;">P1 U/S</label>
-                  <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center; font-size: 12px; padding: 6px; width: 100%;">
+                <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                  <label style="font-size: 11px; font-weight: bold; margin-bottom: 4px; text-align: center;">P1 U/S</label>
+                  <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center; font-size: 12px; padding: 6px; width: 100%; box-sizing: border-box; margin: 0;">
                 </div>
-                <div style="flex: 1;">
-                  <label style="display: block; font-size: 11px; font-weight: bold; margin-bottom: 4px; text-align: center; width: 100%; color: #1e40af;">GRAND TOTAL</label>
-                  <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center; font-size: 12px; font-weight: bold; background: #dbeafe; border: 2px solid #3b82f6; padding: 6px; width: 100%;">
+                <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                  <label style="font-size: 11px; font-weight: bold; margin-bottom: 4px; text-align: center; color: #1e40af;">GRAND TOTAL</label>
+                  <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center; font-size: 12px; font-weight: bold; background: #dbeafe; border: 2px solid #3b82f6; padding: 6px; width: 100%; box-sizing: border-box; margin: 0;">
                 </div>
               </div>
             </div>
