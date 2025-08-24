@@ -738,18 +738,12 @@
               <input type="text" id="pilotName" class="form-input" placeholder="Enter your full name" required />
             </div>
             <div class="form-group">
-              <label for="designation" class="required">Position/Role</label>
+              <label for="designation" class="required">flydubai Designation</label>
               <select id="designation" class="form-select" required>
-                <option value="">Select Position</option>
+                <option value="">Select…</option>
                 <option>Captain</option>
                 <option>First Officer</option>
-                <option>Senior First Officer</option>
-                <option>Training Captain</option>
-                <option>Line Training Captain</option>
-                <option>Check Captain</option>
-                <option>Deputy Chief Pilot</option>
-                <option>Chief Pilot</option>
-                <option>Fleet Manager</option>
+                <option>Second Officer</option>
                 <option>Cadet</option>
                 <option>Ab-Initio</option>
               </select>
@@ -1113,34 +1107,45 @@
           <h2 class="section-h">FLYING EXPERIENCE SUMMARY</h2>
           <h3 class="section-h" style="margin-top:6px">GENERAL</h3>
           <div class="section">
-            <table>
-              <thead>
-                <tr>
-                  <th><b>PIC/P1</b></th>
-                  <th><b>SIC/P2</b></th>
-                  <th><b>SOLO</b></th>
-                  <th><b>INSTRUMENT</b></th>
-                  <th><b>SIM</b></th>
-                  <th><b>NIGHT</b></th>
-                  <th><b>INSTRUCTOR</b></th>
-                  <th><b>P1 U/S</b></th>
-                  <th><b>GRAND TOTAL</b></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
-                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
-                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
-                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
-                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
-                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
-                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
-                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
-                  <td><input type="text" class="hhmm" placeholder="0:00"></td>
-                </tr>
-              </tbody>
-            </table>
+            <!-- Mobile-friendly individual inputs -->
+            <div class="form-grid">
+              <div class="form-group">
+                <label><strong>PIC/P1</strong></label>
+                <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center;">
+              </div>
+              <div class="form-group">
+                <label><strong>SIC/P2</strong></label>
+                <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center;">
+              </div>
+              <div class="form-group">
+                <label><strong>SOLO</strong></label>
+                <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center;">
+              </div>
+              <div class="form-group">
+                <label><strong>INSTRUMENT</strong></label>
+                <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center;">
+              </div>
+              <div class="form-group">
+                <label><strong>SIM</strong></label>
+                <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center;">
+              </div>
+              <div class="form-group">
+                <label><strong>NIGHT</strong></label>
+                <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center;">
+              </div>
+              <div class="form-group">
+                <label><strong>INSTRUCTOR</strong></label>
+                <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center;">
+              </div>
+              <div class="form-group">
+                <label><strong>P1 U/S</strong></label>
+                <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center;">
+              </div>
+              <div class="form-group">
+                <label><strong>GRAND TOTAL</strong></label>
+                <input type="text" class="hhmm form-input" placeholder="0:00" style="text-align: center; font-weight: bold; background: #f0f9ff;">
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1767,7 +1772,7 @@
         }
         
         const heavyJetIndicator = (aircraftType === 'Boeing 737 NG/MAX' || aircraftType === 'Boeing 737 Classic (300-500)') ? 
-          '<div class="heavy-jet-indicator">✈️ Heavy Jet Aircraft</div>' : '';
+          '<div class="heavy-jet-indicator">✈ >50T MTOW</div>' : '';
         
         section.innerHTML = `
           <div class="section-title">
