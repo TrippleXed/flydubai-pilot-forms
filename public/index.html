@@ -593,11 +593,21 @@
     
     /* Responsive */
     @media (max-width: 768px) {
+      * {
+        box-sizing: border-box;
+      }
+      
+      html, body {
+        overflow-x: hidden;
+        width: 100%;
+      }
+      
       .container {
         margin: 0;
         padding: 0;
         width: 100vw;
-        box-sizing: border-box;
+        max-width: 100vw;
+        overflow-x: hidden;
       }
       
       .header {
@@ -721,6 +731,75 @@
         font-size: 12px;
         margin: 10px 0;
       }
+      
+      /* Force all form elements to be contained */
+      .form-input, .form-select, input, select, textarea {
+        max-width: 100%;
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+      
+      /* Fix any grid layouts that might overflow */
+      .form-section .form-grid {
+        grid-template-columns: 1fr !important;
+        width: 100% !important;
+        overflow: hidden;
+      }
+      
+      /* Fix signature section */
+      #signSection .form-grid {
+        grid-template-columns: 1fr !important;
+        gap: 10px;
+      }
+      
+      #signSection input, #signSection button, #signSection label {
+        width: 100% !important;
+        margin: 5px 0;
+        box-sizing: border-box;
+      }
+      
+      /* Fix aircraft type sections */
+      .aircraft-type-section {
+        width: 100% !important;
+        overflow: hidden;
+      }
+      
+      .aircraft-type-section .form-grid {
+        grid-template-columns: 1fr !important;
+      }
+      
+      /* Fix table layouts */
+      table {
+        width: 100% !important;
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+      
+      table thead, table tbody, table tr {
+        display: block;
+      }
+      
+      table th, table td {
+        display: inline-block;
+        width: auto;
+        min-width: 100px;
+        white-space: normal;
+        vertical-align: top;
+      }
+      
+      /* Fix any flex containers that might cause overflow */
+      .nav-left, .nav-right {
+        flex-wrap: wrap;
+      }
+      
+      /* Ensure all content sections are properly contained */
+      .form-section, .section-title, .step-title, .step-subtitle {
+        width: 100%;
+        max-width: 100%;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+      }
     }
     
     @media (max-width: 480px) {
@@ -798,6 +877,21 @@
       .upload-area {
         padding: 10px;
         font-size: 11px;
+      }
+      
+      /* Even more aggressive mobile containment */
+      table th, table td {
+        min-width: 80px;
+        font-size: 11px;
+      }
+      
+      #signSection input {
+        min-width: auto !important;
+      }
+      
+      .aircraft-type-section input, .aircraft-type-section select {
+        font-size: 12px;
+        padding: 5px;
       }
     }
     
@@ -3831,7 +3925,6 @@
           
           const section = makeAircraftSection({
             label: `Aircraft Type ${index + 1}`,
-            typeText: isLocked ? sectionData.aircraftType : '',
             locked: isLocked,
             b737Type: b737Type
           });
@@ -6284,7 +6377,6 @@
       console.log('🛩️ Creating Aircraft Type 1: Boeing 737 NG/MAX');
       const section1 = makeAircraftSection({
         label: 'Aircraft Type 1',
-        typeText: 'Boeing 737 NG/MAX',
         locked: true,
         b737Type: 'ng-max'
       });
@@ -6294,7 +6386,6 @@
       console.log('🛩️ Creating Aircraft Type 2: Boeing 737 Classic');
       const section2 = makeAircraftSection({
         label: 'Aircraft Type 2', 
-        typeText: 'Boeing 737 Classic (300-500)',
         locked: true,
         b737Type: 'classic'
       });
