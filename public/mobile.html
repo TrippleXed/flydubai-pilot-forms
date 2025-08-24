@@ -1751,12 +1751,13 @@
         ];
         
         let aircraftSelectHtml;
-        if (locked) {
+        if (locked && (b737Type === 'ng-max' || b737Type === 'classic')) {
           aircraftSelectHtml = `
             <div>
               <label>Aircraft Type *</label>
-              <input type="text" value="${aircraftType}" readonly style="background: #f3f4f6; color: #6b7280;" />
-              <input type="hidden" class="ac-type" value="${aircraftType}" />
+              <select class="ac-type form-select" disabled style="background: #f3f4f6; color: #6b7280; cursor: not-allowed;">
+                <option value="${aircraftType}" selected>${aircraftType}</option>
+              </select>
             </div>
           `;
         } else {
