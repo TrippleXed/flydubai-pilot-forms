@@ -212,7 +212,7 @@
     /* Mobile Form Steps */
     .form-step {
       padding: 15px 12px;
-      padding-bottom: 20px;
+      padding-bottom: 5px;
       width: 100%;
       display: none;
       animation: fadeIn 0.3s ease;
@@ -244,6 +244,45 @@
     .form-section {
       margin-bottom: 20px;
       width: 100%;
+      border: 2px solid var(--line);
+      border-radius: 16px;
+      padding: 20px;
+      background: linear-gradient(135deg, #ffffff 0%, #fafbff 100%);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .form-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--flydubai-blue) 0%, var(--flydubai-orange) 100%);
+    }
+    
+    .section {
+      margin-bottom: 20px;
+      width: 100%;
+      border: 2px solid var(--line);
+      border-radius: 16px;
+      padding: 20px;
+      background: linear-gradient(135deg, #ffffff 0%, #fafbff 100%);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--flydubai-blue) 0%, var(--flydubai-orange) 100%);
     }
     
     .section-title, .section-h {
@@ -340,7 +379,7 @@
     /* Mobile Navigation */
     .form-navigation {
       padding: 15px 12px;
-      padding-bottom: max(30px, env(safe-area-inset-bottom, 30px));
+      padding-bottom: max(80px, env(safe-area-inset-bottom, 80px));
       background: var(--card);
       border-top: 1px solid var(--line);
       display: flex;
@@ -1201,6 +1240,171 @@
           </div>
         </div>
 
+      <!-- Radio Operator License Section -->
+      <div class="form-section">
+        <h2 class="section-h">📻 Radio Operator License</h2>
+        <div class="grid">
+          <div>
+            <label>ROL Type</label>
+            <select id="rolType" onchange="toggleROLFields()">
+              <option value="">Select ROL Type</option>
+              <option value="Separate Certificate">Separate ROL Certificate</option>
+              <option value="Attached to License">Attached to Pilot License</option>
+            </select>
+          </div>
+        </div>
+        
+        <div id="rolSeparateFields" class="conditional-section">
+          <div class="grid">
+            <div>
+              <label>ROL Number</label>
+              <input type="text" id="rolNumber" placeholder="Enter ROL certificate number">
+            </div>
+            <div>
+              <label>Issuing Radio Authority</label>
+              <select id="rolAuthority">
+                <option value="">Select Radio Authority</option>
+                <!-- Major International Authorities -->
+                <option value="EASA">EASA (European Union Aviation Safety Agency)</option>
+                <option value="FAA USA">FAA (Federal Aviation Administration - USA)</option>
+                <option value="ICAO">ICAO (International Civil Aviation Organization)</option>
+                
+                <!-- Middle East & Gulf -->
+                <option value="GCAA UAE">GCAA UAE (General Civil Aviation Authority)</option>
+                <option value="GACA Saudi">GACA (General Authority of Civil Aviation - Saudi Arabia)</option>
+                <option value="CAA Qatar">CAA Qatar (Civil Aviation Authority)</option>
+                <option value="DGCA Kuwait">DGCA Kuwait (Directorate General of Civil Aviation)</option>
+                <option value="CAA Bahrain">CAA Bahrain (Civil Aviation Affairs)</option>
+                <option value="CAA Oman">CAA Oman (Civil Aviation Authority)</option>
+                <option value="DGCA Jordan">DGCA Jordan (Directorate General of Civil Aviation)</option>
+                <option value="DGCA Lebanon">DGCA Lebanon (Directorate General of Civil Aviation)</option>
+                <option value="CAA Egypt">CAA Egypt (Egyptian Civil Aviation Authority)</option>
+                <option value="DGCA Iraq">DGCA Iraq (Iraqi Civil Aviation Authority)</option>
+                <option value="CAA Iran">CAA Iran (Civil Aviation Organization)</option>
+                <option value="DGCA Syria">DGCA Syria (Syrian Civil Aviation Authority)</option>
+                <option value="CAA Turkey">CAA Turkey (Directorate General of Civil Aviation)</option>
+                <option value="CAA Israel">CAA Israel (Civil Aviation Authority)</option>
+                
+                <!-- Asia Pacific -->
+                <option value="DGCA India">DGCA India (Directorate General of Civil Aviation)</option>
+                <option value="CASA Australia">CASA (Civil Aviation Safety Authority - Australia)</option>
+                <option value="CAAC China">CAAC (Civil Aviation Administration of China)</option>
+                <option value="JCAB Japan">JCAB (Japan Civil Aviation Bureau)</option>
+                <option value="KCAB Korea">KCAB (Korea Civil Aviation Bureau)</option>
+                <option value="CAAS Singapore">CAAS (Civil Aviation Authority of Singapore)</option>
+                <option value="DCA Malaysia">DCA Malaysia (Department of Civil Aviation)</option>
+                <option value="CAAT Thailand">CAAT (Civil Aviation Authority of Thailand)</option>
+                <option value="DGCA Indonesia">DGCA Indonesia (Directorate General of Civil Aviation)</option>
+                <option value="CAAP Philippines">CAAP (Civil Aviation Authority of Philippines)</option>
+                <option value="CAA Vietnam">CAA Vietnam (Civil Aviation Authority)</option>
+                <option value="DGCA Pakistan">DGCA Pakistan (Civil Aviation Authority)</option>
+                <option value="DGCA Bangladesh">DGCA Bangladesh (Civil Aviation Authority)</option>
+                <option value="CAAN Nepal">CAAN (Civil Aviation Authority of Nepal)</option>
+                <option value="DGCA Sri Lanka">DGCA Sri Lanka (Civil Aviation Authority)</option>
+                <option value="DGCA Myanmar">DGCA Myanmar (Department of Civil Aviation)</option>
+                <option value="CAA New Zealand">CAA New Zealand (Civil Aviation Authority)</option>
+                
+                <!-- Europe -->
+                <option value="CAA UK">CAA UK (Civil Aviation Authority - United Kingdom)</option>
+                <option value="LBA Germany">LBA (Luftfahrt-Bundesamt - Germany)</option>
+                <option value="DGAC France">DGAC (Direction Générale de l'Aviation Civile - France)</option>
+                <option value="ENAC Italy">ENAC (Ente Nazionale per l'Aviazione Civile - Italy)</option>
+                <option value="AESA Spain">AESA (Agencia Estatal de Seguridad Aérea - Spain)</option>
+                <option value="ANAC Portugal">ANAC (Autoridade Nacional da Aviação Civil - Portugal)</option>
+                <option value="BCAA Netherlands">BCAA (Inspectie Leefomgeving en Transport - Netherlands)</option>
+                <option value="FOCA Switzerland">FOCA (Federal Office of Civil Aviation - Switzerland)</option>
+                <option value="Austrocontrol Austria">Austrocontrol (Austria)</option>
+                <option value="DGTA Belgium">DGTA (Direction Générale Transport Aérien - Belgium)</option>
+                <option value="CAA Denmark">CAA Denmark (Civil Aviation Authority)</option>
+                <option value="CAA Finland">CAA Finland (Civil Aviation Authority)</option>
+                <option value="CAA Norway">CAA Norway (Civil Aviation Authority)</option>
+                <option value="CAA Sweden">CAA Sweden (Civil Aviation Authority)</option>
+                <option value="CAA Ireland">CAA Ireland (Irish Aviation Authority)</option>
+                <option value="CAA Iceland">CAA Iceland (Civil Aviation Authority)</option>
+                <option value="CAA Poland">CAA Poland (Civil Aviation Authority)</option>
+                <option value="CAA Czech">CAA Czech Republic (Civil Aviation Authority)</option>
+                <option value="CAA Slovakia">CAA Slovakia (Civil Aviation Authority)</option>
+                <option value="CAA Hungary">CAA Hungary (Civil Aviation Authority)</option>
+                <option value="CAA Slovenia">CAA Slovenia (Civil Aviation Authority)</option>
+                <option value="CAA Croatia">CAA Croatia (Civil Aviation Authority)</option>
+                <option value="CAA Romania">CAA Romania (Civil Aviation Authority)</option>
+                <option value="CAA Bulgaria">CAA Bulgaria (Civil Aviation Authority)</option>
+                <option value="CAA Greece">CAA Greece (Civil Aviation Authority)</option>
+                <option value="CAA Cyprus">CAA Cyprus (Civil Aviation Authority)</option>
+                <option value="CAA Malta">CAA Malta (Civil Aviation Authority)</option>
+                <option value="CAA Estonia">CAA Estonia (Civil Aviation Authority)</option>
+                <option value="CAA Latvia">CAA Latvia (Civil Aviation Authority)</option>
+                <option value="CAA Lithuania">CAA Lithuania (Civil Aviation Authority)</option>
+                
+                <!-- Americas -->
+                <option value="Transport Canada">Transport Canada (Civil Aviation Authority)</option>
+                <option value="ANAC Brazil">ANAC (Agência Nacional de Aviação Civil - Brazil)</option>
+                <option value="ANAC Argentina">ANAC (Administración Nacional de Aviación Civil - Argentina)</option>
+                <option value="DGAC Chile">DGAC (Dirección General de Aeronáutica Civil - Chile)</option>
+                <option value="AEROCIVIL Colombia">AEROCIVIL (Aeronáutica Civil - Colombia)</option>
+                <option value="DGAC Peru">DGAC (Dirección General de Aeronáutica Civil - Peru)</option>
+                <option value="DGAC Ecuador">DGAC (Dirección General de Aviación Civil - Ecuador)</option>
+                <option value="INAC Venezuela">INAC (Instituto Nacional de Aeronáutica Civil - Venezuela)</option>
+                <option value="DINAC Paraguay">DINAC (Dirección Nacional de Aeronáutica Civil - Paraguay)</option>
+                <option value="DINACIA Uruguay">DINACIA (Dirección Nacional de Aviación Civil - Uruguay)</option>
+                <option value="DGAC Bolivia">DGAC (Dirección General de Aeronáutica Civil - Bolivia)</option>
+                <option value="ANAC Mexico">ANAC (Agencia Federal de Aviación Civil - Mexico)</option>
+                <option value="DGAC Guatemala">DGAC (Dirección General de Aeronáutica Civil - Guatemala)</option>
+                <option value="COCESNA">COCESNA (Central American Corporation for Air Navigation Services)</option>
+                <option value="JAA Jamaica">JAA (Jamaica Civil Aviation Authority)</option>
+                
+                <!-- Africa -->
+                <option value="SACAA">SACAA (South African Civil Aviation Authority)</option>
+                <option value="NCAA Nigeria">NCAA (Nigerian Civil Aviation Authority)</option>
+                <option value="KCAA Kenya">KCAA (Kenya Civil Aviation Authority)</option>
+                <option value="ECAA Ethiopia">ECAA (Ethiopian Civil Aviation Authority)</option>
+                <option value="CAA Ghana">CAA Ghana (Civil Aviation Authority)</option>
+                <option value="CAA Morocco">CAA Morocco (Office National des Aéroports)</option>
+                <option value="CAA Algeria">CAA Algeria (Établissement National de la Navigation Aérienne)</option>
+                <option value="CAA Egypt Regional">CAA Egypt (Egyptian Civil Aviation Authority)</option>
+                <option value="CAA Tunisia">CAA Tunisia (Office de l'Aviation Civile et des Aéroports)</option>
+                <option value="CAA Tanzania">CAA Tanzania (Tanzania Civil Aviation Authority)</option>
+                <option value="CAA Uganda">CAA Uganda (Civil Aviation Authority)</option>
+                <option value="CAA Zimbabwe">CAA Zimbabwe (Civil Aviation Authority)</option>
+                
+                <!-- Other/Manual Entry -->
+                <option value="Other">Other Radio Authority (Specify below)</option>
+              </select>
+              <div id="rolAuthorityOtherDiv" style="margin-top: 8px; display: none;">
+                <input type="text" id="rolAuthorityOther" placeholder="Please specify radio authority" />
+              </div>
+            </div>
+          </div>
+          <div class="grid">
+            <div>
+              <label>ROL Issue Date</label>
+              <input type="date" id="rolIssue">
+            </div>
+            <div>
+              <label>ROL Expiry Date</label>
+              <input type="date" id="rolExpiry" onchange="checkDocumentExpiry('ROL', this.value)">
+              <div id="rolExpiryWarning" class="expiry-warning"></div>
+            </div>
+          </div>
+          
+          <div>
+            <label>Upload ROL Certificate</label>
+            <input type="file" id="rolFile" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload(this, 'ROL Certificate')">
+            <div class="upload-info">Accepted formats: PDF, JPG, PNG (Max 10MB)</div>
+          </div>
+        </div>
+        
+        <div id="rolAttachedFields" class="conditional-section">
+          <div class="info-note">
+            <strong>Note:</strong> Since ROL is attached to your pilot license, please ensure your pilot license document clearly shows the radio operator endorsement.
+          </div>
+        </div>
+        
+        <div class="requirement-note">
+          <strong>Requirement:</strong> Valid Radio Operator License (ROL) certificate with appropriate endorsements for commercial aviation operations.
+        </div>
+      </div>
+
         <div class="form-section">
           <h2 class="section-h">🏥 Medical Certificate</h2>
           <div class="grid">
@@ -1247,6 +1451,50 @@
           <div id="medicalStatus"></div>
           <div class="requirement-note">
             <strong>Requirement:</strong> Valid Class 1 medical certificate issued within the last 12 months. Must meet ICAO medical standards and be valid for commercial aviation operations. Class 2 medical certificates are not accepted.
+          </div>
+        </div>
+
+
+        <div class="form-section">
+          <h2 class="section-h">🌐 English Proficiency Certificate (if applicable)</h2>
+          <div class="grid">
+            <div>
+              <label>Proficiency Level</label>
+              <select id="englishLevel">
+                <option value="">Select ICAO Level</option>
+                <option value="Level 4">Level 4 (Operational)</option>
+                <option value="Level 5">Level 5 (Extended)</option>
+                <option value="Level 6">Level 6 (Expert)</option>
+              </select>
+            </div>
+            <div>
+              <label>Test Type</label>
+              <select id="englishTestType" onchange="toggleEnglishTestDate()">
+                <option value="">Select Test Type</option>
+                <option value="ICAO English Test">ICAO English Test</option>
+                <option value="Aviation English Test">Aviation English Test</option>
+                <option value="TEA (Test of English for Aviation)">TEA (Test of English for Aviation)</option>
+                <option value="IELTS">IELTS (Academic)</option>
+                <option value="Attached to License">Attached to License (ELP Endorsement)</option>
+                <option value="Other">Other Approved Test</option>
+              </select>
+            </div>
+            <div id="englishTestDateDiv">
+              <label>Test Date</label>
+              <input type="date" id="englishTestDate" />
+            </div>
+            <div id="englishExpiryDiv">
+              <label>Expiry Date</label>
+              <input type="date" id="englishExpiry" onchange="checkValidity('english')" />
+            </div>
+            <div id="englishUploadDiv">
+              <label>Upload Certificate</label>
+              <input type="file" id="englishFile" accept=".pdf,.jpg,.png" />
+            </div>
+          </div>
+          <div id="englishStatus"></div>
+          <div class="requirement-note">
+            <strong>Requirement:</strong> ICAO Level 4 or higher English proficiency certificate. Native English speakers may provide alternative documentation. Certificate must be current and valid for commercial aviation operations.
           </div>
         </div>
 
@@ -1353,6 +1601,334 @@
           <div id="passportStatus"></div>
           <div class="requirement-note">
             <strong>Requirement:</strong> Valid passport with minimum 6 months validity remaining from intended employment start date. Must be machine-readable and in good condition.
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="section-h">📋 License Verification Letter</h2>
+          <div class="grid">
+            <div>
+              <label>Issuing Aviation Authority</label>
+              <select id="licenseVerificationAuthority">
+                <option value="">Select Aviation Authority</option>
+                <!-- Major International Authorities -->
+                <option value="EASA">EASA (European Union Aviation Safety Agency)</option>
+                <option value="FAA USA">FAA (Federal Aviation Administration - USA)</option>
+                <option value="ICAO">ICAO (International Civil Aviation Organization)</option>
+                
+                <!-- Middle East & Gulf -->
+                <option value="GCAA UAE">GCAA UAE (General Civil Aviation Authority)</option>
+                <option value="GACA Saudi">GACA (General Authority of Civil Aviation - Saudi Arabia)</option>
+                <option value="CAA Qatar">CAA Qatar (Civil Aviation Authority)</option>
+                <option value="DGCA Kuwait">DGCA Kuwait (Directorate General of Civil Aviation)</option>
+                <option value="CAA Bahrain">CAA Bahrain (Civil Aviation Affairs)</option>
+                <option value="CAA Oman">CAA Oman (Civil Aviation Authority)</option>
+                <option value="DGCA Jordan">DGCA Jordan (Directorate General of Civil Aviation)</option>
+                <option value="DGCA Lebanon">DGCA Lebanon (Directorate General of Civil Aviation)</option>
+                <option value="CAA Egypt">CAA Egypt (Egyptian Civil Aviation Authority)</option>
+                <option value="DGCA Iraq">DGCA Iraq (Iraqi Civil Aviation Authority)</option>
+                <option value="CAA Iran">CAA Iran (Civil Aviation Organization)</option>
+                <option value="DGCA Syria">DGCA Syria (Syrian Civil Aviation Authority)</option>
+                <option value="CAA Turkey">CAA Turkey (Directorate General of Civil Aviation)</option>
+                <option value="CAA Israel">CAA Israel (Civil Aviation Authority)</option>
+                
+                <!-- Asia Pacific -->
+                <option value="DGCA India">DGCA India (Directorate General of Civil Aviation)</option>
+                <option value="CASA Australia">CASA (Civil Aviation Safety Authority - Australia)</option>
+                <option value="CAAC China">CAAC (Civil Aviation Administration of China)</option>
+                <option value="JCAB Japan">JCAB (Japan Civil Aviation Bureau)</option>
+                <option value="KCAB Korea">KCAB (Korea Civil Aviation Bureau)</option>
+                <option value="CAAS Singapore">CAAS (Civil Aviation Authority of Singapore)</option>
+                <option value="DCA Malaysia">DCA Malaysia (Department of Civil Aviation)</option>
+                <option value="CAAT Thailand">CAAT (Civil Aviation Authority of Thailand)</option>
+                <option value="DGCA Indonesia">DGCA Indonesia (Directorate General of Civil Aviation)</option>
+                <option value="CAAP Philippines">CAAP (Civil Aviation Authority of Philippines)</option>
+                <option value="CAA Vietnam">CAA Vietnam (Civil Aviation Authority)</option>
+                <option value="DGCA Pakistan">DGCA Pakistan (Civil Aviation Authority)</option>
+                <option value="DGCA Bangladesh">DGCA Bangladesh (Civil Aviation Authority)</option>
+                <option value="CAAN Nepal">CAAN (Civil Aviation Authority of Nepal)</option>
+                <option value="DGCA Sri Lanka">DGCA Sri Lanka (Civil Aviation Authority)</option>
+                <option value="DGCA Myanmar">DGCA Myanmar (Department of Civil Aviation)</option>
+                <option value="CAA New Zealand">CAA New Zealand (Civil Aviation Authority)</option>
+                
+                <!-- Europe -->
+                <option value="CAA UK">CAA UK (Civil Aviation Authority - United Kingdom)</option>
+                <option value="LBA Germany">LBA (Luftfahrt-Bundesamt - Germany)</option>
+                <option value="DGAC France">DGAC (Direction Générale de l'Aviation Civile - France)</option>
+                <option value="ENAC Italy">ENAC (Ente Nazionale per l'Aviazione Civile - Italy)</option>
+                <option value="AESA Spain">AESA (Agencia Estatal de Seguridad Aérea - Spain)</option>
+                <option value="ANAC Portugal">ANAC (Autoridade Nacional da Aviação Civil - Portugal)</option>
+                <option value="BCAA Netherlands">BCAA (Inspectie Leefomgeving en Transport - Netherlands)</option>
+                <option value="FOCA Switzerland">FOCA (Federal Office of Civil Aviation - Switzerland)</option>
+                <option value="AAC Austria">AAC (Austro Control - Austria)</option>
+                <option value="DGAC Belgium">DGAC (Direction Générale Transport Aérien - Belgium)</option>
+                <option value="CAA Ireland">CAA Ireland (Irish Aviation Authority)</option>
+                <option value="CAA Denmark">CAA Denmark (Danish Civil Aviation Authority)</option>
+                <option value="CAA Sweden">CAA Sweden (Swedish Transport Agency)</option>
+                <option value="CAA Norway">CAA Norway (Civil Aviation Authority Norway)</option>
+                <option value="CAA Finland">CAA Finland (Finnish Transport and Communications Agency)</option>
+                <option value="CAA Poland">CAA Poland (Civil Aviation Authority)</option>
+                <option value="CAA Czech">CAA Czech (Civil Aviation Authority)</option>
+                <option value="CAA Hungary">CAA Hungary (National Transport Authority)</option>
+                <option value="CAA Romania">CAA Romania (Romanian Civil Aeronautical Authority)</option>
+                <option value="CAA Bulgaria">CAA Bulgaria (Civil Aviation Administration)</option>
+                <option value="CAA Greece">CAA Greece (Hellenic Civil Aviation Authority)</option>
+                <option value="CAA Croatia">CAA Croatia (Croatian Civil Aviation Agency)</option>
+                <option value="CAA Slovenia">CAA Slovenia (Civil Aviation Agency)</option>
+                <option value="CAA Slovakia">CAA Slovakia (Transport Authority)</option>
+                <option value="CAA Russia">CAA Russia (Federal Air Transport Agency)</option>
+                <option value="CAA Ukraine">CAA Ukraine (State Aviation Administration)</option>
+                
+                <!-- Americas -->
+                <option value="TCCA Canada">TCCA (Transport Canada Civil Aviation)</option>
+                <option value="ANAC Brazil">ANAC (Agência Nacional de Aviação Civil - Brazil)</option>
+                <option value="ANAC Argentina">ANAC (Administración Nacional de Aviación Civil - Argentina)</option>
+                <option value="DGAC Chile">DGAC (Dirección General de Aeronáutica Civil - Chile)</option>
+                <option value="UAEAC Colombia">UAEAC (Unidad Administrativa Especial de Aeronáutica Civil - Colombia)</option>
+                <option value="DGAC Ecuador">DGAC (Dirección General de Aviación Civil - Ecuador)</option>
+                <option value="DGAC Peru">DGAC (Dirección General de Aeronáutica Civil - Peru)</option>
+                <option value="DINAC Venezuela">DINAC (Instituto Nacional de Aeronáutica Civil - Venezuela)</option>
+                <option value="DGAC Mexico">DGAC (Dirección General de Aeronáutica Civil - Mexico)</option>
+                <option value="JCAA Jamaica">JCAA (Jamaica Civil Aviation Authority)</option>
+                
+                <!-- Africa -->
+                <option value="SACAA South Africa">SACAA (South African Civil Aviation Authority)</option>
+                <option value="NCAA Nigeria">NCAA (Nigerian Civil Aviation Authority)</option>
+                <option value="KCAA Kenya">KCAA (Kenya Civil Aviation Authority)</option>
+                <option value="ECAA Egypt">ECAA (Egyptian Civil Aviation Authority)</option>
+                <option value="GACA Ghana">GACA (Ghana Civil Aviation Authority)</option>
+                <option value="CCAA Ethiopia">CCAA (Ethiopian Civil Aviation Authority)</option>
+                <option value="DGAC Morocco">DGAC (Direction Générale de l'Aviation Civile - Morocco)</option>
+                <option value="CAA Tanzania">CAA Tanzania (Tanzania Civil Aviation Authority)</option>
+                <option value="CAA Uganda">CAA Uganda (Civil Aviation Authority)</option>
+                <option value="CAA Zimbabwe">CAA Zimbabwe (Civil Aviation Authority)</option>
+                
+                <!-- Other/Manual Entry -->
+                <option value="Other">Other Aviation Authority (Specify below)</option>
+              </select>
+              <div id="licenseVerificationAuthorityOtherDiv" style="margin-top: 8px; display: none;">
+                <input type="text" id="licenseVerificationAuthorityOther" placeholder="Please specify aviation authority" />
+              </div>
+            </div>
+            <div>
+              <label>Verification Letter Date</label>
+              <input type="date" id="licenseVerificationDate" onchange="validateLetterDate('licenseVerificationDate', 'License Verification Letter')" />
+            </div>
+            <div>
+              <label>Upload Verification Letter</label>
+              <input type="file" id="licenseVerificationFile" accept=".pdf,.jpg,.png" />
+            </div>
+          </div>
+          <div id="licenseVerificationStatus"></div>
+          <div class="requirement-note">
+            <strong>Requirement:</strong> Official letter from the aviation authority that issued your license confirming its validity, ratings, and any restrictions. Required for license conversion to UAE GCAA license.
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="section-h">✅ No Incident/Accident Letter</h2>
+          <div class="grid">
+            <div>
+              <label>Issuing Aviation Authority</label>
+              <select id="incidentLetterAuthority">
+                <option value="">Select Aviation Authority</option>
+                <!-- Major International Authorities -->
+                <option value="EASA">EASA (European Union Aviation Safety Agency)</option>
+                <option value="FAA USA">FAA (Federal Aviation Administration - USA)</option>
+                <option value="ICAO">ICAO (International Civil Aviation Organization)</option>
+                
+                <!-- Middle East & Gulf -->
+                <option value="GCAA UAE">GCAA UAE (General Civil Aviation Authority)</option>
+                <option value="GACA Saudi">GACA (General Authority of Civil Aviation - Saudi Arabia)</option>
+                <option value="CAA Qatar">CAA Qatar (Civil Aviation Authority)</option>
+                <option value="DGCA Kuwait">DGCA Kuwait (Directorate General of Civil Aviation)</option>
+                <option value="CAA Bahrain">CAA Bahrain (Civil Aviation Affairs)</option>
+                <option value="CAA Oman">CAA Oman (Civil Aviation Authority)</option>
+                <option value="DGCA Jordan">DGCA Jordan (Directorate General of Civil Aviation)</option>
+                <option value="DGCA Lebanon">DGCA Lebanon (Directorate General of Civil Aviation)</option>
+                <option value="CAA Egypt">CAA Egypt (Egyptian Civil Aviation Authority)</option>
+                <option value="DGCA Iraq">DGCA Iraq (Iraqi Civil Aviation Authority)</option>
+                <option value="CAA Iran">CAA Iran (Civil Aviation Organization)</option>
+                <option value="DGCA Syria">DGCA Syria (Syrian Civil Aviation Authority)</option>
+                <option value="CAA Turkey">CAA Turkey (Directorate General of Civil Aviation)</option>
+                <option value="CAA Israel">CAA Israel (Civil Aviation Authority)</option>
+                
+                <!-- Asia Pacific -->
+                <option value="DGCA India">DGCA India (Directorate General of Civil Aviation)</option>
+                <option value="CASA Australia">CASA (Civil Aviation Safety Authority - Australia)</option>
+                <option value="CAAC China">CAAC (Civil Aviation Administration of China)</option>
+                <option value="JCAB Japan">JCAB (Japan Civil Aviation Bureau)</option>
+                <option value="KCAB Korea">KCAB (Korea Civil Aviation Bureau)</option>
+                <option value="CAAS Singapore">CAAS (Civil Aviation Authority of Singapore)</option>
+                <option value="DCA Malaysia">DCA Malaysia (Department of Civil Aviation)</option>
+                <option value="CAAT Thailand">CAAT (Civil Aviation Authority of Thailand)</option>
+                <option value="DGCA Indonesia">DGCA Indonesia (Directorate General of Civil Aviation)</option>
+                <option value="CAAP Philippines">CAAP (Civil Aviation Authority of Philippines)</option>
+                <option value="CAA Vietnam">CAA Vietnam (Civil Aviation Authority)</option>
+                <option value="DGCA Pakistan">DGCA Pakistan (Civil Aviation Authority)</option>
+                <option value="DGCA Bangladesh">DGCA Bangladesh (Civil Aviation Authority)</option>
+                <option value="CAAN Nepal">CAAN (Civil Aviation Authority of Nepal)</option>
+                <option value="DGCA Sri Lanka">DGCA Sri Lanka (Civil Aviation Authority)</option>
+                <option value="DGCA Myanmar">DGCA Myanmar (Department of Civil Aviation)</option>
+                <option value="CAA New Zealand">CAA New Zealand (Civil Aviation Authority)</option>
+                
+                <!-- Europe -->
+                <option value="CAA UK">CAA UK (Civil Aviation Authority - United Kingdom)</option>
+                <option value="LBA Germany">LBA (Luftfahrt-Bundesamt - Germany)</option>
+                <option value="DGAC France">DGAC (Direction Générale de l'Aviation Civile - France)</option>
+                <option value="ENAC Italy">ENAC (Ente Nazionale per l'Aviazione Civile - Italy)</option>
+                <option value="AESA Spain">AESA (Agencia Estatal de Seguridad Aérea - Spain)</option>
+                <option value="ANAC Portugal">ANAC (Autoridade Nacional da Aviação Civil - Portugal)</option>
+                <option value="BCAA Netherlands">BCAA (Inspectie Leefomgeving en Transport - Netherlands)</option>
+                <option value="FOCA Switzerland">FOCA (Federal Office of Civil Aviation - Switzerland)</option>
+                <option value="AAC Austria">AAC (Austro Control - Austria)</option>
+                <option value="DGAC Belgium">DGAC (Direction Générale Transport Aérien - Belgium)</option>
+                <option value="CAA Ireland">CAA Ireland (Irish Aviation Authority)</option>
+                <option value="CAA Denmark">CAA Denmark (Danish Civil Aviation Authority)</option>
+                <option value="CAA Sweden">CAA Sweden (Swedish Transport Agency)</option>
+                <option value="CAA Norway">CAA Norway (Civil Aviation Authority Norway)</option>
+                <option value="CAA Finland">CAA Finland (Finnish Transport and Communications Agency)</option>
+                <option value="CAA Poland">CAA Poland (Civil Aviation Authority)</option>
+                <option value="CAA Czech">CAA Czech (Civil Aviation Authority)</option>
+                <option value="CAA Hungary">CAA Hungary (National Transport Authority)</option>
+                <option value="CAA Romania">CAA Romania (Romanian Civil Aeronautical Authority)</option>
+                <option value="CAA Bulgaria">CAA Bulgaria (Civil Aviation Administration)</option>
+                <option value="CAA Greece">CAA Greece (Hellenic Civil Aviation Authority)</option>
+                <option value="CAA Croatia">CAA Croatia (Croatian Civil Aviation Agency)</option>
+                <option value="CAA Slovenia">CAA Slovenia (Civil Aviation Agency)</option>
+                <option value="CAA Slovakia">CAA Slovakia (Transport Authority)</option>
+                <option value="CAA Russia">CAA Russia (Federal Air Transport Agency)</option>
+                <option value="CAA Ukraine">CAA Ukraine (State Aviation Administration)</option>
+                
+                <!-- Americas -->
+                <option value="TCCA Canada">TCCA (Transport Canada Civil Aviation)</option>
+                <option value="ANAC Brazil">ANAC (Agência Nacional de Aviação Civil - Brazil)</option>
+                <option value="ANAC Argentina">ANAC (Administración Nacional de Aviación Civil - Argentina)</option>
+                <option value="DGAC Chile">DGAC (Dirección General de Aeronáutica Civil - Chile)</option>
+                <option value="UAEAC Colombia">UAEAC (Unidad Administrativa Especial de Aeronáutica Civil - Colombia)</option>
+                <option value="DGAC Ecuador">DGAC (Dirección General de Aviación Civil - Ecuador)</option>
+                <option value="DGAC Peru">DGAC (Dirección General de Aeronáutica Civil - Peru)</option>
+                <option value="DINAC Venezuela">DINAC (Instituto Nacional de Aeronáutica Civil - Venezuela)</option>
+                <option value="DGAC Mexico">DGAC (Dirección General de Aeronáutica Civil - Mexico)</option>
+                <option value="JCAA Jamaica">JCAA (Jamaica Civil Aviation Authority)</option>
+                
+                <!-- Africa -->
+                <option value="SACAA South Africa">SACAA (South African Civil Aviation Authority)</option>
+                <option value="NCAA Nigeria">NCAA (Nigerian Civil Aviation Authority)</option>
+                <option value="KCAA Kenya">KCAA (Kenya Civil Aviation Authority)</option>
+                <option value="ECAA Egypt">ECAA (Egyptian Civil Aviation Authority)</option>
+                <option value="GACA Ghana">GACA (Ghana Civil Aviation Authority)</option>
+                <option value="CCAA Ethiopia">CCAA (Ethiopian Civil Aviation Authority)</option>
+                <option value="DGAC Morocco">DGAC (Direction Générale de l'Aviation Civile - Morocco)</option>
+                <option value="CAA Tanzania">CAA Tanzania (Tanzania Civil Aviation Authority)</option>
+                <option value="CAA Uganda">CAA Uganda (Civil Aviation Authority)</option>
+                <option value="CAA Zimbabwe">CAA Zimbabwe (Civil Aviation Authority)</option>
+                
+                <!-- Previous Employer/Other -->
+                <option value="Previous Airline/Employer">Previous Airline/Employer</option>
+                <option value="Other">Other Authority (Specify below)</option>
+              </select>
+              <div id="incidentLetterAuthorityOtherDiv" style="margin-top: 8px; display: none;">
+                <input type="text" id="incidentLetterAuthorityOther" placeholder="Please specify authority" />
+              </div>
+            </div>
+            <div>
+              <label>Letter Issue Date</label>
+              <input type="date" id="incidentLetterDate" onchange="validateLetterDate('incidentLetterDate', 'No Incident/Accident Letter')" />
+            </div>
+            <div>
+              <label>Upload Letter</label>
+              <input type="file" id="incidentLetterFile" accept=".pdf,.jpg,.png" />
+            </div>
+          </div>
+          <div id="incidentLetterStatus"></div>
+          <div class="requirement-note">
+            <strong>Requirement:</strong> Official letter confirming no aviation incidents, accidents, or violations on record. Must be issued by relevant aviation authority or previous employer within the last 6 months.
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="section-h">⏱️ Flight Hours Verification Letter</h2>
+          <div class="grid">
+            <div>
+              <label>Issuing Authority/Company</label>
+              <input type="text" id="flightHoursAuthority" placeholder="Previous airline, flight school, or aviation authority" />
+            </div>
+            <div>
+              <label>Letter Issue Date</label>
+              <input type="date" id="flightHoursIssue" onchange="validateLetterDate('flightHoursIssue', 'Flight Hours Verification Letter')" />
+            </div>
+            <div>
+              <label>Upload Verification Letter</label>
+              <input type="file" id="flightHoursFile" accept=".pdf,.jpg,.png" />
+            </div>
+          </div>
+          <div id="flightHoursStatus"></div>
+          <div class="requirement-note">
+            <strong>Requirement:</strong> Official letter from previous employer or aviation authority verifying your total flight hours, aircraft types flown, and positions held. Must be on company letterhead with official signature and stamp.
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="section-h">🆔 Emirates ID (if applicable)</h2>
+          <div class="grid">
+            <div>
+              <label>Emirates ID Status</label>
+              <select id="emiratesIdStatus" onchange="toggleEmiratesIdFields()">
+                <option value="">Select Emirates ID Status</option>
+                <option value="Have Emirates ID">I have Emirates ID</option>
+                <option value="Do not have Emirates ID">No Current Emirates ID</option>
+              </select>
+            </div>
+            <div id="emiratesIdNumberDiv" style="display: none;">
+              <label>Emirates ID Number</label>
+              <input type="text" id="emiratesIdNumber" placeholder="784-YYYY-XXXXXXX-X" />
+            </div>
+            <div id="emiratesIdIssueDateDiv" style="display: none;">
+              <label>Issue Date</label>
+              <input type="date" id="emiratesIdIssue" />
+            </div>
+            <div id="emiratesIdExpiryDateDiv" style="display: none;">
+              <label>Expiry Date</label>
+              <input type="date" id="emiratesIdExpiry" onchange="checkValidity('emiratesId')" />
+            </div>
+            <div id="emiratesIdUploadDiv" style="display: none;">
+              <label>Upload Emirates ID Copy</label>
+              <input type="file" id="emiratesIdFile" accept=".pdf,.jpg,.png" />
+            </div>
+          </div>
+          <div id="emiratesIdStatusDiv"></div>
+          <div class="requirement-note">
+            <strong>Note:</strong> Only required if you currently hold UAE residence. If you don't have Emirates ID, new Emirates ID will be processed after employment confirmation.
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="section-h">🛂 UAE Visa & Work Permit (if applicable)</h2>
+          <div class="grid">
+            <div>
+              <label>Current Visa Status</label>
+              <select id="visaStatus">
+                <option value="">Select Visa Status</option>
+                <option value="Tourist Visa">Tourist Visa</option>
+                <option value="Visit Visa">Visit Visa</option>
+                <option value="Residence Visa">Residence Visa</option>
+                <option value="Employment Visa">Employment Visa</option>
+                <option value="No Current UAE Visa">No Current UAE Visa</option>
+              </select>
+            </div>
+            <div>
+              <label>Visa Expiry Date</label>
+              <input type="date" id="visaExpiry" onchange="checkValidity('visa')" />
+            </div>
+            <div>
+              <label>Upload Current Visa Copy</label>
+              <input type="file" id="visaFile" accept=".pdf,.jpg,.png" />
+            </div>
+          </div>
+          <div id="visaStatusDiv"></div>
+          <div class="requirement-note">
+            <strong>Requirement:</strong> Valid UAE entry visa or residence permit. If currently outside UAE, company will provide visa assistance. Work permit will be processed after job offer acceptance.
           </div>
         </div>
       </div>
@@ -1492,16 +2068,20 @@
         </div>` : '';
         
         const sessionRecoveryMessage = window.hasSessionToRecover ? `<div style="color: #059669; margin-bottom: 16px; padding: 12px; background: #ecfdf5; border-radius: 8px; border: 1px solid #a7f3d0;">
-          <strong>Previous Session Detected!</strong> Your previous form data will be restored after authentication.
+          <div style="display: flex; align-items: center; margin-bottom: 8px;">
+            <span style="font-size: 18px;">📋</span>
+            <span style="margin-left: 8px; font-weight: 600;">Previous session found!</span>
+          </div>
+          <div style="font-size: 14px;">Your previous form data will be restored after authentication.</div>
         </div>` : '';
         
         document.body.innerHTML = `
           <div style="background: linear-gradient(135deg, #6d28d9 0%, #7c3aed 12%, #8b5cf6 25%, #a855f7 37%, #c084fc 50%, #6366f1 62%, #8b5cf6 75%, #9333ea 87%, #7c3aed 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; font-family: Inter, system-ui, sans-serif; padding: 20px;">
-            <div style="background: white; border-radius: 20px; padding: 32px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4); max-width: 400px; width: 100%; border: 1px solid #e2e8f0;">
-              <div style="text-align: center; margin-bottom: 24px;">
-                <div style="width: 80px; height: 60px; background-image: url('Flydubai-Logo.png'); background-size: contain; background-repeat: no-repeat; background-position: center; margin: 0 auto 16px;"></div>
-                <h1 style="font-size: 24px; font-weight: 700; color: #1e3a8a; margin: 0 0 8px;">Flight Operations</h1>
-                <p style="color: #64748b; margin: 0; font-size: 14px;">Pilot Documentation Portal</p>
+            <div style="background: white; border-radius: 20px; padding: 16px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4); max-width: 400px; width: 100%; border: 1px solid #e2e8f0;">
+              <div style="text-align: center; margin: 0;">
+                <div style="width: 180px; height: 120px; background-image: url('Flydubai-Logo.png'); background-size: contain; background-repeat: no-repeat; background-position: center; margin: 0 auto -8px;"></div>
+                <h2 style="color: #7c3aed; margin: 0 0 12px 0; font-size: 28px; font-weight: 700;">Access Code Required</h2>
+                <p style="color: #6b7280; margin: 0;">Enter your access code to continue to the pilot documentation form.</p>
               </div>
               
               ${sessionRecoveryMessage}
@@ -1510,29 +2090,37 @@
               <form id="passwordForm" style="display: flex; flex-direction: column; gap: 20px;">
                 <div>
                   <label for="passwordInput" style="display: block; margin-bottom: 8px; color: #374151; font-weight: 600; font-size: 14px;">Access Code</label>
-                  <input 
-                    type="password" 
-                    id="passwordInput" 
-                    placeholder="Enter access code"
-                    style="width: 100%; padding: 16px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 16px; transition: all 0.3s ease; box-sizing: border-box;"
-                    onfocus="this.style.borderColor='#7c3aed'; this.style.boxShadow='0 0 0 3px rgba(124, 58, 237, 0.1)'"
-                    onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'"
-                    required
-                  />
+                  <div style="position: relative;">
+                    <input 
+                      type="password" 
+                      id="passwordInput" 
+                      placeholder="Enter access code"
+                      style="width: 100%; padding: 16px 50px 16px 16px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 16px; transition: all 0.3s ease; box-sizing: border-box;"
+                      onfocus="this.style.borderColor='#7c3aed'; this.style.boxShadow='0 0 0 3px rgba(124, 58, 237, 0.1)'"
+                      onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'"
+                      required
+                    />
+                    <button 
+                      type="button" 
+                      id="togglePassword"
+                      style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #6b7280; padding: 0; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;"
+                      onclick="togglePasswordVisibility()"
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                      </svg>
+                    </button>
+                  </div>
                 </div>
                 <button 
                   type="submit" 
-                  style="width: 100%; padding: 16px; background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;"
-                  onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 25px rgba(124, 58, 237, 0.4)'"
+                  style="background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%); color: white; border: none; padding: 16px 32px; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 16px; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 0.5px;"
+                  onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 25px -5px rgba(124, 58, 237, 0.4)'"
                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'"
                 >
-                  Access Documentation Portal
+                  Access Form
                 </button>
               </form>
-              
-              <div style="text-align: center; margin-top: 20px; color: #94a3b8; font-size: 12px;">
-                Authorized Personnel Only
-              </div>
             </div>
           </div>
         `;
@@ -1543,6 +2131,20 @@
           console.log('🎯 Trying to focus password input:', passwordInput ? 'FOUND' : 'NOT FOUND');
           if (passwordInput) passwordInput.focus();
         }, 100);
+        
+        // Add password visibility toggle function
+        window.togglePasswordVisibility = function() {
+          const passwordInput = document.getElementById('passwordInput');
+          const toggleButton = document.getElementById('togglePassword');
+          
+          if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleButton.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>';
+          } else {
+            passwordInput.type = 'password';
+            toggleButton.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>';
+          }
+        };
         
         console.log('✅ Password form HTML set, form should be visible now');
         
@@ -1638,6 +2240,9 @@
         
         // Setup event listeners
         setupEventListeners();
+        
+        // Setup authority dropdown handlers
+        setupAuthorityDropdownHandlers();
         
         // Add initial Boeing 737 sections (locked)
         addFlightExperienceSection('Boeing 737 NG/MAX', true, 'ng-max');
@@ -1744,29 +2349,109 @@
         section.id = sectionId;
         
         const aircraftOptions = [
+          // Boeing Commercial Aircraft
+          'Boeing 757-200',
+          'Boeing 757-300', 
+          'Boeing 767-200',
+          'Boeing 767-300',
+          'Boeing 777-200',
+          'Boeing 777-300',
+          'Boeing 787-8 Dreamliner',
+          'Boeing 787-9 Dreamliner',
+          'Boeing 787-10 Dreamliner',
+          // Airbus Commercial Aircraft
           'Airbus A319',
           'Airbus A320',
           'Airbus A321',
-          'Boeing 737-300',
-          'Boeing 737-400',
-          'Boeing 737-500',
-          'Boeing 737-600',
-          'Boeing 737-700',
-          'Boeing 737-800',
-          'Boeing 737-900',
-          'Boeing 737 MAX 7',
-          'Boeing 737 MAX 8',
-          'Boeing 737 MAX 9',
-          'Embraer E170',
-          'Embraer E175',
-          'Embraer E190',
-          'Other (Please specify in notes)'
+          'Airbus A330-200',
+          'Airbus A330-300',
+          'Airbus A340-200',
+          'Airbus A340-300',
+          'Airbus A350-900',
+          'Airbus A350-1000',
+          'Airbus A380',
+          // Regional Jets & Commercial Aircraft
+          'McDonnell Douglas MD-80',
+          'McDonnell Douglas MD-90',
+          'Embraer E-Jet E170',
+          'Embraer E-Jet E175',
+          'Embraer E-Jet E190',
+          'Embraer E-Jet E195',
+          'Bombardier CRJ-100',
+          'Bombardier CRJ-200',
+          'Bombardier CRJ-700',
+          'Bombardier CRJ-900',
+          'Bombardier CRJ-1000',
+          'British Aerospace BAe 146',
+          'Avro RJ70',
+          'Avro RJ85',
+          'Avro RJ100',
+          'Dornier 328JET',
+          'Fairchild Metro III',
+          'BAe Jetstream 41',
+          'Embraer EMB-120 Brasilia',
+          // Cargo Aircraft
+          'Boeing 747-400F Freighter',
+          'Boeing 767-300F Freighter',
+          'Boeing 777F Freighter',
+          'Airbus A330-200F Freighter',
+          'McDonnell Douglas MD-11F',
+          // Business Jets & Private Aircraft
+          'Gulfstream G150',
+          'Gulfstream G280',
+          'Gulfstream G450',
+          'Gulfstream G500',
+          'Gulfstream G550',
+          'Gulfstream G600',
+          'Gulfstream G650',
+          'Gulfstream G700',
+          'Bombardier Global 5000',
+          'Bombardier Global 5500',
+          'Bombardier Global 6000',
+          'Bombardier Global 6500',
+          'Bombardier Global 7500',
+          'Bombardier Challenger 300',
+          'Bombardier Challenger 350',
+          'Bombardier Challenger 600',
+          'Bombardier Challenger 650',
+          'Dassault Falcon 2000',
+          'Dassault Falcon 2000EX',
+          'Dassault Falcon 2000LX',
+          'Dassault Falcon 7X',
+          'Dassault Falcon 8X',
+          'Dassault Falcon 900',
+          'Cessna Citation Longitude',
+          'Cessna Citation X',
+          'Embraer Lineage 1000',
+          'Embraer Praetor 500',
+          'Embraer Praetor 600',
+          // Military & Special Aircraft
+          'Lockheed C-130 Hercules',
+          'Boeing KC-135 Stratotanker',
+          'Airbus A400M Atlas',
+          'Boeing E-3 AWACS',
+          'Lockheed P-3 Orion',
+          'Boeing P-8 Poseidon',
+          // Vintage & Classic Aircraft
+          'Douglas DC-3',
+          'Boeing 727',
+          'McDonnell Douglas DC-9',
+          'Lockheed L-1011 TriStar',
+          'Sud Aviation Caravelle',
+          'BAC One-Eleven',
+          'Fokker F28',
+          'Fokker 100',
+          // Other Aircraft Types
+          'Glider/Sailplane',
+          'Ultralight Aircraft',
+          'Experimental Aircraft',
+          'Other - Specify in Notes'
         ];
         
         let aircraftSelectHtml;
         if (locked && (b737Type === 'ng-max' || b737Type === 'classic')) {
           aircraftSelectHtml = `
-            <div>
+            <div style="margin-bottom: 12px;">
               <label>Aircraft Type *</label>
               <select class="ac-type form-select" disabled style="background: #f3f4f6; color: #6b7280; cursor: not-allowed;">
                 <option value="${aircraftType}" selected>${aircraftType}</option>
@@ -1775,7 +2460,7 @@
           `;
         } else {
           aircraftSelectHtml = `
-            <div>
+            <div style="margin-bottom: 12px;">
               <label>Aircraft Type *</label>
               <select class="ac-type" required>
                 <option value="">Select Aircraft Type</option>
@@ -1785,19 +2470,50 @@
           `;
         }
         
-        const heavyJetIndicator = (aircraftType === 'Boeing 737 NG/MAX' || aircraftType === 'Boeing 737 Classic (300-500)') ? 
-          '<div class="heavy-jet-indicator">✈ >50T MTOW</div>' : '';
+        // Function to check if aircraft is >50T MTOW
+        function isHeavyJet(aircraftType) {
+          const heavyJets = [
+            // Boeing Commercial Aircraft - VERIFIED >50T MTOW
+            'Boeing 757-200', 'Boeing 757-300', 'Boeing 767-200', 'Boeing 767-300',
+            'Boeing 777-200', 'Boeing 777-300', 'Boeing 787-8 Dreamliner', 
+            'Boeing 787-9 Dreamliner', 'Boeing 787-10 Dreamliner', 'Boeing 727',
+            // Airbus Commercial Aircraft - VERIFIED >50T MTOW  
+            'Airbus A319', 'Airbus A320', 'Airbus A321', 'Airbus A330-200',
+            'Airbus A330-300', 'Airbus A340-200', 'Airbus A340-300', 
+            'Airbus A350-900', 'Airbus A350-1000', 'Airbus A380',
+            // Regional Jets - ONLY VERIFIED >50T
+            'Embraer E-Jet E195',
+            // Business Jets - VERIFIED >50T MTOW ONLY
+            'Bombardier Global 7500', 'Embraer Lineage 1000',
+            // Cargo Aircraft - VERIFIED >50T MTOW
+            'Boeing 747-400F Freighter', 'Boeing 767-300F Freighter', 
+            'Boeing 777F Freighter', 'Airbus A330-200F Freighter', 'McDonnell Douglas MD-11F',
+            // Military & Special Aircraft - VERIFIED >50T MTOW
+            'Lockheed C-130 Hercules', 'Boeing KC-135 Stratotanker', 'Airbus A400M Atlas',
+            'Boeing E-3 AWACS', 'Boeing P-8 Poseidon', 'Lockheed P-3 Orion',
+            // Vintage & Classic Aircraft - VERIFIED >50T MTOW
+            'Lockheed L-1011 TriStar'
+          ];
+          return heavyJets.includes(aircraftType);
+        }
+        
+        const showHeavyJetIndicator = (aircraftType === 'Boeing 737 NG/MAX' || aircraftType === 'Boeing 737 Classic (300-500)');
+        const heavyJetIndicator = showHeavyJetIndicator ? 
+          '<div class="heavy-jet-indicator" style="display: flex; align-items: center; background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: white; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; box-shadow: 0 2px 4px rgba(5, 150, 105, 0.3); margin-bottom: 12px;">✈ >50T MTOW</div>' : '';
+        
+        // Add heavy jet indicator placeholder for non-locked sections
+        const heavyJetPlaceholder = !locked ? '<div class="heavy-jet-indicator" style="display: none; align-items: center; background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: white; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; box-shadow: 0 2px 4px rgba(5, 150, 105, 0.3); margin-bottom: 12px;">✈ >50T MTOW</div>' : '';
         
         section.innerHTML = `
           <div class="section-title">
             <h3>Aircraft Type ${sectionCounter}</h3>
             ${!locked ? `<button type="button" onclick="removeSection('${sectionId}')" class="btn" style="background: #ef4444; color: white; font-size: 12px; padding: 6px 12px; width: auto; margin-left: 10px;">Remove</button>` : ''}
           </div>
-          ${heavyJetIndicator}
+          ${heavyJetIndicator}${heavyJetPlaceholder}
           
           <div class="grid">
             ${aircraftSelectHtml}
-            <div>
+            <div class="notes-container" style="display: none;">
               <label>Notes/Comments</label>
               <textarea class="ac-notes" placeholder="Any additional notes about your experience on this aircraft type"></textarea>
             </div>
@@ -1866,6 +2582,45 @@
             computeAll();
           });
         });
+        
+        // Add aircraft type change event listener to show/hide notes field  
+        const aircraftSelect = section.querySelector('.ac-type');
+        const notesContainer = section.querySelector('.notes-container');
+        
+        if (aircraftSelect && !locked) {
+          aircraftSelect.addEventListener('change', function() {
+            // Handle notes visibility
+            if (this.value === 'Other - Specify in Notes') {
+              notesContainer.style.display = 'block';
+            } else {
+              notesContainer.style.display = 'none';
+              // Clear notes when switching away from "Other"
+              const notesInput = notesContainer.querySelector('.ac-notes');
+              if (notesInput) notesInput.value = '';
+            }
+            
+            // Handle heavy jet indicator visibility
+            const heavyIndicator = section.querySelector('.heavy-jet-indicator');
+            if (heavyIndicator) {
+              if (isHeavyJet(this.value)) {
+                heavyIndicator.style.display = 'flex';
+              } else {
+                heavyIndicator.style.display = 'none';
+              }
+            }
+          });
+          
+          // Trigger initial state check for notes
+          if (aircraftSelect.value === 'Other - Specify in Notes') {
+            notesContainer.style.display = 'block';
+          }
+          
+          // Trigger initial state check for heavy jet indicator
+          const heavyIndicator = section.querySelector('.heavy-jet-indicator');
+          if (heavyIndicator && isHeavyJet(aircraftSelect.value)) {
+            heavyIndicator.style.display = 'flex';
+          }
+        }
       }
 
       // Time formatting functions
@@ -1902,6 +2657,22 @@
         }
         
         el.value = toHHMM(minutes);
+      }
+
+      // Date formatting function
+      function toDDMMMYYYY(dateStr) {
+        if (!dateStr) return '';
+        const date = new Date(dateStr);
+        if (isNaN(date.getTime())) return '';
+        
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = months[date.getMonth()];
+        const year = date.getFullYear();
+        
+        return `${day} ${month} ${year}`;
       }
 
       // Compute all totals
@@ -1981,6 +2752,286 @@
         document.addEventListener('input', () => {
           saveFormData();
         });
+        
+        // Add event listeners for summary section time fields
+        setTimeout(() => {
+          const summaryTimeFields = document.querySelectorAll('.summary .hhmm');
+          console.log('🕐 Setting up summary time fields:', summaryTimeFields.length);
+          summaryTimeFields.forEach(field => {
+            field.addEventListener('blur', function() {
+              padHHMM(this);
+              computeAll();
+            });
+          });
+        }, 100);
+      }
+
+      // ROL Functions
+      function toggleROLFields() {
+        const rolType = document.getElementById('rolType').value;
+        const rolNumberDiv = document.getElementById('rolNumberDiv');
+        const rolIssueDateDiv = document.getElementById('rolIssueDateDiv');
+        const rolExpiryDateDiv = document.getElementById('rolExpiryDateDiv');
+        const rolUploadDiv = document.getElementById('rolUploadDiv');
+        
+        if (rolType === 'Attached to License') {
+          // Hide all fields except ROL Type when attached to license
+          if (rolNumberDiv) rolNumberDiv.style.display = 'none';
+          if (rolIssueDateDiv) rolIssueDateDiv.style.display = 'none';
+          if (rolExpiryDateDiv) rolExpiryDateDiv.style.display = 'none';
+          if (rolUploadDiv) rolUploadDiv.style.display = 'none';
+          
+          // Clear the fields
+          document.getElementById('rolNumber').value = '';
+          document.getElementById('rolIssue').value = '';
+          document.getElementById('rolExpiry').value = '';
+          const fileInput = document.getElementById('rolFile');
+          if (fileInput) {
+            fileInput.value = '';
+          }
+        } else if (rolType === 'Separate Certificate') {
+          // Show all fields when separate certificate is selected
+          if (rolNumberDiv) rolNumberDiv.style.display = 'block';
+          if (rolIssueDateDiv) rolIssueDateDiv.style.display = 'block';
+          if (rolExpiryDateDiv) rolExpiryDateDiv.style.display = 'block';
+          if (rolUploadDiv) rolUploadDiv.style.display = 'block';
+        } else {
+          // Hide fields when nothing is selected
+          if (rolNumberDiv) rolNumberDiv.style.display = 'none';
+          if (rolIssueDateDiv) rolIssueDateDiv.style.display = 'none';
+          if (rolExpiryDateDiv) rolExpiryDateDiv.style.display = 'none';
+          if (rolUploadDiv) rolUploadDiv.style.display = 'none';
+        }
+      }
+
+      // Make function globally accessible
+      window.toggleROLFields = toggleROLFields;
+
+      // English Proficiency Functions
+      function toggleEnglishTestDate() {
+        const testType = document.getElementById('englishTestType').value;
+        const testDateDiv = document.getElementById('englishTestDateDiv');
+        const expiryDiv = document.getElementById('englishExpiryDiv');
+        const englishUploadDiv = document.getElementById('englishUploadDiv');
+        const statusDiv = document.getElementById('englishStatus');
+        
+        if (testType === 'Attached to License') {
+          // Hide date, expiry and upload fields - keep proficiency level visible
+          if (testDateDiv) testDateDiv.style.display = 'none';
+          if (expiryDiv) expiryDiv.style.display = 'none';
+          if (englishUploadDiv) englishUploadDiv.style.display = 'none';
+          
+          // Clear the hidden fields
+          document.getElementById('englishTestDate').value = '';
+          document.getElementById('englishExpiry').value = '';
+          const fileInput = document.getElementById('englishFile');
+          if (fileInput) fileInput.value = '';
+          
+          // Show attached to license status
+          if (statusDiv) {
+            statusDiv.innerHTML = '<span class="status-indicator status-valid">ATTACHED TO LICENSE</span>';
+          }
+        } else if (testType && testType !== '') {
+          // Show all fields for other test types
+          if (testDateDiv) testDateDiv.style.display = 'block';
+          if (expiryDiv) expiryDiv.style.display = 'block';
+          if (englishUploadDiv) englishUploadDiv.style.display = 'block';
+          
+          // Clear status when not attached to license
+          if (statusDiv) statusDiv.innerHTML = '';
+        } else {
+          // Hide fields when nothing is selected
+          if (testDateDiv) testDateDiv.style.display = 'none';
+          if (expiryDiv) expiryDiv.style.display = 'none';
+          if (englishUploadDiv) englishUploadDiv.style.display = 'none';
+        }
+      }
+
+      // Make function globally accessible
+      window.toggleEnglishTestDate = toggleEnglishTestDate;
+
+      // Emirates ID Functions
+      function toggleEmiratesIdFields() {
+        const emiratesIdStatus = document.getElementById('emiratesIdStatus').value;
+        const emiratesIdNumberDiv = document.getElementById('emiratesIdNumberDiv');
+        const emiratesIdIssueDateDiv = document.getElementById('emiratesIdIssueDateDiv');
+        const emiratesIdExpiryDateDiv = document.getElementById('emiratesIdExpiryDateDiv');
+        const emiratesIdUploadDiv = document.getElementById('emiratesIdUploadDiv');
+        
+        if (emiratesIdStatus === 'Have Emirates ID') {
+          // Show all fields when user has Emirates ID
+          if (emiratesIdNumberDiv) emiratesIdNumberDiv.style.display = 'block';
+          if (emiratesIdIssueDateDiv) emiratesIdIssueDateDiv.style.display = 'block';
+          if (emiratesIdExpiryDateDiv) emiratesIdExpiryDateDiv.style.display = 'block';
+          if (emiratesIdUploadDiv) emiratesIdUploadDiv.style.display = 'block';
+        } else if (emiratesIdStatus === 'Do not have Emirates ID') {
+          // Hide all fields when user doesn't have Emirates ID
+          if (emiratesIdNumberDiv) emiratesIdNumberDiv.style.display = 'none';
+          if (emiratesIdIssueDateDiv) emiratesIdIssueDateDiv.style.display = 'none';
+          if (emiratesIdExpiryDateDiv) emiratesIdExpiryDateDiv.style.display = 'none';
+          if (emiratesIdUploadDiv) emiratesIdUploadDiv.style.display = 'none';
+          
+          // Clear the fields when hidden
+          document.getElementById('emiratesIdNumber').value = '';
+          document.getElementById('emiratesIdIssue').value = '';
+          document.getElementById('emiratesIdExpiry').value = '';
+          const fileInput = document.getElementById('emiratesIdFile');
+          if (fileInput) fileInput.value = '';
+        } else {
+          // Hide fields when nothing is selected
+          if (emiratesIdNumberDiv) emiratesIdNumberDiv.style.display = 'none';
+          if (emiratesIdIssueDateDiv) emiratesIdIssueDateDiv.style.display = 'none';
+          if (emiratesIdExpiryDateDiv) emiratesIdExpiryDateDiv.style.display = 'none';
+          if (emiratesIdUploadDiv) emiratesIdUploadDiv.style.display = 'none';
+        }
+      }
+
+      // Make function globally accessible
+      window.toggleEmiratesIdFields = toggleEmiratesIdFields;
+      
+      // Document Expiry Check Function
+      function checkDocumentExpiry(docType, expiryValue) {
+        if (!expiryValue) return;
+        
+        const today = new Date();
+        const expiryDate = new Date(expiryValue);
+        const daysUntilExpiry = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+        const warningDiv = document.getElementById(docType.toLowerCase() + 'ExpiryWarning');
+        
+        if (!warningDiv) return;
+        
+        warningDiv.innerHTML = '';
+        
+        if (daysUntilExpiry < 0) {
+          warningDiv.innerHTML = '<span style="color: #dc2626; font-weight: 600;">⚠️ EXPIRED</span>';
+        } else if (daysUntilExpiry <= 30) {
+          warningDiv.innerHTML = '<span style="color: #f59e0b; font-weight: 600;">⚠️ EXPIRES SOON</span>';
+        } else {
+          warningDiv.innerHTML = '<span style="color: #059669; font-weight: 600;">✅ VALID</span>';
+        }
+      }
+      
+      // File Upload Handler Function
+      function handleFileUpload(fileInput, documentType) {
+        const file = fileInput.files[0];
+        if (!file) return;
+        
+        // Check file size (10MB limit)
+        const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+        if (file.size > maxSize) {
+          alert(`File size too large. Maximum size is 10MB. Your file is ${(file.size / 1024 / 1024).toFixed(1)}MB.`);
+          fileInput.value = '';
+          return;
+        }
+        
+        // Check file type
+        const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+        if (!allowedTypes.includes(file.type)) {
+          alert(`Invalid file type. Please upload PDF, JPG, or PNG files only.`);
+          fileInput.value = '';
+          return;
+        }
+        
+        // Show success indicator
+        console.log(`${documentType} file uploaded successfully: ${file.name}`);
+      }
+      
+      // Make functions globally accessible
+      window.checkDocumentExpiry = checkDocumentExpiry;
+      window.handleFileUpload = handleFileUpload;
+
+      // Letter Date Validation Function (30-day requirement)
+      function validateLetterDate(letterDateId, letterName) {
+        const dojInput = document.getElementById('doj');
+        const letterDateInput = document.getElementById(letterDateId);
+        
+        if (!dojInput || !letterDateInput || !dojInput.value || !letterDateInput.value) {
+          return; // Skip validation if inputs are missing or empty
+        }
+        
+        const doj = new Date(dojInput.value);
+        const letterDate = new Date(letterDateInput.value);
+        const daysDifference = Math.ceil((doj.getTime() - letterDate.getTime()) / (1000 * 60 * 60 * 24));
+        
+        // Determine status div ID based on letter type
+        let statusDivId = '';
+        if (letterName.includes('License Verification')) {
+          statusDivId = 'licenseVerificationStatus';
+        } else if (letterName.includes('Flight Hours')) {
+          statusDivId = 'flightHoursStatus';
+        } else if (letterName.includes('Incident')) {
+          statusDivId = 'incidentLetterStatus';
+        }
+        
+        const statusDiv = document.getElementById(statusDivId);
+        if (!statusDiv) return;
+        
+        if (daysDifference > 30) {
+          statusDiv.innerHTML = `<span class="status-indicator status-expired">⚠️ LETTER TOO OLD: Issued ${daysDifference} days before joining. Must be within 30 days of employment start date.</span>`;
+        } else if (daysDifference < 0) {
+          const futureDays = Math.abs(daysDifference);
+          statusDiv.innerHTML = `<span class="status-indicator status-warning">⚠️ FUTURE DATE: Letter dated ${futureDays} days after joining date. Please verify date is correct.</span>`;
+        } else {
+          statusDiv.innerHTML = `<span class="status-indicator status-valid">✅ VALID: Letter issued ${daysDifference} days before joining (within 30-day requirement)</span>`;
+        }
+      }
+
+      // Make function globally accessible
+      window.validateLetterDate = validateLetterDate;
+
+      // Authority Dropdown "Other" Option Handlers
+      function setupAuthorityDropdownHandlers() {
+        // Medical Authority dropdown
+        const medicalAuthority = document.getElementById('medicalAuthority');
+        const medicalAuthorityOtherDiv = document.getElementById('medicalAuthorityOtherDiv');
+        if (medicalAuthority && medicalAuthorityOtherDiv) {
+          medicalAuthority.addEventListener('change', () => {
+            if (medicalAuthority.value === 'Other') {
+              medicalAuthorityOtherDiv.style.display = 'block';
+            } else {
+              medicalAuthorityOtherDiv.style.display = 'none';
+            }
+          });
+        }
+        
+        // Radio Authority dropdown  
+        const rolAuthority = document.getElementById('rolAuthority');
+        const rolAuthorityOtherDiv = document.getElementById('rolAuthorityOtherDiv');
+        if (rolAuthority && rolAuthorityOtherDiv) {
+          rolAuthority.addEventListener('change', () => {
+            if (rolAuthority.value === 'Other') {
+              rolAuthorityOtherDiv.style.display = 'block';
+            } else {
+              rolAuthorityOtherDiv.style.display = 'none';
+            }
+          });
+        }
+        
+        // License Verification Authority dropdown
+        const licenseVerificationAuthority = document.getElementById('licenseVerificationAuthority');
+        const licenseVerificationAuthorityOtherDiv = document.getElementById('licenseVerificationAuthorityOtherDiv');
+        if (licenseVerificationAuthority && licenseVerificationAuthorityOtherDiv) {
+          licenseVerificationAuthority.addEventListener('change', () => {
+            if (licenseVerificationAuthority.value === 'Other') {
+              licenseVerificationAuthorityOtherDiv.style.display = 'block';
+            } else {
+              licenseVerificationAuthorityOtherDiv.style.display = 'none';
+            }
+          });
+        }
+        
+        // Incident Letter Authority dropdown
+        const incidentLetterAuthority = document.getElementById('incidentLetterAuthority');
+        const incidentLetterAuthorityOtherDiv = document.getElementById('incidentLetterAuthorityOtherDiv');
+        if (incidentLetterAuthority && incidentLetterAuthorityOtherDiv) {
+          incidentLetterAuthority.addEventListener('change', () => {
+            if (incidentLetterAuthority.value === 'Other') {
+              incidentLetterAuthorityOtherDiv.style.display = 'block';
+            } else {
+              incidentLetterAuthorityOtherDiv.style.display = 'none';
+            }
+          });
+        }
       }
 
       // Validation functions
@@ -2056,7 +3107,7 @@
         }
         
         // Validate summary table
-        const summaryInputs = document.querySelectorAll('.summary table tbody input.hhmm');
+        const summaryInputs = document.querySelectorAll('.summary .hhmm');
         let hasSummaryData = false;
         summaryInputs.forEach(input => {
           if (input.value && input.value !== '0:00') {
@@ -2073,20 +3124,141 @@
       }
       
       function validateDocumentation() {
-        // Basic document validation - at minimum need license, medical, and passport
-        const requiredDocs = [
-          { id: 'licenseType', name: 'License Type' },
-          { id: 'licenseNumber', name: 'License Number' },
-          { id: 'medicalClass', name: 'Medical Class' },
-          { id: 'passportNumber', name: 'Passport Number' }
+        const requiredFields = [
+          // Pilot License fields
+          { id: 'licenseType', label: 'License Type' },
+          { id: 'licenseNumber', label: 'License Number' },
+          { id: 'licenseIssue', label: 'License Issue Date' },
+          { id: 'licenseExpiry', label: 'License Expiry Date' },
+          
+          // Medical Certificate fields
+          { id: 'medicalClass', label: 'Medical Class' },
+          { id: 'medicalAuthority', label: 'Medical Authority' },
+          { id: 'medicalIssue', label: 'Medical Issue Date' },
+          { id: 'medicalExpiry', label: 'Medical Expiry Date' },
+          
+          // Passport fields
+          { id: 'passportNumber', label: 'Passport Number' },
+          { id: 'passportNationality', label: 'Passport Nationality' },
+          { id: 'passportIssue', label: 'Passport Issue Date' },
+          { id: 'passportExpiry', label: 'Passport Expiry Date' },
+          
+          // UAE Visa fields
+          { id: 'visaStatus', label: 'Current Visa Status' }
         ];
         
-        for (const doc of requiredDocs) {
-          const field = document.getElementById(doc.id);
+        const requiredFiles = [
+          { id: 'licenseFile', label: 'Pilot License Document' },
+          { id: 'medicalFile', label: 'Medical Certificate' },
+          { id: 'passportFile', label: 'Passport Copy' }
+        ];
+        
+        // Validate required form fields
+        for (const { id, label } of requiredFields) {
+          const field = document.getElementById(id);
+          
+          // Skip visa fields if "No Current UAE Visa" is selected
+          const visaStatus = document.getElementById('visaStatus')?.value;
+          if (id === 'visaExpiry' && visaStatus === 'No Current UAE Visa') {
+            continue; // Skip validation for this field
+          }
+          
+          // Skip ROL fields if "Attached to License" is selected
+          const rolType = document.getElementById('rolType')?.value;
+          if ((id === 'rolNumber' || id === 'rolIssue' || id === 'rolExpiry' || id === 'rolAuthority') && rolType === 'Attached to License') {
+            continue; // Skip validation for these fields
+          }
+          
+          // Skip English fields if "Attached to License" is selected
+          const englishTestType = document.getElementById('englishTestType')?.value;
+          if ((id === 'englishTestDate' || id === 'englishExpiry') && englishTestType === 'Attached to License') {
+            continue; // Skip validation for these fields
+          }
+          
+          // Skip Emirates ID fields if "Do not have Emirates ID" is selected
+          const emiratesIdStatus = document.getElementById('emiratesIdStatus')?.value;
+          if ((id === 'emiratesIdNumber' || id === 'emiratesIdIssue' || id === 'emiratesIdExpiry') && emiratesIdStatus === 'Do not have Emirates ID') {
+            continue; // Skip validation for these fields
+          }
+          
           if (!field || !field.value.trim()) {
-            alert(`Please fill in the ${doc.name}`);
+            alert(`Please complete the ${label} field in the documentation section.`);
             field?.focus();
             return false;
+          }
+        }
+        
+        // Validate required file uploads
+        for (const { id, label } of requiredFiles) {
+          const fileInput = document.getElementById(id);
+          
+          // Skip visa file if "No Current UAE Visa" is selected
+          const visaStatus = document.getElementById('visaStatus')?.value;
+          if (id === 'visaFile' && visaStatus === 'No Current UAE Visa') {
+            continue; // Skip validation for visa file
+          }
+          
+          // Skip ROL file if "Attached to License" is selected
+          const rolType = document.getElementById('rolType')?.value;
+          if (id === 'rolFile' && rolType === 'Attached to License') {
+            continue; // Skip validation for ROL file
+          }
+          
+          // Skip English file if "Attached to License" is selected
+          const englishTestType = document.getElementById('englishTestType')?.value;
+          if (id === 'englishFile' && englishTestType === 'Attached to License') {
+            continue; // Skip validation for English file
+          }
+          
+          // Skip Emirates ID file if "Do not have Emirates ID" is selected
+          const emiratesIdStatus = document.getElementById('emiratesIdStatus')?.value;
+          if (id === 'emiratesIdFile' && emiratesIdStatus === 'Do not have Emirates ID') {
+            continue; // Skip validation for Emirates ID file
+          }
+          
+          if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+            alert(`Please upload the required ${label} document.`);
+            fileInput?.focus();
+            return false;
+          }
+        }
+        
+        // Validate "Other" fields are properly filled
+        return validateOtherFields();
+      }
+      
+      // Validation function to check if all "Other" fields are properly filled
+      function validateOtherFields() {
+        const otherFieldPairs = [
+          {
+            dropdown: document.getElementById('medicalAuthority'),
+            textField: document.getElementById('medicalAuthorityOther'),
+            label: 'Medical Authority'
+          },
+          {
+            dropdown: document.getElementById('rolAuthority'),
+            textField: document.getElementById('rolAuthorityOther'),
+            label: 'ROL Authority'
+          },
+          {
+            dropdown: document.getElementById('licenseVerificationAuthority'),
+            textField: document.getElementById('licenseVerificationAuthorityOther'),
+            label: 'License Verification Authority'
+          },
+          {
+            dropdown: document.getElementById('incidentLetterAuthority'),
+            textField: document.getElementById('incidentLetterAuthorityOther'),
+            label: 'Incident Letter Authority'
+          }
+        ];
+        
+        for (const pair of otherFieldPairs) {
+          if (pair.dropdown && pair.textField && pair.dropdown.value === 'Other') {
+            if (!pair.textField.value.trim()) {
+              alert(`Please specify the ${pair.label} since you selected "Other"`);
+              pair.textField.focus();
+              return false;
+            }
           }
         }
         
@@ -2182,10 +3354,100 @@
           const docs = formData.documentation;
           html += `
             <h3 style="color: var(--flydubai-navy); margin-bottom: 16px;">📄 Documentation</h3>
-            <div style="display: grid; gap: 12px; margin-bottom: 24px;">
-              ${docs.licenseType ? `<div><strong>License:</strong> ${docs.licenseType} (${docs.licenseNumber || 'N/A'})</div>` : ''}
-              ${docs.medicalClass ? `<div><strong>Medical:</strong> ${docs.medicalClass}</div>` : ''}
-              ${docs.passportNumber ? `<div><strong>Passport:</strong> ${docs.passportNumber}</div>` : ''}
+            <div style="display: grid; gap: 16px; margin-bottom: 24px;">
+              <!-- Pilot License -->
+              <div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
+                <h4 style="margin: 0 0 12px; color: var(--flydubai-blue);">🛂 Pilot License</h4>
+                <div style="display: grid; gap: 8px; font-size: 13px;">
+                  ${docs.licenseType ? `<div><strong>Type:</strong> ${docs.licenseType}</div>` : ''}
+                  ${docs.licenseNumber ? `<div><strong>Number:</strong> ${docs.licenseNumber}</div>` : ''}
+                  ${docs.licenseExpiry ? `<div><strong>Expiry:</strong> ${toDDMMMYYYY(docs.licenseExpiry)}</div>` : ''}
+                </div>
+              </div>
+              
+              <!-- Medical Certificate -->
+              <div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
+                <h4 style="margin: 0 0 12px; color: var(--flydubai-blue);">🏥 Medical Certificate</h4>
+                <div style="display: grid; gap: 8px; font-size: 13px;">
+                  ${docs.medicalClass ? `<div><strong>Class:</strong> ${docs.medicalClass}</div>` : ''}
+                  ${docs.medicalAuthority ? `<div><strong>Authority:</strong> ${docs.medicalAuthority}</div>` : ''}
+                  ${docs.medicalExpiry ? `<div><strong>Expiry:</strong> ${toDDMMMYYYY(docs.medicalExpiry)}</div>` : ''}
+                </div>
+              </div>
+              
+              <!-- Radio Operator License -->
+              ${docs.rolType && docs.rolType !== 'Attached to License' ? `
+              <div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
+                <h4 style="margin: 0 0 12px; color: var(--flydubai-blue);">📻 Radio Operator License</h4>
+                <div style="display: grid; gap: 8px; font-size: 13px;">
+                  <div><strong>Type:</strong> ${docs.rolType}</div>
+                  ${docs.rolNumber ? `<div><strong>Number:</strong> ${docs.rolNumber}</div>` : ''}
+                  ${docs.rolAuthority ? `<div><strong>Authority:</strong> ${docs.rolAuthority}</div>` : ''}
+                  ${docs.rolExpiry ? `<div><strong>Expiry:</strong> ${toDDMMMYYYY(docs.rolExpiry)}</div>` : ''}
+                </div>
+              </div>
+              ` : docs.rolType === 'Attached to License' ? `
+              <div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
+                <h4 style="margin: 0 0 12px; color: var(--flydubai-blue);">📻 Radio Operator License</h4>
+                <div style="color: #16a34a; font-weight: 500;">✅ Attached to Pilot License</div>
+              </div>
+              ` : ''}
+              
+              <!-- English Proficiency -->
+              ${docs.englishLevel ? `
+              <div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
+                <h4 style="margin: 0 0 12px; color: var(--flydubai-blue);">🌐 English Proficiency</h4>
+                <div style="display: grid; gap: 8px; font-size: 13px;">
+                  <div><strong>Level:</strong> ${docs.englishLevel}</div>
+                  ${docs.englishTestType && docs.englishTestType !== 'Attached to License' ? `<div><strong>Test Type:</strong> ${docs.englishTestType}</div>` : ''}
+                  ${docs.englishTestType === 'Attached to License' ? `<div style="color: #16a34a; font-weight: 500;">✅ Attached to License</div>` : ''}
+                  ${docs.englishExpiry ? `<div><strong>Expiry:</strong> ${toDDMMMYYYY(docs.englishExpiry)}</div>` : ''}
+                </div>
+              </div>
+              ` : ''}
+              
+              <!-- Emirates ID -->
+              ${docs.emiratesIdStatus && docs.emiratesIdStatus !== 'Do not have Emirates ID' ? `
+              <div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
+                <h4 style="margin: 0 0 12px; color: var(--flydubai-blue);">🆔 Emirates ID</h4>
+                <div style="display: grid; gap: 8px; font-size: 13px;">
+                  <div><strong>Status:</strong> ${docs.emiratesIdStatus}</div>
+                  ${docs.emiratesIdNumber ? `<div><strong>Number:</strong> ${docs.emiratesIdNumber}</div>` : ''}
+                  ${docs.emiratesIdExpiry ? `<div><strong>Expiry:</strong> ${toDDMMMYYYY(docs.emiratesIdExpiry)}</div>` : ''}
+                </div>
+              </div>
+              ` : docs.emiratesIdStatus === 'Do not have Emirates ID' ? `
+              <div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
+                <h4 style="margin: 0 0 12px; color: var(--flydubai-blue);">🆔 Emirates ID</h4>
+                <div style="color: #64748b; font-style: italic;">Not currently available</div>
+              </div>
+              ` : ''}
+              
+              <!-- Passport -->
+              <div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
+                <h4 style="margin: 0 0 12px; color: var(--flydubai-blue);">📘 Passport</h4>
+                <div style="display: grid; gap: 8px; font-size: 13px;">
+                  ${docs.passportNumber ? `<div><strong>Number:</strong> ${docs.passportNumber}</div>` : ''}
+                  ${docs.passportNationality ? `<div><strong>Nationality:</strong> ${docs.passportNationality}</div>` : ''}
+                  ${docs.passportExpiry ? `<div><strong>Expiry:</strong> ${toDDMMMYYYY(docs.passportExpiry)}</div>` : ''}
+                </div>
+              </div>
+              
+              <!-- UAE Visa -->
+              ${docs.visaStatus && docs.visaStatus !== 'No Current UAE Visa' ? `
+              <div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
+                <h4 style="margin: 0 0 12px; color: var(--flydubai-blue);">🛂 UAE Visa</h4>
+                <div style="display: grid; gap: 8px; font-size: 13px;">
+                  <div><strong>Status:</strong> ${docs.visaStatus}</div>
+                  ${docs.visaExpiry ? `<div><strong>Expiry:</strong> ${toDDMMMYYYY(docs.visaExpiry)}</div>` : ''}
+                </div>
+              </div>
+              ` : docs.visaStatus === 'No Current UAE Visa' ? `
+              <div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
+                <h4 style="margin: 0 0 12px; color: var(--flydubai-blue);">🛂 UAE Visa</h4>
+                <div style="color: #64748b; font-style: italic;">No current UAE visa</div>
+              </div>
+              ` : ''}
             </div>
           `;
         }
@@ -2250,7 +3512,7 @@
         });
         
         // Collect summary hours
-        const summaryInputs = document.querySelectorAll('.summary table tbody input.hhmm');
+        const summaryInputs = document.querySelectorAll('.summary .hhmm');
         const summaryHours = {};
         if (summaryInputs.length >= 9) {
           summaryHours.pic = summaryInputs[0]?.value || '0:00';
@@ -2271,20 +3533,71 @@
         
         // Step 3: Documentation
         formData.documentation = {
+          // Pilot License
           licenseType: document.getElementById('licenseType')?.value || '',
           licenseNumber: document.getElementById('licenseNumber')?.value || '',
           licenseIssue: document.getElementById('licenseIssue')?.value || '',
           licenseExpiry: document.getElementById('licenseExpiry')?.value || '',
+          licenseFile: document.getElementById('licenseFile')?.files[0]?.name || '',
           
+          // Medical Certificate
           medicalClass: document.getElementById('medicalClass')?.value || '',
           medicalAuthority: document.getElementById('medicalAuthority')?.value || '',
           medicalIssue: document.getElementById('medicalIssue')?.value || '',
           medicalExpiry: document.getElementById('medicalExpiry')?.value || '',
+          medicalFile: document.getElementById('medicalFile')?.files[0]?.name || '',
           
+          // Radio Operator License (ROL)
+          rolType: document.getElementById('rolType')?.value || '',
+          rolNumber: document.getElementById('rolNumber')?.value || '',
+          rolIssue: document.getElementById('rolIssue')?.value || '',
+          rolExpiry: document.getElementById('rolExpiry')?.value || '',
+          rolAuthority: document.getElementById('rolAuthority')?.value || '',
+          rolAuthorityOther: document.getElementById('rolAuthorityOther')?.value || '',
+          rolFile: document.getElementById('rolFile')?.files[0]?.name || '',
+          
+          // English Proficiency Certificate
+          englishLevel: document.getElementById('englishLevel')?.value || '',
+          englishTestType: document.getElementById('englishTestType')?.value || '',
+          englishTestDate: document.getElementById('englishTestDate')?.value || '',
+          englishExpiry: document.getElementById('englishExpiry')?.value || '',
+          englishFile: document.getElementById('englishFile')?.files[0]?.name || '',
+          
+          // License Verification Letter
+          licenseVerificationAuthority: document.getElementById('licenseVerificationAuthority')?.value || '',
+          licenseVerificationAuthorityOther: document.getElementById('licenseVerificationAuthorityOther')?.value || '',
+          licenseVerificationDate: document.getElementById('licenseVerificationDate')?.value || '',
+          licenseVerificationFile: document.getElementById('licenseVerificationFile')?.files[0]?.name || '',
+          
+          // No Incident/Accident Letter
+          incidentLetterAuthority: document.getElementById('incidentLetterAuthority')?.value || '',
+          incidentLetterAuthorityOther: document.getElementById('incidentLetterAuthorityOther')?.value || '',
+          incidentLetterDate: document.getElementById('incidentLetterDate')?.value || '',
+          incidentLetterFile: document.getElementById('incidentLetterFile')?.files[0]?.name || '',
+          
+          // Flight Hours Verification Letter
+          flightHoursAuthority: document.getElementById('flightHoursAuthority')?.value || '',
+          flightHoursIssue: document.getElementById('flightHoursIssue')?.value || '',
+          flightHoursFile: document.getElementById('flightHoursFile')?.files[0]?.name || '',
+          
+          // Emirates ID
+          emiratesIdStatus: document.getElementById('emiratesIdStatus')?.value || '',
+          emiratesIdNumber: document.getElementById('emiratesIdNumber')?.value || '',
+          emiratesIdIssue: document.getElementById('emiratesIdIssue')?.value || '',
+          emiratesIdExpiry: document.getElementById('emiratesIdExpiry')?.value || '',
+          emiratesIdFile: document.getElementById('emiratesIdFile')?.files[0]?.name || '',
+          
+          // Passport
           passportNumber: document.getElementById('passportNumber')?.value || '',
           passportNationality: document.getElementById('passportNationality')?.value || '',
           passportIssue: document.getElementById('passportIssue')?.value || '',
-          passportExpiry: document.getElementById('passportExpiry')?.value || ''
+          passportExpiry: document.getElementById('passportExpiry')?.value || '',
+          passportFile: document.getElementById('passportFile')?.files[0]?.name || '',
+          
+          // UAE Visa & Work Permit
+          visaStatus: document.getElementById('visaStatus')?.value || '',
+          visaExpiry: document.getElementById('visaExpiry')?.value || '',
+          visaFile: document.getElementById('visaFile')?.files[0]?.name || ''
         };
         
         // Step 4: Declaration
@@ -2367,13 +3680,54 @@
           });
         }
         
+        // Step 2: Flight Experience
+        if (formData.flightExperience) {
+          const flightExp = formData.flightExperience;
+          
+          // Populate summary hours
+          if (flightExp.summaryHours) {
+            const summaryInputs = document.querySelectorAll('.summary .hhmm');
+            if (summaryInputs.length >= 9) {
+              summaryInputs[0].value = flightExp.summaryHours.pic || '0:00';
+              summaryInputs[1].value = flightExp.summaryHours.sic || '0:00';
+              summaryInputs[2].value = flightExp.summaryHours.solo || '0:00';
+              summaryInputs[3].value = flightExp.summaryHours.instrument || '0:00';
+              summaryInputs[4].value = flightExp.summaryHours.sim || '0:00';
+              summaryInputs[5].value = flightExp.summaryHours.night || '0:00';
+              summaryInputs[6].value = flightExp.summaryHours.instructor || '0:00';
+              summaryInputs[7].value = flightExp.summaryHours.p1us || '0:00';
+              summaryInputs[8].value = flightExp.summaryHours.grandTotal || '0:00';
+            }
+          }
+          
+          // Note: Aircraft sections are recreated during initialization
+          // so their data is populated when they're created
+        }
+        
         // Step 3: Documentation
         if (formData.documentation) {
           const docs = formData.documentation;
           const docFields = [
+            // Pilot License
             'licenseType', 'licenseNumber', 'licenseIssue', 'licenseExpiry',
+            // Medical Certificate  
             'medicalClass', 'medicalAuthority', 'medicalIssue', 'medicalExpiry',
-            'passportNumber', 'passportNationality', 'passportIssue', 'passportExpiry'
+            // Radio Operator License (ROL)
+            'rolType', 'rolNumber', 'rolIssue', 'rolExpiry', 'rolAuthority', 'rolAuthorityOther',
+            // English Proficiency Certificate
+            'englishLevel', 'englishTestType', 'englishTestDate', 'englishExpiry',
+            // License Verification Letter
+            'licenseVerificationAuthority', 'licenseVerificationAuthorityOther', 'licenseVerificationDate',
+            // No Incident/Accident Letter
+            'incidentLetterAuthority', 'incidentLetterAuthorityOther', 'incidentLetterDate',
+            // Flight Hours Verification Letter
+            'flightHoursAuthority', 'flightHoursIssue',
+            // Emirates ID
+            'emiratesIdStatus', 'emiratesIdNumber', 'emiratesIdIssue', 'emiratesIdExpiry',
+            // Passport
+            'passportNumber', 'passportNationality', 'passportIssue', 'passportExpiry',
+            // UAE Visa & Work Permit
+            'visaStatus', 'visaExpiry'
           ];
           
           docFields.forEach(fieldId => {
@@ -2382,6 +3736,11 @@
               element.value = docs[fieldId];
             }
           });
+          
+          // Trigger conditional field visibility after populating values
+          if (docs.rolType) window.toggleROLFields();
+          if (docs.englishTestType) window.toggleEnglishTestDate();
+          if (docs.emiratesIdStatus) window.toggleEmiratesIdFields();
         }
         
         // Step 4: Declaration
@@ -2476,25 +3835,169 @@
 
       // Date validation
       function checkValidity(docType) {
-        // Placeholder for document validation
-        console.log('Checking validity for:', docType);
-      }
-
-      // Submit form
-      function submitForm() {
-        console.log('📤 Submitting form...');
+        const today = new Date();
+        const expiryInput = document.getElementById(docType + 'Expiry');
+        const statusDiv = document.getElementById(docType + 'Status');
+        const dojInput = document.getElementById('doj');
         
-        if (!validateCurrentStep()) {
+        if (!expiryInput || !expiryInput.value || !statusDiv) return;
+        
+        const expiryDate = new Date(expiryInput.value);
+        const daysUntilExpiry = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+        
+        statusDiv.innerHTML = '';
+        
+        // Check if document expires before today
+        if (daysUntilExpiry < 0) {
+          statusDiv.innerHTML = '<span class="status-indicator status-expired">EXPIRED</span>';
           return;
         }
         
-        collectFormData();
+        // Check validity against joining date if available
+        if (dojInput && dojInput.value) {
+          const joiningDate = new Date(dojInput.value);
+          const daysAfterJoining = Math.ceil((expiryDate - joiningDate) / (1000 * 60 * 60 * 24));
+          
+          // Passport must be valid for at least 6 months (180 days) after joining
+          if (docType === 'passport' && daysAfterJoining < 180) {
+            statusDiv.innerHTML = '<span class="status-indicator status-expired">EXPIRES TOO SOON AFTER JOINING (Need 6+ months)</span>';
+            return;
+          }
+          
+          // License, Medical, ROL must be valid for at least 90 days after joining
+          if (['license', 'medical', 'rol'].includes(docType) && daysAfterJoining < 90) {
+            statusDiv.innerHTML = '<span class="status-indicator status-expired">EXPIRES TOO SOON AFTER JOINING (Need 90+ days)</span>';
+            return;
+          }
+        }
         
-        // Here you would normally send the data to a server
-        alert('Form submitted successfully! This is a demo - in production, data would be sent to the server.');
+        // Emirates ID and UAE Visa only need to be valid at submission (no DOJ requirement)
+        // They are handled by the basic expiry check only
         
-        // Clear saved data after successful submit
-        localStorage.removeItem('pilotFormData');
+        // English Proficiency - only validate if not "Attached to License"
+        if (docType === 'english') {
+          const englishTestType = document.getElementById('englishTestType')?.value;
+          if (englishTestType === 'Attached to License') {
+            statusDiv.innerHTML = '<span class="status-indicator status-valid">ATTACHED TO LICENSE</span>';
+            return;
+          }
+        }
+        
+        // Show appropriate status message
+        if (daysUntilExpiry <= 30) {
+          statusDiv.innerHTML = `<span class="status-indicator status-warning">EXPIRES IN ${daysUntilExpiry} DAYS</span>`;
+        } else if (daysUntilExpiry <= 90) {
+          statusDiv.innerHTML = `<span class="status-indicator status-caution">EXPIRES IN ${daysUntilExpiry} DAYS</span>`;
+        } else {
+          statusDiv.innerHTML = `<span class="status-indicator status-valid">VALID (${daysUntilExpiry} days remaining)</span>`;
+        }
+      }
+
+      // Submit form
+      async function submitForm() {
+        console.log('📨 === SUBMITTING FORM ===');
+        
+        // Show loading state
+        const nextBtn = document.getElementById('nextBtn');
+        const originalText = nextBtn.textContent;
+        nextBtn.textContent = 'Submitting...';
+        nextBtn.disabled = true;
+        
+        try {
+          // Collect current form data before submission
+          collectFormData();
+          
+          // Prepare form data with files
+          const formDataToSubmit = new FormData();
+          
+          // Log form data size for debugging
+          const formDataJSON = JSON.stringify(formData);
+          console.log('📊 Form data size:', (formDataJSON.length / 1024).toFixed(2) + ' KB');
+          console.log('📊 Form data keys:', Object.keys(formData));
+          
+          // Add all form fields
+          formDataToSubmit.append('formData', formDataJSON);
+          
+          // Add all uploaded files with size logging
+          const fileInputs = document.querySelectorAll('input[type="file"]');
+          let totalFileSize = 0;
+          fileInputs.forEach(input => {
+            if (input.files && input.files[0]) {
+              const file = input.files[0];
+              totalFileSize += file.size;
+              formDataToSubmit.append(input.id, file);
+              console.log(`📎 Added file: ${input.id} - ${file.name} (${(file.size / 1024).toFixed(1)} KB)`);
+            }
+          });
+          console.log('📊 Total file size:', (totalFileSize / 1024).toFixed(2) + ' KB');
+          
+          console.log('🚀 Sending form data to server...');
+          
+          // Submit to API
+          const response = await fetch('/api/submit-form', {
+            method: 'POST',
+            body: formDataToSubmit
+          });
+          
+          const result = await response.json();
+          
+          console.log('📬 Server response:', {
+            ok: response.ok,
+            status: response.status,
+            result: result
+          });
+          
+          if (response.ok) {
+            console.log('✅ Form submitted successfully');
+            showSubmissionSuccess(result);
+            
+            // Clear saved data after successful submit
+            localStorage.removeItem('pilotFormData');
+            
+          } else {
+            console.error('❌ Form submission failed:', result);
+            showDetailedSubmissionError(response.status, result, formDataJSON, totalFileSize);
+          }
+          
+        } catch (error) {
+          console.error('❌ Network error during submission:', error);
+          showNetworkError(error, JSON.stringify(formData), 0);
+        } finally {
+          // Reset button state
+          nextBtn.textContent = originalText;
+          nextBtn.disabled = false;
+        }
+      }
+      
+      function showSubmissionSuccess(result) {
+        const successHtml = `
+          <div style="max-width: 600px; margin: 40px auto; padding: 32px; background: white; border-radius: 12px; box-shadow: var(--shadow); text-align: center;">
+            <div style="color: #16a34a; font-size: 48px; margin-bottom: 16px;">✅</div>
+            <h2 style="color: var(--flydubai-navy); margin-bottom: 16px;">Application Submitted Successfully!</h2>
+            <p style="color: var(--muted); margin-bottom: 24px; line-height: 1.6;">
+              Your pilot documentation application has been submitted to flydubai Flight Operations. 
+              You will receive a confirmation email shortly with your application details and next steps.
+            </p>
+            ${result.submissionId ? `
+              <div style="background: #f0f9ff; padding: 16px; border-radius: 8px; margin-bottom: 24px;">
+                <strong>Application ID:</strong> ${result.submissionId}
+              </div>
+            ` : ''}
+            <button onclick="location.reload()" style="background: var(--flydubai-blue); color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer;">
+              Submit Another Application
+            </button>
+          </div>
+        `;
+        
+        document.body.innerHTML = successHtml;
+      }
+      
+      function showDetailedSubmissionError(status, result, formDataJSON, totalFileSize) {
+        alert(`Submission failed with status ${status}. Please check your internet connection and try again. If the problem persists, contact support.`);
+      }
+      
+      function showNetworkError(error, formDataJSON, totalFileSize) {
+        alert(`Network error during submission: ${error.message}. Please check your internet connection and try again.`);
       }
 
       // Initialize signature date to today
